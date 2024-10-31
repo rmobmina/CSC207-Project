@@ -1,0 +1,76 @@
+{\rtf1}
+
+weather-data-visualization-app/
+│
+├── src/
+│   ├── domain/
+│   │   ├── entities/
+│   │   │   ├── WeatherData.java
+│   │   │   ├── Location.java
+│   │   │   └── Visualization.java
+│   │   └── services/
+│   │       ├── WeatherService.java
+│   │       └── VisualizationService.java
+│   │
+│   ├── application/
+│   │   ├── usecases/
+│   │   │   ├── RetrieveCurrentWeather.java
+│   │   │   ├── RetrieveHistoricalWeather.java
+│   │   │   └── GenerateVisualization.java
+│   │   ├── dto/
+│   │   │   ├── WeatherDataDTO.java
+│   │   │   └── LocationDTO.java
+│   │   └── interfaces/
+│   │       ├── WeatherDataRepository.java
+│   │       └── VisualizationRepository.java
+│   │
+│   ├── infrastructure/
+│   │   ├── apis/
+│   │   │   ├── OpenWeatherService.java
+│   │   │   ├── OikolabService.java
+│   │   │   └── CohereChatService.java
+│   │   └── repositories/
+│   │       ├── WeatherDataRepositoryImpl.java
+│   │       └── VisualizationRepositoryImpl.java
+│   │
+│   ├── presentation/
+│   │   ├── cli/
+│   │   │   └── WeatherApp.java
+│   │   ├── ui/
+│   │   │   ├── DashboardUI.java
+│   │   │   └── AlertUI.java
+│   │   └── viewmodels/
+│   │       └── WeatherViewModel.java
+│   │
+│   └── utils/
+│       └── HttpUtils.java
+│       └── DateUtils.java
+│       └── VisualizationUtils.java
+│
+├── lib/
+│   └── external-dependencies/
+│       ├── gson.jar
+│       └── some-other-library.jar
+│
+├── resources/
+│   ├── config/
+│   │   └── api-config.properties
+│   └── images/
+│       └── example-graph.png
+│
+├── tests/
+│   ├── domain/
+│   │   ├── entities/
+│   │   │   ├── WeatherDataTest.java
+│   │   │   └── LocationTest.java
+│   └── application/
+│       ├── usecases/
+│       │   ├── RetrieveCurrentWeatherTest.java
+│       │   └── GenerateVisualizationTest.java
+│       └── services/
+│           ├── OpenWeatherServiceTest.java
+│           └── CohereChatServiceTest.java
+│
+├── .gitignore
+├── README.md
+└── pom.xml (or build.gradle)
