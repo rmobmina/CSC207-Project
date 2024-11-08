@@ -10,7 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class OpenWeatherService<JSONObject> {
-    private static final String API_KEY = "b6409511ceff67156736df6da983d467";
+    private static final String API_KEY = "Enter your key here";
     private String lon;
     private String lat;
     private String location = "";
