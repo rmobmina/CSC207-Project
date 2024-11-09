@@ -1,10 +1,16 @@
 import infrastructure.apis.OpenWeatherService;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import java.util.Scanner;
+
+import infrastructure.apis.OpenWeatherService;
+
+import javax.swing.*;
+
 public class Main {
     public static void main(String[] args) {
-        OpenWeatherService test = new OpenWeatherService("Saskatoon");
+        // Initialize OpenWeatherService with the provided API key and city
+        OpenWeatherService weatherService = new OpenWeatherService();
 
     }
 }
+

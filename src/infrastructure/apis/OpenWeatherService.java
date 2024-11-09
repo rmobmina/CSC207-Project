@@ -10,19 +10,31 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class OpenWeatherService<JSONObject> {
-    private static final String API_KEY = "Enter you API Key here.";
+    private String API_KEY;
     private String lon;
     private String lat;
     private String location = "";
     private JSONArray locDat;
+    private JSONArray weatherDat;
 
-    public OpenWeatherService(String location) {
-        this.location = location;
-        getData();
+    public OpenWeatherService() {
+        while (true) {
+            getInformation();
+            getData();
+        }
+    }
+
+    public void getInformation() {
+        Scanner myObj = new Scanner(System.in);
+
+        // Get city and API key input from the user
+        System.out.println("Enter a city:");
+        location = myObj.nextLine();
+        System.out.println("Enter your OpenWeatherMap API key:");
+        API_KEY = myObj.nextLine();
 
     }
 
-    //    public static <JSONObject, JSONArray> JSONObject getWeatherData(String locationName) {
     public void getData() {
 
         // build API request URL with location coordinates
@@ -42,7 +54,7 @@ public class OpenWeatherService<JSONObject> {
 
     }
 
-    public void getData(String key) {
+    public void getWeatherData(String key) {
         // (Switchs statements regarding keys)
         // build API request URL with location coordinates
         String urlString = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon +
@@ -59,27 +71,34 @@ public class OpenWeatherService<JSONObject> {
             // catch errors; the call is a success IFF the response code is 200
             assert conn != null;
             if(conn.getResponseCode() != 200){
-                System.out.println("Error: Could not connect to API");
+                System.out.println("Error: Could not connect to API \n");
+                getInformation();
+                getData();
+
             }
 
-            // store resulting json data
-            StringBuilder resultJson = new StringBuilder();
-            Scanner scanner = new Scanner(conn.getInputStream());
-            while(scanner.hasNext()){
-                // read and store into the string builder
-                resultJson.append(scanner.nextLine());
+            else {
+                // store resulting json data
+                StringBuilder resultJson = new StringBuilder();
+                Scanner scanner = new Scanner(conn.getInputStream());
+                while (scanner.hasNext()) {
+                    // read and store into the string builder
+                    resultJson.append(scanner.nextLine());
+                }
+
+                scanner.close();
+                locDat = new JSONArray(resultJson.toString());
+
+                System.out.println(locDat.toString());
+
+//                System.out.println(locDat.toString(4)); // Print it with specified indentation
+
             }
-
-            scanner.close();
-            locDat = new JSONArray(resultJson.toString());
-            System.out.println(locDat.toString());
-
 
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
 
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
