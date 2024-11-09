@@ -1,47 +1,81 @@
 package infrastructure.frameworks;
 
-import infrastructure.adapters.OpenWeatherApiService;
-import domain.entities.Location;
-import domain.entities.WeatherData;
-import application.usecases.GetLocationDataUseCase;
-import application.usecases.GetWeatherDataUseCase;
-import org.json.JSONException;
-
+// importing needed tools
 import java.util.Scanner;
 
+import org.json.JSONException;
+
+import application.usecases.GetLocationDataUseCase;
+import application.usecases.GetWeatherDataUseCase;
+import domain.entities.Location;
+import domain.entities.WeatherData;
+import infrastructure.adapters.OpenWeatherApiService;
+
+/**
+ * Main class for the weather application.
+ * This class serves as the entry point for fetching and displaying weather data.
+ */
 public class Main {
+
+    /**
+     * Main method that runs the weather application.
+     *
+     * @param args command-line arguments, not used in this application
+     */
     public static void main(String[] args) {
-        OpenWeatherApiService apiService = new OpenWeatherApiService();
-        GetLocationDataUseCase locationUseCase = new GetLocationDataUseCase(apiService);
-        GetWeatherDataUseCase weatherUseCase = new GetWeatherDataUseCase(apiService);
+        // initializing varibles
+        final OpenWeatherApiService apiService = new OpenWeatherApiService();
+        final GetLocationDataUseCase locationUseCase = new GetLocationDataUseCase(apiService);
+        final GetWeatherDataUseCase weatherUseCase = new GetWeatherDataUseCase(apiService);
+        String apiKey = "";
+        final int indentAmount = 4;
+        final Scanner scanner = new Scanner(System.in);
 
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("(Type 'quit' to exit) Enter a city:");
-        String city = scanner.nextLine();
-        if ("quit".equals(city)) {
-            System.exit(0);
-        }
+        while (true) {
 
-        System.out.println("Enter your OpenWeatherMap API key:");
-        String apiKey = scanner.nextLine();
-
-        Location location = locationUseCase.execute(city, apiKey);
-        if (location != null) {
-            WeatherData weatherData = weatherUseCase.execute(location, apiKey);
-            if (weatherData != null) {
-                try {
-                    System.out.println("\nWeather Data:\n" + weatherData.getWeatherDetails().toString(4));
-                }
-                catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            } else {
-                System.out.println("Error: Could not retrieve weather data.");
+            // get user inputs for locations and API keys
+            System.out.println("(Type 'quit' to exit) Enter a city:");
+            final String city = scanner.nextLine();
+            if ("quit".equals(city)) {
+                System.exit(0);
             }
-        } else {
-            System.out.println("Error: Could not retrieve location data.");
+
+            // we only check for the key once
+            if (apiKey.isEmpty()) {
+                System.out.println("Enter your OpenWeatherMap API key:");
+                apiKey = scanner.nextLine();
+            }
+
+            // we run the location use case given this information
+            final Location location = locationUseCase.execute(city, apiKey);
+
+            if (location != null) {
+
+                // given that the information is valid, we then find weather details -
+                final WeatherData weatherData = weatherUseCase.execute(location, apiKey);
+                if (weatherData != null) {
+
+                    // - and print it into the console
+                    try {
+                        System.out.println("\nWeather Data:\n"
+                                + weatherData.getWeatherDetails().toString(indentAmount));
+                    }
+
+                    // the rest of the code from here simply accounts for errors
+                    catch (JSONException exception) {
+                        exception.printStackTrace();
+                    }
+
+                }
+                else {
+                    System.out.println("Error: Could not retrieve weather data.");
+                }
+            }
+            else {
+                System.out.println("Error: Could not retrieve location data.");
+            }
         }
-        scanner.close();
     }
 }
+
+
