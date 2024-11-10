@@ -1,5 +1,9 @@
 package domain.entities;
 
+/**
+ * A class representing a city.
+ * Stores the city, longitude, latitude.
+ */
 public class Location {
     private String city;
     private double latitude;
@@ -17,6 +21,10 @@ public class Location {
 
     public String getLongitude() {
         return Double.toString(longitude);
+    }
+
+    public String getCity() {
+        return city;
     }
 
 }

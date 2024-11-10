@@ -1,10 +1,9 @@
 package domain.services;
 
-import domain.entities.Visualization;
-import domain.entities.WeatherData;
-
-import java.util.List;
-
+/**
+ * An interface used for visualizing the data.
+ * Has a method to generate a graph, but is not yet finished.
+ */
 public interface VisualizationService {
-    Visualization generateGraph(String graphType, List<WeatherData> dataPoints, List<WeatherData> comparisonData);
+
 }

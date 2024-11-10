@@ -18,8 +18,8 @@ public class GetWeatherDataUseCase {
 
     /**
      * Method for retrieving the weather data of a given city, using a given API key.
-     * @param location is a string representing the name of a city given by the user. Not case-sensitive.
-     * @param apiKey is a string representing the user's given OpenWeatherMap API key.
+     * @param location is a Location object representing the name of a city given by the user.
+     * @param apiKey is a String representing the user's given OpenWeatherMap API key.
      * @return a WeatherData object storing the weather details.
      */
     public WeatherData execute(Location location, String apiKey) {
