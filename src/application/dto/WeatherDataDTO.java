@@ -23,4 +23,25 @@ public class WeatherDataDTO {
         this.precipitation = precipitation;
         this.alerts = alerts;
     }
+
+    public WeatherDataDTO() { this.location = "n/a"; }
+
+    public double getTemperature(String type) {
+        switch (type) {
+            case "cel":
+                return getTemperatureInCelsius();
+            case "fah":
+                return getTemperatureInFahrenheit();
+            default:
+                return temperature;
+        }
+    }
+
+    public double getTemperatureInCelsius() {
+        return this.temperature - 273.15;
+    }
+
+    public double getTemperatureInFahrenheit() {
+        return getTemperatureInCelsius() * 1.8 + 32;
+    }
 }
