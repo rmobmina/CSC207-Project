@@ -40,12 +40,6 @@ public class Main {
                 System.exit(0);
             }
 
-            // we only check for the key once
-            if (apiKey.isEmpty()) {
-                System.out.println("Enter your OpenWeatherMap API key:");
-                apiKey = scanner.nextLine();
-            }
-
             // we run the location use case given this information
             final Location location = locationUseCase.execute(city, apiKey);
 

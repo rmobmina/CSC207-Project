@@ -33,11 +33,11 @@ public class OpenWeatherApiService implements ApiService {
 
         // here, we try to construct a url to the API based on user input
 //        final String urlString = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=1&appid=" + apiKey;
-        final String urlString = "https://archive-api.open-meteo.com/v1/archive?latitude=52.52&longitude=13.41&"
-                + "start_date=2024-10-26&end_date=2024-11-09&hourly=temperature_2m,relative_humidity_2m,apparent_"
-                + "temperature,precipitation,rain,weather_code,cloud_cover,cloud_cover_low,cloud_cover_mid,"
-                + "cloud_cover_high,wind_speed_10m,wind_speed_100m,wind_direction_10m,wind_direction_100m,"
-                + "wind_gusts_10m";
+        final String urlString = "https://archive-api.open-meteo.com/v1/archive?" +
+                "latitude=52.52&longitude=13.41&start_date=2024-10-26&end_date=2024-11-09&" +
+                "daily=temperature_2m_max,temperature_2m_min,temperature_2m_mean,apparent_temperature_max," +
+                "apparent_temperature_min,apparent_temperature_mean,precipitation_sum,rain_sum," +
+                "snowfall_sum,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant";
 
         try {
             final HttpURLConnection conn = callApi(urlString);
