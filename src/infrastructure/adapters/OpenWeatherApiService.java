@@ -14,6 +14,8 @@ import domain.entities.Location;
 import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
 
+import javax.xml.bind.SchemaOutputResolver;
+
 /**
  * An implementation of the ApiService interface.
  * Parses the OpenWeatherMap API to retrieve location and weather data, given a valid location and API key.
@@ -30,7 +32,12 @@ public class OpenWeatherApiService implements ApiService {
         Location testLocation = null;
 
         // here, we try to construct a url to the API based on user input
-        final String urlString = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=1&appid=" + apiKey;
+//        final String urlString = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=1&appid=" + apiKey;
+        final String urlString = "https://archive-api.open-meteo.com/v1/archive?latitude=52.52&longitude=13.41&"
+                + "start_date=2024-10-26&end_date=2024-11-09&hourly=temperature_2m,relative_humidity_2m,apparent_"
+                + "temperature,precipitation,rain,weather_code,cloud_cover,cloud_cover_low,cloud_cover_mid,"
+                + "cloud_cover_high,wind_speed_10m,wind_speed_100m,wind_direction_10m,wind_direction_100m,"
+                + "wind_gusts_10m";
 
         try {
             final HttpURLConnection conn = callApi(urlString);
@@ -41,20 +48,24 @@ public class OpenWeatherApiService implements ApiService {
                 // here, we want to make new object to parse through the result of the API call, then accumulate it
                 //      into a string
                 final StringBuilder resultJson = new StringBuilder();
+                resultJson.append("[");
                 final Scanner scanner = new Scanner(conn.getInputStream());
 
                 while (scanner.hasNext()) {
                     resultJson.append(scanner.nextLine());
                 }
+                resultJson.append("]");
                 scanner.close();
 
                 // the reason why we created the result string is so that we can create a JSON object to store our
                 //      information as needed
                 final JSONArray locationArray = new JSONArray(resultJson.toString());
 
+                System.out.println(locationArray.toString(4));
+
                 if (locationArray.length() > 0) {
                     locData = locationArray.getJSONObject(0);
-                    testLocation = new Location(city, locData.getDouble("lat"), locData.getDouble("lon"));
+                    testLocation = new Location(city, locData.getDouble("latitude"), locData.getDouble("longitude"));
                 }
             }
         }
