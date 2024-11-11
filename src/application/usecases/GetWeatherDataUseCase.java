@@ -24,6 +24,6 @@ public class GetWeatherDataUseCase {
      */
     public WeatherData execute(Location location, String apiKey) {
         // calls the API service to extract weather information in JSON format
-        return apiService.fetchWeather(location, apiKey);
+        return apiService.fetchWeather(location);
     }
 }

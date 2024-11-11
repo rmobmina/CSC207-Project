@@ -14,8 +14,6 @@ import domain.entities.Location;
 import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
 
-import javax.xml.bind.SchemaOutputResolver;
-
 /**
  * An implementation of the ApiService interface.
  * Parses the OpenWeatherMap API to retrieve location and weather data, given a valid location and API key.
@@ -32,12 +30,7 @@ public class OpenWeatherApiService implements ApiService {
         Location testLocation = null;
 
         // here, we try to construct a url to the API based on user input
-//        final String urlString = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=1&appid=" + apiKey;
-        final String urlString = "https://archive-api.open-meteo.com/v1/archive?latitude=52.52&longitude=13.41&"
-                + "start_date=2024-10-26&end_date=2024-11-09&hourly=temperature_2m,relative_humidity_2m,apparent_"
-                + "temperature,precipitation,rain,weather_code,cloud_cover,cloud_cover_low,cloud_cover_mid,"
-                + "cloud_cover_high,wind_speed_10m,wind_speed_100m,wind_direction_10m,wind_direction_100m,"
-                + "wind_gusts_10m";
+        final String urlString = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=1&appid=" + apiKey;
 
         try {
             final HttpURLConnection conn = callApi(urlString);
@@ -48,13 +41,11 @@ public class OpenWeatherApiService implements ApiService {
                 // here, we want to make new object to parse through the result of the API call, then accumulate it
                 //      into a string
                 final StringBuilder resultJson = new StringBuilder();
-                resultJson.append("[");
                 final Scanner scanner = new Scanner(conn.getInputStream());
 
                 while (scanner.hasNext()) {
                     resultJson.append(scanner.nextLine());
                 }
-                resultJson.append("]");
                 scanner.close();
 
                 // the reason why we created the result string is so that we can create a JSON object to store our
@@ -65,7 +56,7 @@ public class OpenWeatherApiService implements ApiService {
 
                 if (locationArray.length() > 0) {
                     locData = locationArray.getJSONObject(0);
-                    testLocation = new Location(city, locData.getDouble("latitude"), locData.getDouble("longitude"));
+                    testLocation = new Location(city, locData.getDouble("lat"), locData.getDouble("lon"));
                 }
             }
         }
@@ -77,14 +68,15 @@ public class OpenWeatherApiService implements ApiService {
     }
 
     @Override
-    public WeatherData fetchWeather(Location location, String apiKey) {
+    public WeatherData fetchWeather(Location location) {
         // initializes a local WeatherData variable so we can avoid having multiple return statements
         WeatherData weatherData = null;
 
         // here, we try to construct a url to the API based on our location data
-        final String urlString = "https://api.openweathermap.org/data/2.5/weather?lat=" + location.getLatitude()
-                + "&lon=" + location.getLongitude() + "&appid=" + apiKey;
-
+        final String urlString = "https://archive-api.open-meteo.com/v1/archive?latitude="
+                + location.getLatitude()
+                + "&longitude=" + location.getLongitude()
+                + "&start_date=2024-10-26&end_date=2024-10-26&daily=temperature_2m_max,temperature_2m_min,temperature_2m_mean,apparent_temperature_max,apparent_temperature_min,apparent_temperature_mean,precipitation_sum,rain_sum,snowfall_sum,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant";
         try {
             final HttpURLConnection conn = callApi(urlString);
 

@@ -23,6 +23,6 @@ public interface ApiService {
      * @param apiKey is a String with the user's entered API key
      * @return a JSON object storing weather details for the given location
      */
-    WeatherData fetchWeather(Location location, String apiKey);
+    WeatherData fetchWeather(Location location);
 
 }
