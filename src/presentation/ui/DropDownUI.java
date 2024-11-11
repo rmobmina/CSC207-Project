@@ -23,7 +23,8 @@ public class DropDownUI extends JPanel {
         add(locationDropdown);
         locationDropdown.setVisible(false);
 
-        updateTimer = new Timer(300, new ActionListener() {
+        // Initialize the timer with a 500ms delay
+        updateTimer = new Timer(500, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 updateDropdown(locationField.getText());
@@ -34,7 +35,8 @@ public class DropDownUI extends JPanel {
         locationField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                if (selectionMade && locationField.getText().isEmpty()) {
+                // Removed the method to check if the search bar is empty so that selection made is false as soon as the user starts typing
+                if (selectionMade) {
                     selectionMade = false;
                 }
 
@@ -65,10 +67,6 @@ public class DropDownUI extends JPanel {
     }
 
     private void updateDropdown(String input) {
-        if (selectionMade && !input.isEmpty()) {
-            return;
-        }
-
         locationDropdown.removeAllItems();
 
         if (input.isEmpty()) {
@@ -76,6 +74,7 @@ public class DropDownUI extends JPanel {
             return;
         }
 
+        // Filter the city list based on the input
         List<String> matchingCities = new ArrayList<>();
         for (String city : cityList) {
             if (city.toLowerCase().startsWith(input.toLowerCase())) {
@@ -85,7 +84,8 @@ public class DropDownUI extends JPanel {
 
         if (matchingCities.isEmpty()) {
             locationDropdown.setVisible(false);
-        } else {
+        }
+        else {
             for (String city : matchingCities) {
                 locationDropdown.addItem(city);
             }
@@ -101,7 +101,7 @@ public class DropDownUI extends JPanel {
     }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("DropDown UI Example");
+        final JFrame frame = new JFrame("DropDown UI Example");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(new DropDownUI());
         frame.pack();
