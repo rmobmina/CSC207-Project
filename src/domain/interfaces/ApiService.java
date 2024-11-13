@@ -3,6 +3,8 @@ package domain.interfaces;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 
+import java.time.LocalDate;
+
 /**
  * An interface used for API calls.
  * Has methods to fetch both the location and the weather data.
@@ -20,9 +22,8 @@ public interface ApiService {
     /**
      * Given a Location object and an API key, calls the OpenWeatherMap API to retrieve details regarding the weather.
      * @param location is a Location object associated with the user's inputted city
-     * @param apiKey is a String with the user's entered API key
      * @return a JSON object storing weather details for the given location
      */
-    WeatherData fetchWeather(Location location);
+    WeatherData fetchWeather(Location location, LocalDate startDate, LocalDate endDate);
 
 }

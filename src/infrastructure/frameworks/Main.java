@@ -1,6 +1,7 @@
 package infrastructure.frameworks;
 
 // importing needed tools
+import java.time.LocalDate;
 import java.util.Scanner;
 
 import org.json.JSONException;
@@ -45,13 +46,16 @@ public class Main {
                 apiKey = scanner.nextLine();
             }
 
+            LocalDate startDate = LocalDate.of(2024, 9, 11);
+            LocalDate endDate = LocalDate.of(2024, 9, 12);
+
             // we run the location use case given this information
             final Location location = locationUseCase.execute(city, apiKey);
 
             if (location != null) {
 
                 // given that the information is valid, we then find weather details -
-                final WeatherData weatherData = weatherUseCase.execute(location, apiKey);
+                final WeatherData weatherData = weatherUseCase.execute(location, startDate, endDate);
                 if (weatherData != null) {
 
                     // - and print it into the console

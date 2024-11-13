@@ -29,6 +29,7 @@ public class DashboardUI extends JFrame {
     static final JTextField locationField = new JTextField(20);
     static final JLabel apiKeyLabel = new JLabel("API Key:");
     static final JTextField apiKeyField = new JTextField(30);
+
     static final JLabel temperatureLabel = new JLabel("Temperature:");
     static final JLabel temperatureValue = new JLabel("N/A"); // Placeholder for temperature
     static final String temperatureType = "cel";
@@ -38,10 +39,22 @@ public class DashboardUI extends JFrame {
     static final JLabel humidityValue = new JLabel("N/A"); // Placeholder for humidity
     static final JLabel windLabel = new JLabel("Wind:");
     static final JLabel windValue = new JLabel("N/A"); // Placeholder for wind speed
+
+    static final JLabel startDateLabel = new JLabel("Start Date:");
+    static final JTextField startDateField = new JTextField(20);
+    static final JLabel endDateLabel = new JLabel("End Date:");
+    static final JTextField endDateField = new JTextField(20);
+
     static final JButton getInfoButton = new JButton("Get Info");
+    static final JButton updateRangeOfTimeButton = new JButton("Update");
     static final JButton refreshButton = new JButton("Refresh");
-    static final JButton rangeOfTimeButton = new JButton("Range of Time");
+    static final JButton setRangeOfTimeButton = new JButton("Set Range of Time");
     static final JButton simulationButton = new JButton("Simulation");
+
+    static final JFrame rangeWindow = new JFrame("Range of Time");
+
+    static LocalDate startDate = LocalDate.now();
+    static LocalDate endDate = LocalDate.now();
     static WeatherDataDTO weatherDataDTO = new WeatherDataDTO();
     static final DropDownUI menu = new DropDownUI();
 
@@ -79,7 +92,7 @@ public class DashboardUI extends JFrame {
         panel.add(refreshButton);
 
         // B: buttons for range and simulation
-        panel.add(rangeOfTimeButton);
+        panel.add(setRangeOfTimeButton);
         panel.add(simulationButton);
 
         add(panel);
@@ -91,6 +104,9 @@ public class DashboardUI extends JFrame {
             }
         });
 
+        //Adding actionListeners to each button
+
+        //Button that resets all info/visuals and input from the user
         refreshButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -98,8 +114,15 @@ public class DashboardUI extends JFrame {
             }
         });
 
+        updateRangeOfTimeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateRangeOfTime();
+            }
+        });
+
         // Buttons that make the menus for range of time and the simulation
-        rangeOfTimeButton.addActionListener(new ActionListener() {
+        setRangeOfTimeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 openRangeOfTimeWindow();
@@ -112,6 +135,20 @@ public class DashboardUI extends JFrame {
                 openSimulationWindow();
             }
         });
+    }
+
+    private String getAPIKeyFieldValue(){
+        return apiKeyField.getText();
+    }
+
+    private String getLocationFieldValue() {
+        return menu.getLocationField().getText();
+    }
+
+    private static void updateRangeOfTime() {
+        startDate = LocalDate.parse(startDateField.getText());
+        endDate = LocalDate.parse(endDateField.getText());
+        rangeWindow.setVisible(false);
     }
 
     private void refreshAll() {
@@ -129,37 +166,31 @@ public class DashboardUI extends JFrame {
         GetWeatherDataUseCase weatherUseCase = new GetWeatherDataUseCase(apiService);
         String apiKey = getAPIKeyFieldValue();
         String city = getLocationFieldValue();
-        System.out.println("city: " + city);
         Location chosenLocation = locationUseCase.execute(city, apiKey);
-        LocalDate date = LocalDate.of(2020, 1, 12); //To be changed later...
+
         if (chosenLocation != null) {
-            WeatherData weatherData = weatherUseCase.execute(chosenLocation, apiKey);
-            extractWeatherData(weatherData, chosenLocation, date);
-            updateTextFields(weatherDataDTO);
+            WeatherData weatherData = weatherUseCase.execute(chosenLocation, startDate, endDate);
+            extractWeatherData(weatherData, chosenLocation, startDate);
+            updateWeatherDataTextFields(weatherDataDTO);
         }
         else {
             openInvalidLocationWindow();
         }
     }
 
-    private String getAPIKeyFieldValue(){
-        return apiKeyField.getText();
-    }
-
-    private String getLocationFieldValue() {
-        return menu.getLocationField().getText();
-    }
-
     private WeatherDataDTO createWeatherDataDTO(JSONObject data, Location location, LocalDate date){
         try {
-            JSONObject mainData = data.getJSONObject("main");
+            //Change this...
+            JSONObject dailyData = data.getJSONObject("daily");
+            JSONObject hourlyData = data.getJSONObject("hourly");
             return new WeatherDataDTO(
                     location.getCity(),
                     date,
-                    mainData.getDouble("temp"),
-                    mainData.getInt("humidity"),
-                    data.getJSONObject("wind").getDouble("speed"),
-                    0.0, new ArrayList<String>(){} ); //NOTE: may not always have percipitation data and alerts
+                    WeatherDataDTO.getAverageData(hourlyData.getJSONArray("temperature_2m")),
+                    (int)WeatherDataDTO.getAverageData(hourlyData.getJSONArray("relative_humidity_2m")),
+                    dailyData.getJSONArray("wind_speed_10m_max").getDouble(0),
+                    dailyData.getJSONArray("precipitation_sum").getInt(0),
+                    new ArrayList<String>(){} ); //NOTE: Don't have alerts (for now)
         }
         catch (JSONException exception) {
             exception.printStackTrace();
@@ -176,29 +207,36 @@ public class DashboardUI extends JFrame {
         }
     }
 
-    private void updateTextFields(WeatherDataDTO weatherDataDTO) {
+    // Updates all the weather data text fields given the current location and dates
+    private void updateWeatherDataTextFields(WeatherDataDTO weatherDataDTO) {
         DecimalFormat df = new DecimalFormat("#.##");
         temperatureValue.setText(df.format(weatherDataDTO.getTemperature(temperatureType)) + " °C");
         humidityValue.setText(weatherDataDTO.humidity + " %");
-        windValue.setText(weatherDataDTO.windSpeed + " m/s");
+        conditionValue.setText(weatherDataDTO.precipitation + "mm");
+        windValue.setText(weatherDataDTO.windSpeed + " km/h");
     }
 
     private void openInvalidLocationWindow() {
-        JFrame rangeWindow = new JFrame("Invalid Location");
-        rangeWindow.setSize(400, 200);
-        rangeWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        JFrame errorWindow = new JFrame("Invalid Location");
+        errorWindow.setSize(400, 200);
+        errorWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         JLabel placeholderLabel = new JLabel("The location you entered is invalid. Please try again!", SwingConstants.CENTER);
-        rangeWindow.add(placeholderLabel);
-        rangeWindow.setVisible(true);
+        errorWindow.add(placeholderLabel);
+        errorWindow.setVisible(true);
     }
 
     // Placeholder window for "Range of Time" feature
     private void openRangeOfTimeWindow() {
-        JFrame rangeWindow = new JFrame("Range of Time");
-        rangeWindow.setSize(300, 200);
+        rangeWindow.setSize(300, 500);
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(3, 2, 10, 10));
         rangeWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JLabel placeholderLabel = new JLabel("feature not added yet.", SwingConstants.CENTER);
-        rangeWindow.add(placeholderLabel);
+        panel.add(startDateLabel);
+        panel.add(startDateField);
+        panel.add(endDateLabel);
+        panel.add(endDateField);
+        panel.add(updateRangeOfTimeButton);
+        rangeWindow.add(panel);
         rangeWindow.setVisible(true);
     }
 

@@ -4,6 +4,8 @@ package infrastructure.adapters;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 import org.json.JSONArray;
@@ -52,7 +54,7 @@ public class OpenWeatherApiService implements ApiService {
                 //      information as needed
                 final JSONArray locationArray = new JSONArray(resultJson.toString());
 
-                System.out.println(locationArray.toString(4));
+               //System.out.println(locationArray.toString(4));
 
                 if (locationArray.length() > 0) {
                     locData = locationArray.getJSONObject(0);
@@ -68,15 +70,27 @@ public class OpenWeatherApiService implements ApiService {
     }
 
     @Override
-    public WeatherData fetchWeather(Location location) {
+    public WeatherData fetchWeather(Location location, LocalDate startDate, LocalDate endDate) {
         // initializes a local WeatherData variable so we can avoid having multiple return statements
         WeatherData weatherData = null;
 
+//        // here, we try to construct a url to the API based on our location data
+//        final String urlString = "https://api.open-meteo.com/v1/forecast?latitude="
+//                + location.getLatitude()
+//                + "&longitude=" + location.getLongitude()
+//                + "&start_date=" + startDate.format(DateTimeFormatter.ISO_DATE) + "&end_date=" + endDate.format(DateTimeFormatter.ISO_DATE)
+//                + "&hourly=temperature_2m,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,"
+//                + "apparent_temperature_max,apparent_temperature_min,precipitation_sum,rain_sum,snowfall_sum,"
+//                + "wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant";
+
         // here, we try to construct a url to the API based on our location data
-        final String urlString = "https://archive-api.open-meteo.com/v1/archive?latitude="
+        final String urlString = "https://api.open-meteo.com/v1/forecast?latitude="
                 + location.getLatitude()
                 + "&longitude=" + location.getLongitude()
-                + "&start_date=2024-10-26&end_date=2024-10-26&daily=temperature_2m_max,temperature_2m_min,temperature_2m_mean,apparent_temperature_max,apparent_temperature_min,apparent_temperature_mean,precipitation_sum,rain_sum,snowfall_sum,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant";
+                + "&start_date=" + "2024-10-09" + "&end_date=" + "2024-10-09"
+                + "&hourly=temperature_2m,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,"
+                + "apparent_temperature_max,apparent_temperature_min,precipitation_sum,rain_sum,snowfall_sum,"
+                + "wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant";
         try {
             final HttpURLConnection conn = callApi(urlString);
 
