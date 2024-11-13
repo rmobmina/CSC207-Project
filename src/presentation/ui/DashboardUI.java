@@ -45,6 +45,8 @@ public class DashboardUI extends JFrame {
     static WeatherDataDTO weatherDataDTO = new WeatherDataDTO();
     static final DropDownUI menu = new DropDownUI();
 
+
+
     // A: main dashboard, its messy for now but we'll split them up for clean architecture and for a cleaner look
     public DashboardUI() {
         setTitle("Weather Dashboard");
@@ -82,6 +84,7 @@ public class DashboardUI extends JFrame {
         panel.add(rangeOfTimeButton);
         panel.add(simulationButton);
 
+
         add(panel);
         //Button that displays weather data given location and api key
         getInfoButton.addActionListener(new ActionListener() {
@@ -112,6 +115,8 @@ public class DashboardUI extends JFrame {
                 openSimulationWindow();
             }
         });
+
+
     }
 
     private void refreshAll() {
