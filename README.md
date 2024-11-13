@@ -26,3 +26,4 @@ Each team member is responsible for implementing a specific user story, detailed
 | "As a user, I want to see a comparison of the average temperature trends over the past 20 years to identify signs of climate change in my city." | **Edison Yao** |
 | "As a user, I want to be alerted of severe weather conditions in my selected area, so I can take necessary precautions to keep me and the people I care for safe." | **Bader Alseiari** |
 | "As a user, I want a summary of the current weather conditions displayed in plain and easy-to-understand language, so I can quickly understand the weather without having to use a dictionary and do further research." | **Arham Mohammed** |
+
