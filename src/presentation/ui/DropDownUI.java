@@ -12,7 +12,7 @@ import java.util.List;
 public class DropDownUI extends JPanel {
     private final JTextField locationField = new JTextField(20);
     private final JComboBox<String> locationDropdown = new JComboBox<>();
-    private final List<String> cityList = Arrays.asList("alberta", "bader", "Los Angeles", "London", "Lagos", "Lisbon", "Lima", "Lahore", "Luxembourg");
+    private List<String> cityList = Arrays.asList("alberta", "bader", "Los Angeles", "London", "Lagos", "Lisbon", "Lima", "Lahore", "Luxembourg");
 
     private Timer updateTimer;
     private boolean selectionMade = false;
@@ -98,6 +98,10 @@ public class DropDownUI extends JPanel {
 
     public JTextField getLocationField() {
         return locationField;
+    }
+
+    public void setCityList(List<String> newCities){
+        this.cityList = newCities;
     }
 
     public static void main(String[] args) {

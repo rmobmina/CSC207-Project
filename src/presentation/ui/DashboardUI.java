@@ -33,8 +33,8 @@ public class DashboardUI extends JFrame {
     static final JLabel temperatureLabel = new JLabel("Temperature:");
     static final JLabel temperatureValue = new JLabel("N/A"); // Placeholder for temperature
     static final String temperatureType = "cel";
-    static final JLabel conditionLabel = new JLabel("Condition:");
-    static final JLabel conditionValue = new JLabel("N/A"); // Placeholder for weather condition
+    static final JLabel percipitationLabel = new JLabel("Percipitation Sum:");
+    static final JLabel percipitationValue = new JLabel("N/A"); // Placeholder for weather condition
     static final JLabel humidityLabel = new JLabel("Humidity:");
     static final JLabel humidityValue = new JLabel("N/A"); // Placeholder for humidity
     static final JLabel windLabel = new JLabel("Wind:");
@@ -77,8 +77,8 @@ public class DashboardUI extends JFrame {
         panel.add(temperatureLabel);
         panel.add(temperatureValue);
 
-        panel.add(conditionLabel);
-        panel.add(conditionValue);
+        panel.add(percipitationLabel);
+        panel.add(percipitationValue);
 
         panel.add(humidityLabel);
         panel.add(humidityValue);
@@ -155,7 +155,7 @@ public class DashboardUI extends JFrame {
         apiKeyField.setText("");
         menu.getLocationField().setText("");
         temperatureValue.setText("N/A");
-        conditionValue.setText("N/A");
+        percipitationValue.setText("N/A");
         humidityValue.setText("N/A");
         windValue.setText("N/A");
     }
@@ -212,7 +212,7 @@ public class DashboardUI extends JFrame {
         DecimalFormat df = new DecimalFormat("#.##");
         temperatureValue.setText(df.format(weatherDataDTO.getTemperature(temperatureType)) + " °C");
         humidityValue.setText(weatherDataDTO.humidity + " %");
-        conditionValue.setText(weatherDataDTO.precipitation + "mm");
+        percipitationValue.setText(weatherDataDTO.precipitation + "mm");
         windValue.setText(weatherDataDTO.windSpeed + " km/h");
     }
 

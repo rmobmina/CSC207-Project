@@ -32,7 +32,7 @@ public class OpenWeatherApiService implements ApiService {
         Location testLocation = null;
 
         // here, we try to construct a url to the API based on user input
-        final String urlString = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=1&appid=" + apiKey;
+        final String urlString = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=5&appid=" + apiKey;
 
         try {
             final HttpURLConnection conn = callApi(urlString);
@@ -54,7 +54,7 @@ public class OpenWeatherApiService implements ApiService {
                 //      information as needed
                 final JSONArray locationArray = new JSONArray(resultJson.toString());
 
-               //System.out.println(locationArray.toString(4));
+               System.out.println(locationArray.toString(4));
 
                 if (locationArray.length() > 0) {
                     locData = locationArray.getJSONObject(0);
