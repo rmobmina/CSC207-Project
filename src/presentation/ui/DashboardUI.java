@@ -84,7 +84,6 @@ public class DashboardUI extends JFrame {
         panel.add(rangeOfTimeButton);
         panel.add(simulationButton);
 
-
         add(panel);
         //Button that displays weather data given location and api key
         getInfoButton.addActionListener(new ActionListener() {
