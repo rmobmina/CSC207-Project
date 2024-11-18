@@ -1,7 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+import javax.swing.*;
+import java.io.File;
 
 /**
  *
@@ -14,6 +12,12 @@ public class MainJFrame extends javax.swing.JFrame {
      */
     public MainJFrame() {
         initComponents();
+        // Set the size of the JFrame
+        setSize(700, 430);
+        // Center the JFrame on the screen
+        setLocationRelativeTo(null);
+        // Make the JFrame non-resizable
+        setResizable(false);
     }
 
     /**
@@ -56,7 +60,11 @@ public class MainJFrame extends javax.swing.JFrame {
         getContentPane().add(jButton3);
         jButton3.setBounds(300, 290, 110, 40);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/The Weather App.png"))); // NOI18N
+        // FIXED CODE
+        final String test = new File(".").getAbsolutePath(); // Check from the working directory
+        String path = test + "/src/presentation/ui/The Weather App.png";
+        jLabel1.setIcon(new javax.swing.ImageIcon(path)); // NOI18N
+
         jLabel1.setText("jLabel1");
         getContentPane().add(jLabel1);
         jLabel1.setBounds(0, 0, 700, 430);
