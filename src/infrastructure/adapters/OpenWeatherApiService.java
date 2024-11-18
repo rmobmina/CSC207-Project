@@ -57,7 +57,10 @@ public class OpenWeatherApiService implements ApiService {
 
                 if (locationArray.length() > 0) {
                     locData = locationArray.getJSONObject(0);
-                    testLocation = new Location(city, locData.getDouble("lat"), locData.getDouble("lon"));
+                    testLocation = new Location(city.substring(0, 1).toUpperCase()
+                            + city.substring(1).toLowerCase(), locData.getString("state"),
+                            locData.getString("country"),
+                            locData.getDouble("lat"), locData.getDouble("lon"));
                 }
             }
         }
@@ -108,7 +111,7 @@ public class OpenWeatherApiService implements ApiService {
         return weatherData;
     }
 
-    private HttpURLConnection callApi(String urlString) throws IOException {
+    public HttpURLConnection callApi(String urlString) throws IOException {
         // we take in the URL string and convert it to a link
         final URL url = new URL(urlString);
 
