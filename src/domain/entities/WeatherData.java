@@ -7,7 +7,7 @@ import org.json.JSONObject;
  * Stores information (consisting of temperature, wind speed, location name, and more) in a JSONObject.
  */
 public class WeatherData {
-    private JSONObject weatherDetails;
+    private final JSONObject weatherDetails;
 
     public WeatherData(JSONObject weatherDetails) {
         this.weatherDetails = weatherDetails;

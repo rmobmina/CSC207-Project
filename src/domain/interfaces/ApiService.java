@@ -1,9 +1,9 @@
 package domain.interfaces;
 
+import java.time.LocalDate;
+
 import domain.entities.Location;
 import domain.entities.WeatherData;
-
-import java.time.LocalDate;
 
 /**
  * An interface used for API calls.
@@ -21,7 +21,9 @@ public interface ApiService {
 
     /**
      * Given a Location object and an API key, calls the OpenWeatherMap API to retrieve details regarding the weather.
-     * @param location is a Location object associated with the user's inputted city
+     * @param location is a Location object associated with the user's inputted city.
+     * @param startDate is a LocalDate object storing the exact start of a date range.
+     * @param endDate is a LocalDate object storing the exact end of a date range.
      * @return a JSON object storing weather details for the given location
      */
     WeatherData fetchWeather(Location location, LocalDate startDate, LocalDate endDate);

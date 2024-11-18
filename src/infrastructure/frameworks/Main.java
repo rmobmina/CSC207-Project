@@ -6,12 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import org.json.JSONException;
-
 import application.usecases.GetLocationDataUseCase;
 import application.usecases.GetWeatherDataUseCase;
 import domain.entities.Location;
-import domain.entities.WeatherData;
 import infrastructure.adapters.OpenWeatherApiService;
 import presentation.ui.LocationsWindow;
 import presentation.ui.LocationsWindowGenerator;
@@ -31,9 +28,8 @@ public class Main {
         // initializing varibles
         final OpenWeatherApiService apiService = new OpenWeatherApiService();
         final GetLocationDataUseCase locationUseCase = new GetLocationDataUseCase(apiService);
-        final GetWeatherDataUseCase weatherUseCase = new GetWeatherDataUseCase(apiService);
+        // final GetWeatherDataUseCase weatherUseCase = new GetWeatherDataUseCase(apiService);
         String apiKey = "";
-        final int indentAmount = 4;
         List<Location> validLocations = new ArrayList<>();
         final Scanner scanner = new Scanner(System.in);
 
