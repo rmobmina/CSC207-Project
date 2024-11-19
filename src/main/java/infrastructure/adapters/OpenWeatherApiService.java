@@ -111,6 +111,13 @@ public class OpenWeatherApiService implements ApiService {
         return weatherData;
     }
 
+    /**
+     * An online Api caller method.
+     * Enters the given URL and returns an object representing the status of an API call.
+     * @param urlString is a String url that calls an API
+     * @return an HttpURLConnection object storing the results of our API call.
+     * @throws IOException if the URL is invalid
+     */
     public HttpURLConnection callApi(String urlString) throws IOException {
         // we take in the URL string and convert it to a link
         final URL url = new URL(urlString);
