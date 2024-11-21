@@ -5,11 +5,11 @@ package domain.entities;
  * Stores the city, longitude, latitude.
  */
 public class Location {
-    private final String city;
-    private final String state;
-    private final String country;
-    private final double latitude;
-    private final double longitude;
+    private String city;
+    private String state = "N/A";
+    private String country = "N/A";
+    private double latitude;
+    private double longitude;
 
     public Location(String city, String state, String country, double latitude, double longitude) {
         this.city = city;
@@ -17,6 +17,24 @@ public class Location {
         this.country = country;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public Location(String city, double latitude, double longitude) {
+        this.city = city;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String fullLocationName(){
+        return city + ", " + state + ", " + country;
     }
 
     public String getLatitude() {

@@ -63,13 +63,13 @@ public class Main {
                 }
 
                 else {
-                    System.out.println("You last key was invalid. Please try again.\n");
+                    System.out.println("Your last key was invalid. Please try again.\n");
                 }
 
             }
 
-            // Check whether each city is valid and store it in the array list
-            validLocations = getValidLocations(citiesArr, locationUseCase, apiKey);
+//            // Check whether each city is valid and store it in the array list
+//            validLocations = getValidLocations(citiesArr, locationUseCase, apiKey);
 
             // Populate the map with formatted keys
             for (Location location : validLocations) {
@@ -94,36 +94,6 @@ public class Main {
                 LocationsWindow window = LocationsWindowGenerator.generateLocationsWindow(validLocations);
                 System.out.println(window.getWindow().getName());
             }
-
-            else {
-                System.out.println("Only 1 valid location found");
-            }
-
-//            if (location != null) {
-//
-//                // given that the information is valid, we then find weather details -
-//                final WeatherData weatherData = weatherUseCase.execute(location, startDate, endDate);
-//                if (weatherData != null) {
-//
-//                    // - and print it into the console
-//                    try {
-//                        System.out.println("\nWeather Data:\n"
-//                                + weatherData.getWeatherDetails().toString(indentAmount));
-//                    }
-//
-//                    // the rest of the code from here simply accounts for errors
-//                    catch (JSONException exception) {
-//                        exception.printStackTrace();
-//                    }
-//
-//                }
-//                else {
-//                    System.out.println("Error: Could not retrieve weather data.");
-//                }
-//            }
-//            else {
-//                System.out.println("Error: Could not retrieve location data.");
-//            }
 
         }
     }

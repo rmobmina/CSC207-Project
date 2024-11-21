@@ -14,7 +14,6 @@ public class MultipleLocationsWindow extends LocationsWindow {
         panel.setLayout(new BorderLayout());
         panel.setName("Multiple Locations");
         this.chosenLocations = locations;
-        locationsDropdown.setCityList(getCities());
     }
 
     private List<String> getCities(){

@@ -1,48 +1,38 @@
 package application.dto;
 
+import domain.entities.Location;
 import org.json.JSONArray;
 import org.json.JSONException;
+import utils.Constants;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public class WeatherDataDTO {
-    public String location;
+    public Location location;
     public LocalDate startDate;
     public LocalDate endDate;
     public double temperature;
     public int humidity;
     public double windSpeed;
+    public double windDirection;
     public double precipitation;
     public List<String> alerts;
 
     // Constructor for mapping from domain entities
-    public WeatherDataDTO(String location, LocalDate startDate, LocalDate endDate, double temperature, int humidity, double windSpeed,
-                          double precipitation, List<String> alerts) {
+    public WeatherDataDTO(Location location, List<LocalDate> timeInterval, Map<String, Double> weatherDetails, List<String> alerts) {
+
         this.location = location;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.temperature = temperature;
-        this.humidity = humidity;
-        this.windSpeed = windSpeed;
-        this.precipitation = precipitation;
+        this.startDate = timeInterval.get(0);
+        this.endDate = timeInterval.get(timeInterval.size() - 1);
+        this.temperature = weatherDetails.get("temperature");
+        this.humidity = weatherDetails.get("humidity").intValue();
+        this.windSpeed = weatherDetails.get("windSpeed");
+        this.windDirection = weatherDetails.get("windDirection");
+        this.precipitation = weatherDetails.get("percipitation");
         this.alerts = alerts;
     }
-
-    //Alternate constuctor for a single date for this location
-    public WeatherDataDTO(String location, LocalDate currentDate, double temperature, int humidity, double windSpeed,
-                          double precipitation, List<String> alerts) {
-        this.location = location;
-        this.startDate = currentDate;
-        this.endDate = currentDate;
-        this.temperature = temperature;
-        this.humidity = humidity;
-        this.windSpeed = windSpeed;
-        this.precipitation = precipitation;
-        this.alerts = alerts;
-    }
-
-    public WeatherDataDTO() { this.location = "n/a"; }
 
     public double getTemperature(String type) {
         switch (type) {
@@ -56,11 +46,11 @@ public class WeatherDataDTO {
     }
 
     public double getTemperatureInKelvin() {
-        return this.temperature + 273.15;
+        return this.temperature + Constants.CELSIUS_TO_KELVIN_OFFSET;
     }
 
     public double getTemperatureInFahrenheit() {
-        return this.temperature * 1.8 + 32;
+        return this.temperature * Constants.CELSIUS_TO_FAHRENHEIT_FACTOR + Constants.CELSIUS_TO_FAHRENHEIT_OFFSET;
     }
 
     /**
