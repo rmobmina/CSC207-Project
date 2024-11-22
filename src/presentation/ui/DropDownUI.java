@@ -8,16 +8,22 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import domain.entities.Location;
+import infrastructure.adapters.OpenWeatherApiService;
+
 
 public class DropDownUI extends JPanel {
     private final JTextField locationField = new JTextField(20);
     private final JComboBox<String> locationDropdown = new JComboBox<>();
-    private final List<String> cityList = Arrays.asList("alberta", "Los Angeles", "London", "Lagos", "Lisbon", "Lima", "Lahore", "Luxembourg");
+    private final OpenWeatherApiService apiService = new OpenWeatherApiService();
+    private final String apiKey;
 
-    private Timer updateTimer;
-    private boolean selectionMade = false;
+    private final Timer updateTimer;
+    private boolean selectionMade;
+    private List<Location> matchingLocations = new ArrayList<>();
 
-    public DropDownUI() {
+    public DropDownUI(String apiKey) {
+        this.apiKey = apiKey;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(locationField);
         add(locationDropdown);
@@ -47,7 +53,8 @@ public class DropDownUI extends JPanel {
                         locationDropdown.requestFocus();
                         locationDropdown.setPopupVisible(true);
                     }
-                } else {
+                }
+                else {
                     // Restart the timer for other keys
                     updateTimer.restart();
                 }
@@ -74,36 +81,36 @@ public class DropDownUI extends JPanel {
             return;
         }
 
-        // Filter the city list based on the input
-        List<String> matchingCities = new ArrayList<>();
-        for (String city : cityList) {
-            if (city.toLowerCase().startsWith(input.toLowerCase())) {
-                matchingCities.add(city);
-            }
-        }
-
-        if (matchingCities.isEmpty()) {
+        matchingLocations = apiService.fetchLocations(input, apiKey);
+        if (matchingLocations.isEmpty()) {
             locationDropdown.setVisible(false);
         }
         else {
-            for (String city : matchingCities) {
-                locationDropdown.addItem(city);
+            for (Location location : matchingLocations) {
+            locationDropdown.addItem(location.getCity());
             }
             locationDropdown.setVisible(true);
             locationDropdown.showPopup();
         }
-
         locationDropdown.setSelectedIndex(-1);
-    }
+        }
 
-    public JTextField getLocationField() {
+    public JTextField getLocationField()
+    {
         return locationField;
+    }
+    public Location getSelectedLocation() {
+        if (locationDropdown.getSelectedIndex() >= 0) {
+            return matchingLocations.get(locationDropdown.getSelectedIndex());
+        }
+        return null;
     }
 
     public static void main(String[] args) {
         final JFrame frame = new JFrame("DropDown UI Example");
+        final String testApiKey = "0e85f616a96a624a0bf65bad89ff68c5"; // Bader's API Key
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(new DropDownUI());
+        frame.add(new DropDownUI(testApiKey));
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);

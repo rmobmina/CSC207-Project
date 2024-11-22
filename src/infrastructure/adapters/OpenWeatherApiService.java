@@ -4,6 +4,8 @@ package infrastructure.adapters;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import org.json.JSONArray;
@@ -26,20 +28,13 @@ public class OpenWeatherApiService implements ApiService {
 
     @Override
     public Location fetchLocation(String city, String apiKey) {
-        // initializes a local Location variable so we can avoid having multiple returns statements
         Location testLocation = null;
-
-        // here, we try to construct a url to the API based on user input
         final String urlString = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=1&appid=" + apiKey;
 
         try {
             final HttpURLConnection conn = callApi(urlString);
 
-            // notably, responseTreshold == 200; a call to the API is successfully IFF the response code is 200
             if (conn.getResponseCode() == responseTreshold) {
-
-                // here, we want to make new object to parse through the result of the API call, then accumulate it
-                //      into a string
                 final StringBuilder resultJson = new StringBuilder();
                 final Scanner scanner = new Scanner(conn.getInputStream());
 
@@ -48,21 +43,61 @@ public class OpenWeatherApiService implements ApiService {
                 }
                 scanner.close();
 
-                // the reason why we created the result string is so that we can create a JSON object to store our
-                //      information as needed
                 final JSONArray locationArray = new JSONArray(resultJson.toString());
-
                 if (locationArray.length() > 0) {
-                    locData = locationArray.getJSONObject(0);
+                    final JSONObject locData = locationArray.getJSONObject(0);
                     testLocation = new Location(city, locData.getDouble("lat"), locData.getDouble("lon"));
                 }
             }
         }
-
         catch (JSONException | IOException exception) {
             exception.printStackTrace();
         }
+
         return testLocation;
+    }
+
+    // Used in DropDownUI to fetch and drop down MULTIPLE Locations in the menu
+    public List<Location> fetchLocations(String city, String apiKey) {
+        final List<Location> locations = new ArrayList<>();
+        // Checkstyle fix
+        final String unknown = "Unknown";
+        final String urlString = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=5&appid=" + apiKey;
+
+        try {
+            final HttpURLConnection conn = callApi(urlString);
+
+            if (conn.getResponseCode() == responseTreshold) {
+                final StringBuilder resultJson = new StringBuilder();
+                final Scanner scanner = new Scanner(conn.getInputStream());
+
+                while (scanner.hasNext()) {
+                    resultJson.append(scanner.nextLine());
+                }
+                scanner.close();
+
+                final JSONArray locationArray = new JSONArray(resultJson.toString());
+                for (int i = 0; i < locationArray.length(); i++) {
+                    final JSONObject locData = locationArray.getJSONObject(i);
+                    final String cityName = locData.optString("name", unknown);
+                    final double lat = locData.optDouble("lat", 0.0);
+                    final double lon = locData.optDouble("lon", 0.0);
+                    final String country = locData.optString("country", unknown);
+
+                    if (!cityName.equals(unknown) && lat != 0.0 && lon != 0.0) {
+                        locations.add(new Location(cityName + ", " + country, lat, lon));
+                    }
+                }
+            }
+            else {
+                System.err.println("Error: API returned response code " + conn.getResponseCode());
+            }
+        }
+        catch (JSONException | IOException exception) {
+            System.err.println("Error fetching locations: " + exception.getMessage());
+        }
+
+        return locations;
     }
 
     @Override

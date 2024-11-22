@@ -9,13 +9,7 @@ import infrastructure.adapters.OpenWeatherApiService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,9 +37,10 @@ public class DashboardUI extends JFrame {
     static final JButton rangeOfTimeButton = new JButton("Range of Time");
     static final JButton simulationButton = new JButton("Simulation");
     static WeatherDataDTO weatherDataDTO = new WeatherDataDTO();
-    static final DropDownUI menu = new DropDownUI();
-
-
+    private String apiKey;
+    private final DropDownUI menu;
+    private final WeatherAlertFunction weatherAlertFunction =
+            new WeatherAlertFunction("492c0a6e6e544fd8a01201116241311");
 
     // A: main dashboard, its messy for now but we'll split them up for clean architecture and for a cleaner look
     public DashboardUI() {
@@ -53,15 +48,19 @@ public class DashboardUI extends JFrame {
         setSize(400, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        apiKey = "0e85f616a96a624a0bf65bad89ff68c5"; // Bader's Key
+        apiKeyField.setText(apiKey);
+        menu = new DropDownUI(apiKey);
+
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(8, 2, 10, 10)); // B: Will be changed as we add more elements
+        panel.setLayout(new GridLayout(9, 2, 10, 10));
 
         // B: main compenents of GUI, most are placeholders
         panel.add(locationLabel);
         panel.add(menu);
 
-        panel.add(apiKeyLabel);
-        panel.add(apiKeyField);
+//        panel.add(apiKeyLabel);
+//        panel.add(apiKeyField);
 
         panel.add(temperatureLabel);
         panel.add(temperatureValue);
@@ -128,42 +127,90 @@ public class DashboardUI extends JFrame {
     }
 
     private void displayWeatherData() {
-        OpenWeatherApiService apiService = new OpenWeatherApiService();
-        GetLocationDataUseCase locationUseCase = new GetLocationDataUseCase(apiService);
-        GetWeatherDataUseCase weatherUseCase = new GetWeatherDataUseCase(apiService);
-        String apiKey = getAPIKeyFieldValue();
-        String city = getLocationFieldValue();
-        System.out.println("city: " + city);
-        Location chosenLocation = locationUseCase.execute(city, apiKey);
-        LocalDate date = LocalDate.of(2020, 1, 12); //To be changed later...
-        if (chosenLocation != null) {
-            WeatherData weatherData = weatherUseCase.execute(chosenLocation, apiKey);
+        final Location chosenLocation = menu.getSelectedLocation();
+        if (chosenLocation == null) {
+            System.out.println("No location selected");
+            openInvalidLocationWindow();
+            return;
+        }
+
+        final OpenWeatherApiService apiService = new OpenWeatherApiService();
+        apiKey = getAPIKeyFieldValue();
+
+        if (apiKey == null || apiKey.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "API key cannot be empty. Please enter a valid API key.",
+                    "Invalid API key", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        System.out.println("City: " + chosenLocation.getCity());
+        System.out.println("Latitude: " + chosenLocation.getLatitude());
+        System.out.println("Longitude: " + chosenLocation.getLongitude());
+
+        final GetWeatherDataUseCase weatherUseCase = new GetWeatherDataUseCase(apiService);
+        final WeatherData weatherData = weatherUseCase.execute(chosenLocation, apiKey);
+
+        if(weatherData != null) {
+            final LocalDate date = LocalDate.now();
             extractWeatherData(weatherData, chosenLocation, date);
             updateTextFields(weatherDataDTO);
+
+            WeatherAlertFunction alertFunction = new WeatherAlertFunction("492c0a6e6e544fd8a01201116241311"); // WeatherAPI key
+            String condition = weatherAlertFunction.getSevereWeather(
+                    chosenLocation.getLatitude(),
+                    chosenLocation.getLongitude()
+            );
+
+            conditionValue.setText(condition);
         }
         else {
-            openInvalidLocationWindow();
+            System.out.println("No weather data found");
+            temperatureValue.setText("N/A");
         }
+    }
+
+    private Location showLocationSelectionPopup(List<Location> locations){
+        String[] locationStrings = locations.stream()
+                .map(loc -> loc.toString())
+                .toArray(String[]::new);
+
+    String selectedLocation = (String) JOptionPane.showInputDialog(
+            this,
+            "Select a location:",
+            "Choose Location",
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            locationStrings,
+            locationStrings[0]
+
+    );
+
+        if (selectedLocation != null) {
+            return locations.stream()
+                .filter(loc -> loc.toString().equals(selectedLocation))
+                .findFirst()
+                .orElse(null);
+            }
+        return null;
     }
 
     private String getAPIKeyFieldValue(){
         return apiKeyField.getText();
     }
 
-    private String getLocationFieldValue() {
-        return menu.getLocationField().getText();
-    }
-
-    private WeatherDataDTO createWeatherDataDTO(JSONObject data, Location location, LocalDate date){
+    private WeatherDataDTO createWeatherDataDTO(JSONObject data, Location location, LocalDate date) {
         try {
-            JSONObject mainData = data.getJSONObject("main");
+            final JSONObject mainData = data.getJSONObject("main");
+            final double temperatureInCelcius = mainData.getDouble("temp");
             return new WeatherDataDTO(
                     location.getCity(),
                     date,
-                    mainData.getDouble("temp"),
+                    temperatureInCelcius,
                     mainData.getInt("humidity"),
                     data.getJSONObject("wind").getDouble("speed"),
-                    0.0, new ArrayList<String>(){} ); //NOTE: may not always have percipitation data and alerts
+                    //NOTE: may not always have percipitation data and alerts
+                    0.0, new ArrayList<String>(){ });
         }
         catch (JSONException exception) {
             exception.printStackTrace();
@@ -181,43 +228,43 @@ public class DashboardUI extends JFrame {
     }
 
     private void updateTextFields(WeatherDataDTO weatherDataDTO) {
-        DecimalFormat df = new DecimalFormat("#.##");
+        final DecimalFormat df = new DecimalFormat("#.##");
         temperatureValue.setText(df.format(weatherDataDTO.getTemperature(temperatureType)) + " °C");
         humidityValue.setText(weatherDataDTO.humidity + " %");
         windValue.setText(weatherDataDTO.windSpeed + " m/s");
     }
 
     private void openInvalidLocationWindow() {
-        JFrame rangeWindow = new JFrame("Invalid Location");
+        final JFrame rangeWindow = new JFrame("Invalid Location");
         rangeWindow.setSize(400, 200);
         rangeWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JLabel placeholderLabel = new JLabel("The location you entered is invalid. Please try again!", SwingConstants.CENTER);
+        final JLabel placeholderLabel = new JLabel("The location you entered is invalid. Please try again!", SwingConstants.CENTER);
         rangeWindow.add(placeholderLabel);
         rangeWindow.setVisible(true);
     }
 
     // Placeholder window for "Range of Time" feature
     private void openRangeOfTimeWindow() {
-        JFrame rangeWindow = new JFrame("Range of Time");
+        final JFrame rangeWindow = new JFrame("Range of Time");
         rangeWindow.setSize(300, 200);
         rangeWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JLabel placeholderLabel = new JLabel("feature not added yet.", SwingConstants.CENTER);
+        final JLabel placeholderLabel = new JLabel("feature not added yet.", SwingConstants.CENTER);
         rangeWindow.add(placeholderLabel);
         rangeWindow.setVisible(true);
     }
 
     // Placeholder window for simulation
     private void openSimulationWindow() {
-        JFrame simulationWindow = new JFrame("Simulation");
+        final JFrame simulationWindow = new JFrame("Simulation");
         simulationWindow.setSize(300, 200);
         simulationWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JLabel placeholderLabel = new JLabel("feature not added yet.", SwingConstants.CENTER);
+        final JLabel placeholderLabel = new JLabel("feature not added yet.", SwingConstants.CENTER);
         simulationWindow.add(placeholderLabel);
         simulationWindow.setVisible(true);
     }
 
     public static void main(String[] args) {
-        DashboardUI frame = new DashboardUI();
+        final DashboardUI frame = new DashboardUI();
 
         SwingUtilities.invokeLater(() -> {
             frame.setVisible(true);
