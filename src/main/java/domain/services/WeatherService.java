@@ -34,5 +34,15 @@ public interface WeatherService {
      * @return a JSON object storing severe weater alerts (tornados, typhoons, ...)
      */
     List<String> getSevereWeatherAlerts(Location location);
-}
 
+
+    /**
+     * the daily average temperature trends for a given location over a specific date range.
+     *
+     * @param location Location object containing city, latitude, and longitude.
+     * @param startDate Start date for the trend data.
+     * @param endDate End date for the trend data.
+     * @return List of average daily temperatures as doubles.
+     */
+    List<Double> getTemperatureTrends(Location location, LocalDate startDate, LocalDate endDate);
+}
