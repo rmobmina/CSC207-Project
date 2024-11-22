@@ -171,7 +171,9 @@ public class DashboardUI extends JFrame {
         GetWeatherDataUseCase weatherUseCase = new GetWeatherDataUseCase(apiService);
         WeatherDataDTOGenerator weatherDataGenerator = new WeatherDataDTOGenerator();
         String city = getLocationFieldValue();
-        Location chosenLocation = locationUseCase.execute(city, apiKey);
+
+        // TODO: implement user choice
+        Location chosenLocation = locationUseCase.execute(city, apiKey).get(0);
         if (chosenLocation != null) {
             showWeatherDataFields(true);
             WeatherData weatherData = weatherUseCase.execute(chosenLocation, startDate, endDate);

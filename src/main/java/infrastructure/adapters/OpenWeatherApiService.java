@@ -21,115 +21,64 @@ import utils.Constants;
 
 /**
  * An implementation of the ApiService interface.
- * Parses the OpenWeatherMap API to retrieve location and weather data, given a valid location and API key.
+ * Parses the OpenWeatherMap API to retrieve a location and the OpenMeteo Weather API,
+ *      given a valid location and API key.
  */
 public class OpenWeatherApiService implements ApiService {
-    // intializing variables
     private JSONObject locData;
     private JSONObject weatherObject;
 
     @Override
-    public Location fetchLocation(String city, String apiKey) {
-        // initializes a local Location variable so we can avoid having multiple returns statements
-        Location testLocation = null;
-
-        // here, we try to construct a url to the API based on user input
-        final String urlString = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=5&appid=" + apiKey;
-
-        try {
-            final HttpURLConnection conn = callApi(urlString);
-
-            // notably, responseTreshold == 200; a call to the API is successfully IFF the response code is 200
-            if (conn.getResponseCode() == Constants.RESPONSE_TRESHOLD) {
-
-                // here, we want to make new object to parse through the result of the API call, then accumulate it
-                //      into a string
-                final StringBuilder resultJson = new StringBuilder();
-                final Scanner scanner = new Scanner(conn.getInputStream());
-
-                while (scanner.hasNext()) {
-                    resultJson.append(scanner.nextLine());
-                }
-                scanner.close();
-
-                // the reason why we created the result string is so that we can create a JSON object to store our
-                //      information as needed
-                final JSONArray locationArray = new JSONArray(resultJson.toString());
-
-                System.out.println(locationArray.toString(Constants.INDENT_FACTOR));
-
-                if (locationArray.length() > 0) {
-                    locData = locationArray.getJSONObject(0);
-                    testLocation = new Location(city, locData.getDouble("lat"), locData.getDouble("lon"));
-                }
-            }
-        }
-
-        catch (JSONException | IOException exception) {
-            exception.printStackTrace();
-        }
-        return testLocation;
-    }
-
-    @Override
     public WeatherData fetchWeather(Location location, LocalDate startDate, LocalDate endDate) {
-        // initializes a local WeatherData variable so we can avoid having multiple return statements
+        // instantiating our return object
         WeatherData weatherData = null;
-        // here, we try to construct a url to the API based on our location data
+
+        // since the user can choose a time range, we construct a call to the API using the user's selected times.
+        //      furthermore, we take the stored longitude and latitude of the user's chosen city and enter it into the
+        //      API call
         final String urlString =
-                "https://historical-forecast-api.open-meteo.com/v1/forecast?" +
-                "latitude=" + location.getLatitude() + "&longitude=" + location.getLongitude() +
-                "&hourly=temperature_2m,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,snowfall_sum,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant" +
-                "&start_date=" + startDate.format(DateTimeFormatter.ISO_DATE) + "&end_date=" + endDate.format(DateTimeFormatter.ISO_DATE);
+                "https://historical-forecast-api.open-meteo.com/v1/forecast?"
+                        + "latitude=" + location.getLatitude() + "&longitude=" + location.getLongitude()
+                        + "&hourly=temperature_2m,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,"
+                        + "precipitation_sum,snowfall_sum,wind_speed_10m_max,wind_gusts_10m_max,"
+                        + "wind_direction_10m_dominant&start_date=" + startDate.format(DateTimeFormatter.ISO_DATE)
+                        + "&end_date=" + endDate.format(DateTimeFormatter.ISO_DATE);
+
+        // since it is possible that the date or location values are invalid, we try to run the API call and
+        //  catch any related errors
         try {
-            final HttpURLConnection conn = callApi(urlString);
-
-            // notably, responseTreshold == 200; a call to the API is successfully IFF the response code is 200
-            if (conn.getResponseCode() == Constants.RESPONSE_TRESHOLD) {
-
-                // here, we want to make new object to parse through the result of the API call, then accumulate it
-                //      into a string
-                final StringBuilder resultJson = new StringBuilder();
-                final Scanner scanner = new Scanner(conn.getInputStream());
-                while (scanner.hasNext()) {
-                    resultJson.append(scanner.nextLine());
-                }
-                scanner.close();
-
-                // the reason why we created the result string is so that we can create a JSON object to store our
-                //      information as needed
-                weatherObject = new JSONObject(resultJson.toString());
+            final String response = makeApiCall(urlString);
+            if (response != null) {
+                weatherObject = new JSONObject(response);
                 weatherData = new WeatherData(weatherObject);
             }
         }
+
         catch (JSONException | IOException exception) {
             exception.printStackTrace();
         }
+
         return weatherData;
     }
 
-    // Used in DropDownUI to fetch and drop down MULTIPLE Locations in the menu
+    /**
+     * Given a city name and API key, return up to five locations with the same name along with weather details.
+     * @param city is a String with the user's inputted city
+     * @param apiKey is a String with the user's entered API key
+     * @return a List of Location objects storing the city name, state, country, and weather information.
+     */
     public List<Location> fetchLocations(String city, String apiKey) {
+        // instantiating our return object and use variables
         final List<Location> locations = new ArrayList<>();
-        // Checkstyle fix
         final String unknown = "Unknown";
         final String urlString = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=5&appid=" + apiKey;
 
         try {
-            final HttpURLConnection conn = callApi(urlString);
-
-            if (conn.getResponseCode() == Constants.RESPONSE_TRESHOLD) {
-                final StringBuilder resultJson = new StringBuilder();
-                final Scanner scanner = new Scanner(conn.getInputStream());
-
-                while (scanner.hasNext()) {
-                    resultJson.append(scanner.nextLine());
-                }
-                scanner.close();
-
-                final JSONArray locationArray = new JSONArray(resultJson.toString());
+            final String response = makeApiCall(urlString);
+            if (response != null) {
+                final JSONArray locationArray = new JSONArray(response);
                 for (int i = 0; i < locationArray.length(); i++) {
-                    final JSONObject locData = locationArray.getJSONObject(i);
+                    locData = locationArray.getJSONObject(i);
                     final String cityName = locData.optString("name", unknown);
                     final double lat = locData.optDouble("lat", 0.0);
                     final double lon = locData.optDouble("lon", 0.0);
@@ -141,54 +90,68 @@ public class OpenWeatherApiService implements ApiService {
                     }
                 }
             }
-            else {
-                System.err.println("Error: API returned response code " + conn.getResponseCode());
-                return null;
-            }
         }
         catch (JSONException | IOException exception) {
             System.err.println("Error fetching locations: " + exception.getMessage());
-
         }
-
         return locations;
     }
 
     /**
-     * An online Api caller method.
-     * Enters the given URL and returns an object representing the status of an API call.
-     * @return an HttpURLConnection object storing the results of our API call.
-     * @throws IOException if the URL is invalid
+     * Tests if the given OpenWeatherMap API key is valid by checking for the location data of Toronto, ON, CA.
+     * @param apiKey is a user-entered String object representing their OpenWeatherMap API key.
+     * @return true if the call is successful, false otherwise.
      */
-    private HttpURLConnection callApi(String urlString) throws IOException {
-        // we take in the URL string and convert it to a link
-        final URL url = new URL(urlString);
+    public boolean isApiKeyValid(String apiKey) {
+        boolean valid = true;
 
-        // here, we try to connect and return the response code and data (if any)
+        if (apiKey.isEmpty()) {
+            valid = false;
+        }
+        final String testCity = "Toronto";
+        final String urlString = "http://api.openweathermap.org/geo/1.0/direct?q=" + testCity + "&limit=5&appid="
+                + apiKey;
+        try {
+            if (makeApiCall(urlString) == null) {
+                valid = false;
+            }
+        }
+        catch (IOException exception) {
+            exception.printStackTrace();
+            valid = false;
+        }
+        return valid;
+    }
+
+    private HttpURLConnection callApi(String urlString) throws IOException {
+        final URL url = new URL(urlString);
         final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.connect();
         return conn;
     }
 
-    // Determines if the given api key is valid for calling the weather api service
-    public boolean isAPIKeyValid(String apiKey){
-        if (apiKey.isEmpty()) return false;
-        // To validate the given api key, we need a test location to use to call it and see if any errors occur
-        String testCity = "Toronto";
-        String urlString = "http://api.openweathermap.org/geo/1.0/direct?q=" + testCity + "&limit=5&appid=" + apiKey;
-        try {
-            // if it fails to get the response code, then api key is invalid
-            if (callApi(urlString).getResponseCode() != Constants.RESPONSE_TRESHOLD) {
-                return false;
+    private String makeApiCall(String urlString) throws IOException {
+        String result = null;
+
+        final HttpURLConnection conn = callApi(urlString);
+        if (conn.getResponseCode() == Constants.RESPONSE_TRESHOLD) {
+            final StringBuilder resultJson = new StringBuilder();
+            try (Scanner scanner = new Scanner(conn.getInputStream())) {
+
+                while (scanner.hasNext()) {
+                    resultJson.append(scanner.nextLine());
+                }
+
             }
+
+            result = resultJson.toString();
         }
-        catch (IOException exception) {
-            // If it throws an error, then api key is invalid
-            exception.printStackTrace();
-            return false;
+
+        else {
+            System.err.println("Error: API returned response code " + conn.getResponseCode());
         }
-        // If no errors above occur, then api key is valid
-        return true;
+
+        return result;
     }
 }

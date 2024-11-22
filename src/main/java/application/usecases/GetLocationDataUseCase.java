@@ -1,5 +1,7 @@
 package application.usecases;
 
+import java.util.List;
+
 import domain.entities.Location;
 import domain.interfaces.ApiService;
 
@@ -20,7 +22,7 @@ public class GetLocationDataUseCase {
      * @param apiKey is a String representing the user's given OpenWeatherMap API key.
      * @return a Location object storing the associated data.
      */
-    public Location execute(String city, String apiKey) {
-        return apiService.fetchLocation(city, apiKey);
+    public List<Location> execute(String city, String apiKey) {
+        return apiService.fetchLocations(city, apiKey);
     }
 }

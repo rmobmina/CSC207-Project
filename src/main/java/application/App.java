@@ -16,7 +16,7 @@ public class App {
         while (!validKeyEntered) {
             System.out.println("Enter your OpenWeatherMap API key.");
             apiKey = scanner.nextLine();
-            if (apiService.isAPIKeyValid(apiKey)) {
+            if (apiService.isApiKeyValid(apiKey)) {
                 dashboardUI.setAPIkey(apiKey);
                 validKeyEntered = true;
             }
