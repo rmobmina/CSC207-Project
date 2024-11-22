@@ -1,38 +1,48 @@
 package domain.services;
 
+import domain.entities.Location;
 import java.time.LocalDate;
 import java.util.List;
 
-import domain.entities.Location;
-import domain.entities.WeatherData;
-
 /**
- * An interface used for retrieving weather data.
- * Has methods to get a city's current weather, historical weather in a time range, and severe weather alerts.
+ * WeatherService interface for weather data retrieval.
+ * Provides methods for fetching current weather, historical data, and temperature trends.
  */
 public interface WeatherService {
 
     /**
-     * Given a Location, return the current weather.
-     * @param location is a Location object storing a city's name, longitude, and latitude.
-     * @return a JSON object storing location details
+     * Fetches the current weather for a given location.
+     *
+     * @param location Location object containing city, latitude, and longitude.
+     * @return List of WeatherData objects containing current weather details.
      */
     WeatherData getCurrentWeather(Location location);
 
     /**
-     * Given a location object, return a list of severe weather alerts.
-     * @param location is a Location object storing a city's name, longitude, and latitude.
-     * @param startDate is a LocalDate object storing the year, month, and day
-     * @param endDate is a LocalDate object storing the year, month, and day
-     * @return a JSON object storing severe weater alerts (tornados, typhoons, ...)
+     * Fetches the historical weather data for a given location and date range.
+     *
+     * @param location Location object containing city, latitude, and longitude.
+     * @param startDate Start date for the historical data range.
+     * @param endDate End date for the historical data range.
+     * @return List of WeatherData objects containing historical weather details.
      */
     List<WeatherData> getHistoricalWeather(Location location, LocalDate startDate, LocalDate endDate);
 
     /**
-     * Given a location object, return a list of severe weather alerts.
-     * @param location is a Location object storing a city's name, longitude, and latitude.
-     * @return a JSON object storing severe weater alerts (tornados, typhoons, ...)
+     * Fetches severe weather alerts for a given location.
+     *
+     * @param location Location object containing city, latitude, and longitude.
+     * @return List of strings representing severe weather alerts.
      */
     List<String> getSevereWeatherAlerts(Location location);
-}
 
+    /**
+     * Fetches the daily average temperature trends for a given location over a specific date range.
+     *
+     * @param location Location object containing city, latitude, and longitude.
+     * @param startDate Start date for the trend data.
+     * @param endDate End date for the trend data.
+     * @return List of average daily temperatures as doubles.
+     */
+    List<Double> getTemperatureTrends(Location location, LocalDate startDate, LocalDate endDate);
+}

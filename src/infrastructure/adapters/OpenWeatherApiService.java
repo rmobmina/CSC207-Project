@@ -4,8 +4,8 @@ package infrastructure.adapters;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import org.json.JSONArray;
@@ -15,20 +15,23 @@ import org.json.JSONObject;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
+import domain.services.WeatherService;
+
+import java.time.LocalDate;
 
 /**
- * An implementation of the ApiService interface.
+ * An implementation of the ApiService interface and WeatherService.
  * Parses the OpenWeatherMap API to retrieve location and weather data, given a valid location and API key.
  */
-public class OpenWeatherApiService implements ApiService {
-    // intializing variables
+public class OpenWeatherApiService implements ApiService, WeatherService {
+    // initializing variables
     private final int responseTreshold = 200;
     private JSONObject locData;
     private JSONObject weatherObject;
 
     @Override
     public Location fetchLocation(String city, String apiKey) {
-        // initializes a local Location variable so we can avoid having multiple returns statements
+        // initializes a local Location variable so we can avoid having multiple return statements
         Location testLocation = null;
 
         // here, we try to construct a url to the API based on user input
@@ -37,7 +40,7 @@ public class OpenWeatherApiService implements ApiService {
         try {
             final HttpURLConnection conn = callApi(urlString);
 
-            // notably, responseTreshold == 200; a call to the API is successfully IFF the response code is 200
+            // notably, responseTreshold == 200; a call to the API is successful IFF the response code is 200
             if (conn.getResponseCode() == responseTreshold) {
 
                 // here, we want to make new object to parse through the result of the API call, then accumulate it
@@ -54,8 +57,6 @@ public class OpenWeatherApiService implements ApiService {
                 //      information as needed
                 final JSONArray locationArray = new JSONArray(resultJson.toString());
 
-               //System.out.println(locationArray.toString(4));
-
                 if (locationArray.length() > 0) {
                     locData = locationArray.getJSONObject(0);
                     testLocation = new Location(city, locData.getDouble("lat"), locData.getDouble("lon"));
@@ -70,31 +71,18 @@ public class OpenWeatherApiService implements ApiService {
     }
 
     @Override
-    public WeatherData fetchWeather(Location location, LocalDate startDate, LocalDate endDate) {
+    public WeatherData fetchWeather(Location location, String apiKey) {
         // initializes a local WeatherData variable so we can avoid having multiple return statements
         WeatherData weatherData = null;
 
-//        // here, we try to construct a url to the API based on our location data
-//        final String urlString = "https://api.open-meteo.com/v1/forecast?latitude="
-//                + location.getLatitude()
-//                + "&longitude=" + location.getLongitude()
-//                + "&start_date=" + startDate.format(DateTimeFormatter.ISO_DATE) + "&end_date=" + endDate.format(DateTimeFormatter.ISO_DATE)
-//                + "&hourly=temperature_2m,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,"
-//                + "apparent_temperature_max,apparent_temperature_min,precipitation_sum,rain_sum,snowfall_sum,"
-//                + "wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant";
-
         // here, we try to construct a url to the API based on our location data
-        final String urlString = "https://api.open-meteo.com/v1/forecast?latitude="
-                + location.getLatitude()
-                + "&longitude=" + location.getLongitude()
-                + "&start_date=" + "2024-10-09" + "&end_date=" + "2024-10-09"
-                + "&hourly=temperature_2m,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,"
-                + "apparent_temperature_max,apparent_temperature_min,precipitation_sum,rain_sum,snowfall_sum,"
-                + "wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant";
+        final String urlString = "https://api.openweathermap.org/data/2.5/weather?lat=" + location.getLatitude()
+                + "&lon=" + location.getLongitude() + "&appid=" + apiKey;
+
         try {
             final HttpURLConnection conn = callApi(urlString);
 
-            // notably, responseTreshold == 200; a call to the API is successfully IFF the response code is 200
+            // notably, responseTreshold == 200; a call to the API is successful IFF the response code is 200
             if (conn.getResponseCode() == responseTreshold) {
 
                 // here, we want to make new object to parse through the result of the API call, then accumulate it
@@ -116,6 +104,43 @@ public class OpenWeatherApiService implements ApiService {
             exception.printStackTrace();
         }
         return weatherData;
+    }
+
+    @Override
+    public List<Double> getTemperatureTrends(Location location, LocalDate startDate, LocalDate endDate) {
+        // initializes a local list to store temperatures
+        List<Double> temperatures = new ArrayList<>();
+
+        try {
+            // loop through every day in the date range
+            for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+
+                // like to the api
+                final String urlString = String.format(
+                        "https://api.openweathermap.org/data/2.5/onecall/timemachine?lat=%s&lon=%s&dt=%d&appid=%s",
+                        location.getLatitude(), location.getLongitude(), date.toEpochDay(), "YOUR_API_KEY"
+                );
+
+                // call the API and fetch data
+                final HttpURLConnection conn = callApi(urlString);
+
+                // notably, responseTreshold == 200; a call to the API is successfully IFF the response code is 200
+                if (conn.getResponseCode() == responseTreshold) {
+
+                    // parse through the result of the API call and accumulate it into a string
+                    final JSONObject response = new JSONObject(new String(conn.getInputStream().readAllBytes()));
+
+                    // extract the temperature for the day and add it to the list
+                    temperatures.add(response.getJSONObject("current").getDouble("temp"));
+                }
+            }
+        }
+        catch (JSONException | IOException exception) {
+            exception.printStackTrace();
+        }
+
+        // return the list of temperatures
+        return temperatures;
     }
 
     private HttpURLConnection callApi(String urlString) throws IOException {
