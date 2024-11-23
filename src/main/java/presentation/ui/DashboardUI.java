@@ -7,8 +7,6 @@ import application.usecases.GetWeatherDataUseCase;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import infrastructure.adapters.OpenWeatherApiService;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -96,6 +94,9 @@ public class DashboardUI extends JFrame {
 
 
         add(panel);
+
+
+
         // Button that displays weather data given location and api key
         getInfoButton.addActionListener(new ActionListener() {
             @Override
@@ -173,8 +174,9 @@ public class DashboardUI extends JFrame {
         String city = getLocationFieldValue();
 
         // TODO: implement user choice
-        Location chosenLocation = locationUseCase.execute(city, apiKey).get(0);
-        if (chosenLocation != null) {
+        List<Location> possibleLocations = locationUseCase.execute(city, apiKey);
+        if (!possibleLocations.isEmpty()) {
+            Location chosenLocation = possibleLocations.get(0);
             showWeatherDataFields(true);
             WeatherData weatherData = weatherUseCase.execute(chosenLocation, startDate, endDate);
             weatherDataDTO = weatherDataGenerator.createWeatherDataDTO(weatherData, chosenLocation, startDate, endDate);
