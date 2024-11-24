@@ -28,7 +28,6 @@ public class MercatorAlgorithm {
         // Calculate x and y using the Mercator formula
         this.x = EARTH_RADIUS * Math.toRadians(longitude);
         this.y = EARTH_RADIUS * Math.log(Math.tan(Math.PI / 4 + Math.toRadians(latitude) / 2));
-
     }
 
     /**
@@ -55,5 +54,11 @@ public class MercatorAlgorithm {
      *      determined by our previous calculations.
      *      - Assume that the image given is a correct Mercator Map.
      */
-
+    public double[] normalizeCoordinates(int length, int width) {
+        toMercator();
+        double circumference = 2 * Math.PI * EARTH_RADIUS;
+        double normalizedX = this.x * width / circumference;
+        double normalizedY = this.y * length / circumference;
+        return new double[]{normalizedX, normalizedY};
+    }
 }
