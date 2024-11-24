@@ -14,7 +14,7 @@ import java.util.Map;
 
 // Generates the weather data object to be used by the dashboard and rest of application
 public class WeatherDataDTOGenerator {
-    public WeatherDataDTO createWeatherDataDTO(WeatherData weatherData, Location location, LocalDate startDate, LocalDate endDate){
+    public static WeatherDataDTO createWeatherDataDTO(WeatherData weatherData, Location location, LocalDate startDate, LocalDate endDate){
         JSONObject data = weatherData.getWeatherDetails();
         List<LocalDate> dates = new ArrayList<>();
         Map<String, Double> weatherDetails  = new HashMap<>();

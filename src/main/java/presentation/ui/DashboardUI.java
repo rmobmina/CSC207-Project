@@ -62,7 +62,7 @@ public class DashboardUI extends JFrame {
     static OpenWeatherApiService apiService;
     static final DropDownUI menu = new DropDownUI();
 
-    // A: main dashboard, its messy for now but we'll split them up for clean architecture and for a cleaner look
+    // A: main dashboard, it's messy for now but we'll split them up for clean architecture and for a cleaner look
     public DashboardUI() {
         setTitle("Weather Dashboard");
         setSize(400, 500);
