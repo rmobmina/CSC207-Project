@@ -9,12 +9,12 @@ import domain.interfaces.ApiService;
 
 /**
  * Use case for the weather application.
- * This class retrieves weather data and returns it as a WeatherData object.
+ * This class retrieves historical weather data and returns it as a WeatherData object.
  */
-public class GetWeatherDataUseCase {
+public class GetHistoricalWeatherDataUseCase {
     private final ApiService apiService;
 
-    public GetWeatherDataUseCase(ApiService apiService) {
+    public GetHistoricalWeatherDataUseCase(ApiService apiService) {
         this.apiService = apiService;
     }
 
@@ -27,6 +27,6 @@ public class GetWeatherDataUseCase {
      */
     public WeatherData execute(Location location, LocalDate startDate, LocalDate endDate) {
         // calls the API service to extract weather information in JSON format
-        return apiService.fetchWeather(location, startDate, endDate);
+        return apiService.fetchHistoricalWeather(location, startDate, endDate);
     }
 }

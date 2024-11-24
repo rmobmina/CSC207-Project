@@ -13,13 +13,22 @@ import domain.entities.WeatherData;
 public interface ApiService {
 
     /**
-     * Given a Location object and an API key, calls the OpenWeatherMap API to retrieve details regarding the weather.
+     * Given a Location object and an API key, calls the OpenWeatherMap API to retrieve weather forcast details.
+     * @param location is a Location object associated with the user's inputted city.
+     * @param numberOfDays The number of days that the forcast is set to
+     * @return a JSON object storing weather details for the given location
+     */
+    WeatherData fetchForcastWeather(Location location, int numberOfDays);
+
+    /**
+     * Given a Location object and an API key, calls the OpenWeatherMap API to retrieve details
+     * regarding the historical weather data over a range of time.
      * @param location is a Location object associated with the user's inputted city.
      * @param startDate is a LocalDate object storing the exact start of a date range.
      * @param endDate is a LocalDate object storing the exact end of a date range.
      * @return a JSON object storing weather details for the given location
      */
-    WeatherData fetchWeather(Location location, LocalDate startDate, LocalDate endDate);
+    WeatherData fetchHistoricalWeather(Location location, LocalDate startDate, LocalDate endDate);
 
     /**
      * Given a city name and an API key, calls the OpenWeatherMap API to retrieve details of up to five cities with

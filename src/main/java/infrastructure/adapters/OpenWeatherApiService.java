@@ -28,16 +28,20 @@ public class OpenWeatherApiService implements ApiService {
     private JSONObject locData;
     private JSONObject weatherObject;
 
-    public WeatherData fetchWeatherForcast(){
-        // yet to be implemeneted by Akram
-        throw new UnsupportedOperationException("Not supported yet.");
+    @Override
+    public WeatherData fetchForcastWeather(Location location, int numberOfDays){
+        final String urlString =
+                "https://api.open-meteo.com/v1/forecast?" +
+                        "latitude=" + location.getLatitude() + "&longitude=" + location.getLongitude() +
+                        "&hourly=temperature_2m,relative_humidity_2m" +
+                        "&daily=temperature_2m_max,temperature_2m_min,temperature_2m_mean,precipitation_sum," +
+                        "wind_speed_10m_max,wind_direction_10m_dominant" +
+                        "&forecast_days=3";
+        return fetchWeather(urlString);
     }
 
     @Override
-    public WeatherData fetchWeather(Location location, LocalDate startDate, LocalDate endDate) {
-        // instantiating our return object
-        WeatherData weatherData = null;
-
+    public WeatherData fetchHistoricalWeather(Location location, LocalDate startDate, LocalDate endDate){
         // since the user can choose a time range, we construct a call to the API using the user's selected times.
         //      furthermore, we take the stored longitude and latitude of the user's chosen city and enter it into the
         //      API call
@@ -48,6 +52,13 @@ public class OpenWeatherApiService implements ApiService {
                         "&hourly=temperature_2m,relative_humidity_2m" +
                         "&daily=temperature_2m_max,temperature_2m_min,temperature_2m_mean,precipitation_sum," +
                         "wind_speed_10m_max,wind_direction_10m_dominant";
+        return fetchWeather(urlString);
+
+    }
+
+    public WeatherData fetchWeather(String urlString) {
+        // instantiating our return object
+        WeatherData weatherData = null;
 
         // since it is possible that the date or location values are invalid, we try to run the API call and
         //  catch any related errors

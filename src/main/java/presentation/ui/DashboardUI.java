@@ -2,8 +2,9 @@ package presentation.ui;
 
 import application.dto.WeatherDataDTO;
 import application.dto.WeatherDataDTOGenerator;
+import application.usecases.GetForcastWeatherDataUseCase;
 import application.usecases.GetLocationDataUseCase;
-import application.usecases.GetWeatherDataUseCase;
+import application.usecases.GetHistoricalWeatherDataUseCase;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import infrastructure.adapters.OpenWeatherApiService;
@@ -15,13 +16,14 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.List;
 
 public class DashboardUI extends JFrame {
     static final JLabel locationLabel = new JLabel("Location:");
@@ -50,13 +52,15 @@ public class DashboardUI extends JFrame {
 
     static final JFrame rangeWindow = new JFrame("Range of Time");
 
+    static final JPanel historicalPanel = new JPanel();
+    static final JPanel forcastPanel = new JPanel();
+
     static LocalDate startDate = LocalDate.now();
     static LocalDate endDate = LocalDate.now();
+    static String userOption = "Historical";
     WeatherDataDTO weatherDataDTO;
     static OpenWeatherApiService apiService;
     static final DropDownUI menu = new DropDownUI();
-
-
 
     // A: main dashboard, its messy for now but we'll split them up for clean architecture and for a cleaner look
     public DashboardUI() {
@@ -64,38 +68,12 @@ public class DashboardUI extends JFrame {
         setSize(400, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(8, 2, 10, 10)); // B: Will be changed as we add more elements
-
-        // B: main compenents of GUI, most are placeholders
-        panel.add(locationLabel);
-        panel.add(menu);
-
-        panel.add(temperatureLabel);
-        panel.add(temperatureValue);
-
-        panel.add(percipitationLabel);
-        panel.add(percipitationValue);
-
-        panel.add(humidityLabel);
-        panel.add(humidityValue);
-
-        panel.add(windLabel);
-        panel.add(windValue);
-
-        panel.add(getInfoButton);
-
-        panel.add(refreshButton);
-
-        // B: button for time range
-        panel.add(setRangeOfTimeButton);
         // Initializes the components for time range window
         initRangeWindowComponents();
 
+        addForcastPanel();
 
-        add(panel);
-
-
+        addHistoricalPanel();
 
         // Button that displays weather data given location and api key
         getInfoButton.addActionListener(new ActionListener() {
@@ -129,6 +107,52 @@ public class DashboardUI extends JFrame {
                 openRangeOfTimeWindow();
             }
         });
+    }
+
+    private void addForcastPanel(){
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(8, 2, 10, 10));
+        addMainComponents(panel);
+
+        // To be completed later by Arham
+
+        add(panel);
+    }
+
+    private void addHistoricalPanel(){
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(8, 2, 10, 10));
+        addMainComponents(panel);
+
+        // To be completed later by Akram
+
+        // Later, include visualization for Historical weather data
+
+        add(panel);
+    }
+
+    private void addMainComponents(JPanel panel){
+        panel.add(locationLabel);
+        panel.add(menu);
+        menu.setApiKey(apiKey);
+
+        panel.add(temperatureLabel);
+        panel.add(temperatureValue);
+
+        panel.add(percipitationLabel);
+        panel.add(percipitationValue);
+
+        panel.add(humidityLabel);
+        panel.add(humidityValue);
+
+        panel.add(windLabel);
+        panel.add(windValue);
+
+        panel.add(getInfoButton);
+
+        panel.add(refreshButton);
+
+        panel.add(setRangeOfTimeButton);
     }
 
     public void setAPIkey(String newAPIkey){
@@ -169,8 +193,8 @@ public class DashboardUI extends JFrame {
 
     private void displayWeatherData() {
         GetLocationDataUseCase locationUseCase = new GetLocationDataUseCase(apiService);
-        GetWeatherDataUseCase weatherUseCase = new GetWeatherDataUseCase(apiService);
-        WeatherDataDTOGenerator weatherDataGenerator = new WeatherDataDTOGenerator();
+        GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase = new GetHistoricalWeatherDataUseCase(apiService);
+        GetForcastWeatherDataUseCase forcastWeatherDataUseCase = new GetForcastWeatherDataUseCase(apiService);
         String city = getLocationFieldValue();
 
         // TODO: implement user choice
@@ -178,8 +202,16 @@ public class DashboardUI extends JFrame {
         if (!possibleLocations.isEmpty()) {
             Location chosenLocation = possibleLocations.get(0);
             showWeatherDataFields(true);
-            WeatherData weatherData = weatherUseCase.execute(chosenLocation, startDate, endDate);
-            weatherDataDTO = weatherDataGenerator.createWeatherDataDTO(weatherData, chosenLocation, startDate, endDate);
+            WeatherData weatherData;
+
+            // To be changed later to adhere to CA
+            if (userOption.equals("Forcast")) {
+                weatherData = forcastWeatherDataUseCase.execute(chosenLocation, 7);
+            }
+            else{
+                weatherData = historicalWeatherDataUseCase.execute(chosenLocation, startDate, endDate);
+            }
+            weatherDataDTO = WeatherDataDTOGenerator.createWeatherDataDTO(weatherData, chosenLocation, startDate, endDate);
             updateWeatherDataTextFields(weatherDataDTO);
         }
         else
