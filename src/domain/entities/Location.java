@@ -15,12 +15,12 @@ public class Location {
         this.longitude = longitude;
     }
 
-    public String getLatitude() {
-        return Double.toString(latitude);
+    public double getLatitude() {
+        return latitude;
     }
 
-    public String getLongitude() {
-        return Double.toString(longitude);
+    public double getLongitude() {
+        return longitude;
     }
 
     public String getCity() {

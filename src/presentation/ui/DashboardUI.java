@@ -38,8 +38,8 @@ public class DashboardUI extends JFrame {
     static WeatherDataDTO weatherDataDTO = new WeatherDataDTO();
     private String apiKey;
     private final DropDownUI menu;
-
-
+    private final WeatherAlertFunction weatherAlertFunction =
+            new WeatherAlertFunction("492c0a6e6e544fd8a01201116241311");
 
     // A: main dashboard, its messy for now but we'll split them up for clean architecture and for a cleaner look
     public DashboardUI() {
@@ -58,8 +58,8 @@ public class DashboardUI extends JFrame {
         panel.add(locationLabel);
         panel.add(menu);
 
-        panel.add(apiKeyLabel);
-        panel.add(apiKeyField);
+//        panel.add(apiKeyLabel);
+//        panel.add(apiKeyField);
 
         panel.add(temperatureLabel);
         panel.add(temperatureValue);
@@ -125,7 +125,6 @@ public class DashboardUI extends JFrame {
     }
 
     private void displayWeatherData() {
-        // Get selected location
         final Location chosenLocation = menu.getSelectedLocation();
         if (chosenLocation == null) {
             System.out.println("No location selected");
@@ -137,12 +136,9 @@ public class DashboardUI extends JFrame {
         apiKey = getAPIKeyFieldValue();
 
         if (apiKey == null || apiKey.isEmpty()) {
-            JOptionPane.showMessageDialog(
-                    this,
+            JOptionPane.showMessageDialog(this,
                     "API key cannot be empty. Please enter a valid API key.",
-                    "Invalid API Key",
-                    JOptionPane.ERROR_MESSAGE
-            );
+                    "Invalid API key", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -153,46 +149,49 @@ public class DashboardUI extends JFrame {
         final GetWeatherDataUseCase weatherUseCase = new GetWeatherDataUseCase(apiService);
         final WeatherData weatherData = weatherUseCase.execute(chosenLocation, apiKey);
 
-        if (weatherData != null) {
+        if(weatherData != null) {
             final LocalDate date = LocalDate.now();
             extractWeatherData(weatherData, chosenLocation, date);
             updateTextFields(weatherDataDTO);
+
+            WeatherAlertFunction alertFunction = new WeatherAlertFunction("492c0a6e6e544fd8a01201116241311"); // WeatherAPI key
+            String condition = weatherAlertFunction.getSevereWeather(
+                    chosenLocation.getLatitude(),
+                    chosenLocation.getLongitude()
+            );
+
+            conditionValue.setText(condition);
         }
         else {
-            System.out.println("Weather data could not be retrieved.");
+            System.out.println("No weather data found");
             temperatureValue.setText("N/A");
         }
     }
 
-    // B: No usages after i worked on the code, either find a usage or can be removed later.
-    private Location showLocationSelectionPopup(List<Location> locations) {
-        // Convert the list of locations to a string array for display
+    private Location showLocationSelectionPopup(List<Location> locations){
         String[] locationStrings = locations.stream()
-                .map(loc -> loc.getCity()) // e.g., "London, GB"
+                .map(loc -> loc.toString())
                 .toArray(String[]::new);
 
-        // Show a dropdown using JOptionPane for the user to select a location
-        String selectedLocation = (String) JOptionPane.showInputDialog(
-                this,
-                "Select a location:",
-                "Choose Location",
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                locationStrings,
-                locationStrings[0] // Default to the first location
-        );
+    String selectedLocation = (String) JOptionPane.showInputDialog(
+            this,
+            "Select a location:",
+            "Choose Location",
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            locationStrings,
+            locationStrings[0]
+
+    );
 
         if (selectedLocation != null) {
-            // Find and return the selected Location object
             return locations.stream()
-                    .filter(loc -> loc.getCity().equals(selectedLocation))
-                    .findFirst()
-                    .orElse(null);
-        }
-        return null; // Return null if the selection is canceled
+                .filter(loc -> loc.toString().equals(selectedLocation))
+                .findFirst()
+                .orElse(null);
+            }
+        return null;
     }
-
-
 
     private String getAPIKeyFieldValue(){
         return apiKeyField.getText();
@@ -201,15 +200,15 @@ public class DashboardUI extends JFrame {
     private WeatherDataDTO createWeatherDataDTO(JSONObject data, Location location, LocalDate date) {
         try {
             final JSONObject mainData = data.getJSONObject("main");
-            final double temperatureInCelsius = mainData.getDouble("temp");
+            final double temperatureInCelcius = mainData.getDouble("temp");
             return new WeatherDataDTO(
                     location.getCity(),
                     date,
-                    temperatureInCelsius,
+                    temperatureInCelcius,
                     mainData.getInt("humidity"),
                     data.getJSONObject("wind").getDouble("speed"),
-                    // NOTE: may not always have percipitation data and alerts
-                    0.0, new ArrayList<String>() { });
+                    //NOTE: may not always have percipitation data and alerts
+                    0.0, new ArrayList<String>(){ });
         }
         catch (JSONException exception) {
             exception.printStackTrace();

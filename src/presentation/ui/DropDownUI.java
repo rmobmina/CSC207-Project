@@ -1,22 +1,21 @@
 package presentation.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-
 import javax.swing.*;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import domain.entities.Location;
 import infrastructure.adapters.OpenWeatherApiService;
+
 
 public class DropDownUI extends JPanel {
     private final JTextField locationField = new JTextField(20);
     private final JComboBox<String> locationDropdown = new JComboBox<>();
-    private final OpenWeatherApiService apiService = new OpenWeatherApiService(); // Imported API to dropdown to show the city names
+    private final OpenWeatherApiService apiService = new OpenWeatherApiService();
     private final String apiKey;
 
     private final Timer updateTimer;
@@ -30,6 +29,7 @@ public class DropDownUI extends JPanel {
         add(locationDropdown);
         locationDropdown.setVisible(false);
 
+        // Initialize the timer with a 500ms delay
         updateTimer = new Timer(500, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -38,20 +38,24 @@ public class DropDownUI extends JPanel {
         });
         updateTimer.setRepeats(false);
 
-        selectionMade = false;
         locationField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
+                // Removed the method to check if the search bar is empty so that selection made is false as soon as the user starts typing
                 if (selectionMade) {
                     selectionMade = false;
                 }
 
+                // Check if the down arrow key is pressed
                 if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                    // If dropdown has items, focus on it and show it
                     if (locationDropdown.getItemCount() > 0) {
                         locationDropdown.requestFocus();
                         locationDropdown.setPopupVisible(true);
                     }
-                } else {
+                }
+                else {
+                    // Restart the timer for other keys
                     updateTimer.restart();
                 }
             }
@@ -83,19 +87,18 @@ public class DropDownUI extends JPanel {
         }
         else {
             for (Location location : matchingLocations) {
-                locationDropdown.addItem(location.getCity());
+            locationDropdown.addItem(location.getCity());
             }
             locationDropdown.setVisible(true);
             locationDropdown.showPopup();
         }
-
         locationDropdown.setSelectedIndex(-1);
-    }
+        }
 
-    public JTextField getLocationField() {
+    public JTextField getLocationField()
+    {
         return locationField;
     }
-
     public Location getSelectedLocation() {
         if (locationDropdown.getSelectedIndex() >= 0) {
             return matchingLocations.get(locationDropdown.getSelectedIndex());
@@ -113,4 +116,3 @@ public class DropDownUI extends JPanel {
         frame.setVisible(true);
     }
 }
-
