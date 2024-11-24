@@ -41,7 +41,6 @@ public class DropDownUI extends JPanel {
         locationField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                // Removed the method to check if the search bar is empty so that selection made is false as soon as the user starts typing
                 if (selectionMade) {
                     selectionMade = false;
                 }
@@ -71,6 +70,11 @@ public class DropDownUI extends JPanel {
                 }
             }
         });
+    }
+
+    public void resetSelection() {
+    locationDropdown.removeAllItems(); // Clear all items
+    locationDropdown.setVisible(false); // Hide the dropdown
     }
 
     private void updateDropdown(String input) {

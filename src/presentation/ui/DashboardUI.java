@@ -6,6 +6,8 @@ import application.usecases.GetWeatherDataUseCase;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import infrastructure.adapters.OpenWeatherApiService;
+import infrastructure.adapters.WeatherAPIService;
+import utils.ApiKeys;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,106 +20,113 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class DashboardUI extends JFrame {
-    // implemented variables, might not end up using all depending
-    static final JLabel locationLabel = new JLabel("Location:");
-    static final JLabel apiKeyLabel = new JLabel("API Key:");
-    static final JTextField apiKeyField = new JTextField(30);
-    static final JLabel temperatureLabel = new JLabel("Temperature:");
-    static final JLabel temperatureValue = new JLabel("N/A"); // Placeholder for temperature
-    static final String temperatureType = "cel";
-    static final JLabel conditionLabel = new JLabel("Condition:");
-    static final JLabel conditionValue = new JLabel("N/A"); // Placeholder for weather condition
-    static final JLabel humidityLabel = new JLabel("Humidity:");
-    static final JLabel humidityValue = new JLabel("N/A"); // Placeholder for humidity
-    static final JLabel windLabel = new JLabel("Wind:");
-    static final JLabel windValue = new JLabel("N/A"); // Placeholder for wind speed
-    static final JButton getInfoButton = new JButton("Get Info");
-    static final JButton refreshButton = new JButton("Refresh");
-    static final JButton rangeOfTimeButton = new JButton("Range of Time");
-    static final JButton simulationButton = new JButton("Simulation");
-    static WeatherDataDTO weatherDataDTO = new WeatherDataDTO();
-    private String apiKey;
-    private final DropDownUI menu;
-    private final WeatherAlertFunction weatherAlertFunction =
-            new WeatherAlertFunction("492c0a6e6e544fd8a01201116241311");
 
-    // A: main dashboard, its messy for now but we'll split them up for clean architecture and for a cleaner look
-    public DashboardUI() {
+    // UI Components
+    private JLabel locationLabel;
+    private JLabel temperatureLabel;
+    private JLabel conditionLabel;
+    private JLabel humidityLabel;
+    private JLabel windLabel;
+
+    private JTextField apiKeyField;
+    private JLabel temperatureValue;
+    private JLabel conditionValue;
+    private JLabel humidityValue;
+    private JLabel windValue;
+
+    private JButton getInfoButton;
+    private JButton refreshButton;
+    private JButton rangeOfTimeButton;
+    private JButton simulationButton;
+
+    // Data Variables
+    static final String temperatureType = "cel"; // Temperature display type
+    static WeatherDataDTO weatherDataDTO = new WeatherDataDTO();
+    private final Map<String, WeatherData> weatherDataCache = new HashMap<>();
+    private final String apiKey; // API key for OpenWeather API
+
+    // Services and Menu
+    private final OpenWeatherApiService apiService = new OpenWeatherApiService();
+    private final WeatherAPIService weatherAPIService = new WeatherAPIService(ApiKeys.WEATHER_API_KEY);
+    private final WeatherAlertFunction weatherAlertFunction = new WeatherAlertFunction(weatherAPIService);
+    private final DropDownUI menu;
+
+
+public DashboardUI() {
         setTitle("Weather Dashboard");
         setSize(400, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        apiKey = "0e85f616a96a624a0bf65bad89ff68c5"; // Bader's Key
-        apiKeyField.setText(apiKey);
+        // Initialize API Key and Dropdown Menu
+        apiKey = ApiKeys.OPEN_WEATHER_API_KEY; // Use from Config class
+        apiKeyField = new JTextField(apiKey, 30);
         menu = new DropDownUI(apiKey);
 
+        // Call setupUI method to configure UI elements
+        setupUI();
+
+        // Add Action Listeners for buttons
+        setupEventListeners();
+    }
+
+    private void setupUI() {
+        // Initialize Components
+        locationLabel = new JLabel("Location:");
+        temperatureLabel = new JLabel("Temperature:");
+        conditionLabel = new JLabel("Condition:");
+        humidityLabel = new JLabel("Humidity:");
+        windLabel = new JLabel("Wind:");
+
+        temperatureValue = new JLabel("N/A");
+        conditionValue = new JLabel("N/A");
+        humidityValue = new JLabel("N/A");
+        windValue = new JLabel("N/A");
+
+        getInfoButton = new JButton("Get Info");
+        refreshButton = new JButton("Refresh");
+        rangeOfTimeButton = new JButton("Range of Time");
+        simulationButton = new JButton("Simulation");
+
+        // Create and configure layout
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(9, 2, 10, 10));
 
-        // B: main compenents of GUI, most are placeholders
+        // Add components to panel
         panel.add(locationLabel);
         panel.add(menu);
-
-//        panel.add(apiKeyLabel);
-//        panel.add(apiKeyField);
-
         panel.add(temperatureLabel);
         panel.add(temperatureValue);
-
         panel.add(conditionLabel);
         panel.add(conditionValue);
-
         panel.add(humidityLabel);
         panel.add(humidityValue);
-
         panel.add(windLabel);
         panel.add(windValue);
-
         panel.add(getInfoButton);
-
-        // panel.add(new JLabel());
         panel.add(refreshButton);
-
-        // B: buttons for range and simulation
         panel.add(rangeOfTimeButton);
         panel.add(simulationButton);
 
+        // Add panel to JFrame
         add(panel);
-        // Button that displays weather data given location and api key
-        getInfoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayWeatherData();
-            }
-        });
+    }
 
-        refreshButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                refreshAll();
-            }
-        });
-
-        // Buttons that make the menus for range of time and the simulation
-        rangeOfTimeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                openRangeOfTimeWindow();
-            }
-        });
-
-        simulationButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                openSimulationWindow();
-            }
-        });
-
+    private void setupEventListeners() {
+        // Add Action Listeners for buttons
+        getInfoButton.addActionListener(e -> displayWeatherData());
+        refreshButton.addActionListener(e -> refreshAll());
+        rangeOfTimeButton.addActionListener(e -> openRangeOfTimeWindow());
+        simulationButton.addActionListener(e -> openSimulationWindow());
     }
 
     private void refreshAll() {
+        // Clears all the UI components
+        clearUIFields();
+        menu.resetSelection();
+    }
+
+    private void clearUIFields() {
         apiKeyField.setText(apiKey);
-        menu.getLocationField().setText("");
         temperatureValue.setText("N/A");
         conditionValue.setText("N/A");
         humidityValue.setText("N/A");
@@ -132,66 +141,66 @@ public class DashboardUI extends JFrame {
             return;
         }
 
-        final OpenWeatherApiService apiService = new OpenWeatherApiService();
-        apiKey = getAPIKeyFieldValue();
+        final String locationKey = chosenLocation.getCity();
+        WeatherData weatherData = weatherDataCache.get(locationKey);
 
-        if (apiKey == null || apiKey.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "API key cannot be empty. Please enter a valid API key.",
-                    "Invalid API key", JOptionPane.ERROR_MESSAGE);
-            return;
+        if (weatherData == null) {
+            System.out.println("Fetching weather data from API...");
+            weatherData = fetchWeatherData(chosenLocation);
+            if (weatherData != null) {
+                weatherDataCache.put(locationKey, weatherData);
+            } else {
+                System.out.println("Weather data could not be retrieved.");
+                temperatureValue.setText("N/A");
+                return;
+            }
+        } else {
+            System.out.println("Using cached weather data...");
         }
 
-        System.out.println("City: " + chosenLocation.getCity());
-        System.out.println("Latitude: " + chosenLocation.getLatitude());
-        System.out.println("Longitude: " + chosenLocation.getLongitude());
+        updateWeatherUI(weatherData, chosenLocation);
 
-        final GetWeatherDataUseCase weatherUseCase = new GetWeatherDataUseCase(apiService);
-        final WeatherData weatherData = weatherUseCase.execute(chosenLocation, apiKey);
+    }
 
-        if(weatherData != null) {
-            final LocalDate date = LocalDate.now();
-            extractWeatherData(weatherData, chosenLocation, date);
-            updateTextFields(weatherDataDTO);
-
-            WeatherAlertFunction alertFunction = new WeatherAlertFunction("492c0a6e6e544fd8a01201116241311"); // WeatherAPI key
-            String condition = weatherAlertFunction.getSevereWeather(
-                    chosenLocation.getLatitude(),
-                    chosenLocation.getLongitude()
-            );
-
-            conditionValue.setText(condition);
-        }
-        else {
-            System.out.println("No weather data found");
-            temperatureValue.setText("N/A");
+    private String fetchWeatherAlerts(Location location) {
+        try {
+            return weatherAlertFunction.getSevereWeather(location.getLatitude(), location.getLongitude());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error fetching weather alert data.";
         }
     }
 
-    private Location showLocationSelectionPopup(List<Location> locations){
-        String[] locationStrings = locations.stream()
-                .map(loc -> loc.toString())
-                .toArray(String[]::new);
 
-    String selectedLocation = (String) JOptionPane.showInputDialog(
+private WeatherData fetchWeatherData(Location location) {
+    String apiKey = getAPIKeyFieldValue();
+    if (apiKey == null || apiKey.isEmpty()) {
+        JOptionPane.showMessageDialog(
             this,
-            "Select a location:",
-            "Choose Location",
-            JOptionPane.QUESTION_MESSAGE,
-            null,
-            locationStrings,
-            locationStrings[0]
-
-    );
-
-        if (selectedLocation != null) {
-            return locations.stream()
-                .filter(loc -> loc.toString().equals(selectedLocation))
-                .findFirst()
-                .orElse(null);
-            }
+            "API key cannot be empty. Please enter a valid API key.",
+            "Invalid API Key",
+            JOptionPane.ERROR_MESSAGE
+        );
         return null;
     }
+
+    try {
+        return apiService.fetchWeather(location, apiKey);
+    } catch (Exception e) {
+        e.printStackTrace();
+        return null;
+    }
+}
+
+
+    private void updateWeatherUI(WeatherData weatherData, Location location) {
+    // Extract data and update fields
+    LocalDate date = LocalDate.now();
+    WeatherDataDTO dto = createWeatherDataDTO(weatherData.getWeatherDetails(), location, date);
+    updateTextFields(dto);
+    String condition = fetchWeatherAlerts(location); // Fetch weather alerts
+    conditionValue.setText(condition);
+}
 
     private String getAPIKeyFieldValue(){
         return apiKeyField.getText();
