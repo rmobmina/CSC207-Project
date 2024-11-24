@@ -9,6 +9,7 @@ import infrastructure.adapters.OpenWeatherApiService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 import javax.swing.*;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
