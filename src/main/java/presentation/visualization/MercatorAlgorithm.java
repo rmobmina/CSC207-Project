@@ -1,47 +1,59 @@
 package presentation.visualization;
 
-public class MercatorProjection {
+import java.awt.geom.Point2D;
 
+/**
+ * A class used to convert a location's longitude and latitude into Mercator Projection coordinates.
+ *  FINISH LATER
+ */
+public class MercatorAlgorithm {
     // Earth's radius in meters (mean radius)
     private static final double EARTH_RADIUS = 6378137.0;
 
+    private final double latitude;
+    private final double longitude;
+    private double x;
+    private double y;
+
+    public MercatorAlgorithm(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     /**
      * Converts latitude and longitude to Mercator projection (x, y) coordinates.
-     *
-     * @param latitude Latitude in degrees.
-     * @param longitude Longitude in degrees.
      * @return A double array [x, y] where x and y are Mercator projection coordinates in meters.
      */
-    public static double[] toMercator(double latitude, double longitude) {
-        // Convert latitude and longitude to radians
-        double latRad = Math.toRadians(latitude);
-        double lonRad = Math.toRadians(longitude);
-
+    public void toMercator() {
         // Calculate x and y using the Mercator formula
-        double x = EARTH_RADIUS * lonRad;
-        double y = EARTH_RADIUS * Math.log(Math.tan(Math.PI / 4 + latRad / 2));
+        this.x = EARTH_RADIUS * Math.toRadians(longitude);
+        this.y = EARTH_RADIUS * Math.log(Math.tan(Math.PI / 4 + Math.toRadians(latitude) / 2));
 
-        return new double[]{x, y};
     }
 
     /**
      * Converts Mercator (x, y) coordinates back to latitude and longitude.
-     *
-     * @param x Mercator x coordinate in meters.
-     * @param y Mercator y coordinate in meters.
      * @return A double array [latitude, longitude] where latitude and longitude are in degrees.
      */
-    public static double[] fromMercator(double x, double y) {
+    public double[] fromMercator() {
         // Calculate longitude
-        double lonRad = x / EARTH_RADIUS;
+        final double lonRad = x / EARTH_RADIUS;
 
         // Calculate latitude
-        double latRad = 2 * Math.atan(Math.exp(y / EARTH_RADIUS)) - Math.PI / 2;
+        final double latRad = 2 * Math.atan(Math.exp(y / EARTH_RADIUS)) - Math.PI / 2;
 
         // Convert back to degrees
-        double latitude = Math.toDegrees(latRad);
-        double longitude = Math.toDegrees(lonRad);
+        final double lat = Math.toDegrees(latRad);
+        final double lon = Math.toDegrees(lonRad);
 
-        return new double[]{latitude, longitude};
+        return new double[]{lat, lon};
     }
+
+    /**
+     * TODO: Normalizing function
+     *  Given an image's length and width in pixels, return x and y values of a mercator point
+     *      determined by our previous calculations.
+     *      - Assume that the image given is a correct Mercator Map.
+     */
+
 }
