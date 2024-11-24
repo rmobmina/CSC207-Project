@@ -55,8 +55,8 @@ public class DashboardUI extends JFrame {
     static final JPanel historicalPanel = new JPanel();
     static final JPanel forcastPanel = new JPanel();
 
-    static LocalDate startDate = LocalDate.now();
-    static LocalDate endDate = LocalDate.now();
+    static LocalDate startDate = LocalDate.of(2021, 1, 1);
+    static LocalDate endDate = LocalDate.of(2021, 1, 2);
     static String userOption = "Historical";
     WeatherDataDTO weatherDataDTO;
     static OpenWeatherApiService apiService;
@@ -223,10 +223,10 @@ public class DashboardUI extends JFrame {
     // Updates all the weather data text fields given the current location and dates
     private void updateWeatherDataTextFields(WeatherDataDTO weatherDataDTO) {
         DecimalFormat df = new DecimalFormat("#.##");
-        temperatureValue.setText(df.format(weatherDataDTO.getTemperature(temperatureType)) + " °C");
-        humidityValue.setText(weatherDataDTO.humidity + " %");
-        percipitationValue.setText(weatherDataDTO.precipitation + " mm");
-        windValue.setText(weatherDataDTO.windSpeed + " km/h " + weatherDataDTO.windDirection + " °");
+        temperatureValue.setText(df.format(weatherDataDTO.getTemperature(temperatureType, 0)) + " °C");
+        humidityValue.setText(weatherDataDTO.humidity.get(0) + " %");
+        percipitationValue.setText(weatherDataDTO.precipitation.get(0) + " mm");
+        windValue.setText(weatherDataDTO.windSpeed.get(0) + " km/h " + weatherDataDTO.windDirection.get(0) + " °");
     }
 
     private void openErrorWindow(String errorMessage) {
