@@ -9,5 +9,8 @@
         <module name="Habibis and Habibti (No relation)" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="test" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
