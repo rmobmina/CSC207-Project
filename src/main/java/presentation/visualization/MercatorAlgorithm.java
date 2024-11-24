@@ -54,11 +54,24 @@ public class MercatorAlgorithm {
      *      determined by our previous calculations.
      *      - Assume that the image given is a correct Mercator Map.
      */
-    public double[] normalizeCoordinates(int length, int width) {
-        toMercator();
-        double circumference = 2 * Math.PI * EARTH_RADIUS;
-        double normalizedX = this.x * width / circumference;
-        double normalizedY = this.y * length / circumference;
+    public double[] normalizeCoordinates(int height, int width) {
+        toMercator(); // Ensure x and y are converted to Mercator values
+
+        // Normalize longitude to X (0 to width)
+        double normalizedX = (this.longitude + 180) * (width / 360.0);
+
+        // Normalize latitude to Y (0 to height) using Mercator projection
+        double mercatorLat = Math.log(Math.tan(Math.PI / 4 + Math.toRadians(latitude) / 2));
+        double normalizedY = (1 - mercatorLat / Math.PI) * (height / 2.0);
+
         return new double[]{normalizedX, normalizedY};
     }
+
+    public static void main(String[] args) {
+        MercatorAlgorithm mercatorAlgorithm = new MercatorAlgorithm(52, 106);
+        mercatorAlgorithm.toMercator();
+        System.out.println(mercatorAlgorithm.x);
+        System.out.println(mercatorAlgorithm.y);
+    }
+
 }
