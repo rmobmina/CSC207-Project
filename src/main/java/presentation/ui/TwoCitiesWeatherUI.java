@@ -7,6 +7,7 @@ import application.usecases.GetWeatherDataUseCase;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import infrastructure.adapters.OpenWeatherApiService;
+import presentation.visualization.BarGraphVisualization;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +20,7 @@ public class TwoCitiesWeatherUI extends JFrame {
     private final JTextField secondCityField = new JTextField(20);
     private final JButton fetchWeatherButton = new JButton("Fetch Weather Data");
     private final JButton refreshButton = new JButton("Refresh");
+    private final JButton visualizeButton = new JButton("Visualize!");
 
     private final JLabel firstCityTemperature = new JLabel("City 1 Temperature: N/A", SwingConstants.LEFT);
     private final JLabel secondCityTemperature = new JLabel("City 2 Temperature: N/A", SwingConstants.LEFT);
@@ -38,16 +40,19 @@ public class TwoCitiesWeatherUI extends JFrame {
     private LocalDate startDate = LocalDate.now();
     private LocalDate endDate = LocalDate.now();
 
+    private WeatherDataDTO firstCityWeatherData;
+    private WeatherDataDTO secondCityWeatherData;
+
     public TwoCitiesWeatherUI(OpenWeatherApiService apiService, String apiKey) {
         this.apiService = apiService;
         this.apiKey = apiKey;
 
         setTitle("Weather Comparison for Two Cities");
-        setSize(500, 650);
+        setSize(600, 750);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(11, 1, 10, 10));
+        mainPanel.setLayout(new GridLayout(13, 2, 10, 10));
 
         mainPanel.add(new JLabel("First City:"));
         mainPanel.add(firstCityField);
@@ -70,10 +75,13 @@ public class TwoCitiesWeatherUI extends JFrame {
         mainPanel.add(firstCityWindSpeed);
         mainPanel.add(secondCityWindSpeed);
 
+        mainPanel.add(visualizeButton);
+
         add(mainPanel);
 
         fetchWeatherButton.addActionListener(e -> handleFetchWeatherData());
         refreshButton.addActionListener(e -> refreshFields());
+        visualizeButton.addActionListener(e -> openVisualization());
     }
 
     private void handleFetchWeatherData() {
@@ -107,10 +115,10 @@ public class TwoCitiesWeatherUI extends JFrame {
                     WeatherData firstCityWeather = weatherUseCase.execute(firstLocation, startDate, endDate);
                     WeatherData secondCityWeather = weatherUseCase.execute(secondLocation, startDate, endDate);
 
-                    WeatherDataDTO firstCityDTO = dtoGenerator.createWeatherDataDTO(firstCityWeather, firstLocation, startDate, endDate);
-                    WeatherDataDTO secondCityDTO = dtoGenerator.createWeatherDataDTO(secondCityWeather, secondLocation, startDate, endDate);
+                    firstCityWeatherData = dtoGenerator.createWeatherDataDTO(firstCityWeather, firstLocation, startDate, endDate);
+                    secondCityWeatherData = dtoGenerator.createWeatherDataDTO(secondCityWeather, secondLocation, startDate, endDate);
 
-                    updateWeatherDataFields(firstCityDTO, secondCityDTO);
+                    updateWeatherDataFields(firstCityWeatherData, secondCityWeatherData);
                 } catch (Exception ex) {
                     showError("Error fetching weather data: " + ex.getMessage());
                 }
@@ -156,6 +164,29 @@ public class TwoCitiesWeatherUI extends JFrame {
             firstCityWindSpeed.setText("City 1 Wind Speed: N/A");
             secondCityWindSpeed.setText("City 2 Wind Speed: N/A");
         });
+    }
+
+    private void openVisualization() {
+        if (firstCityWeatherData == null || secondCityWeatherData == null) {
+            showError("Fetch weather data for both cities first.");
+            return;
+        }
+
+        BarGraphVisualization barGraph = new BarGraphVisualization("Two Cities Weather Comparison");
+
+        barGraph.addData("City 1", "Temperature", firstCityWeatherData.getTemperature("cel"));
+        barGraph.addData("City 2", "Temperature", secondCityWeatherData.getTemperature("cel"));
+
+        barGraph.addData("City 1", "Precipitation", firstCityWeatherData.precipitation);
+        barGraph.addData("City 2", "Precipitation", secondCityWeatherData.precipitation);
+
+        barGraph.addData("City 1", "Humidity", firstCityWeatherData.humidity);
+        barGraph.addData("City 2", "Humidity", secondCityWeatherData.humidity);
+
+        barGraph.addData("City 1", "Wind Speed", firstCityWeatherData.windSpeed);
+        barGraph.addData("City 2", "Wind Speed", secondCityWeatherData.windSpeed);
+
+        barGraph.display();
     }
 
     private void showError(String errorMessage) {

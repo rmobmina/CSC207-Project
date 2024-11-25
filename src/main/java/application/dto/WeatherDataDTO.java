@@ -20,9 +20,10 @@ public class WeatherDataDTO {
     public double precipitation;
     public List<String> alerts;
 
-    // Constructor for mapping from domain entities
-    public WeatherDataDTO(Location location, List<LocalDate> timeInterval, Map<String, Double> weatherDetails, List<String> alerts) {
+    private Map<String, Double> temperatureHistory; // New field for temperature history
 
+    // Constructor for mapping from domain entities
+    public WeatherDataDTO(Location location, List<LocalDate> timeInterval, Map<String, Double> weatherDetails, Map<String, Double> temperatureHistory, List<String> alerts) {
         this.location = location;
         this.startDate = timeInterval.get(0);
         this.endDate = timeInterval.get(timeInterval.size() - 1);
@@ -32,6 +33,7 @@ public class WeatherDataDTO {
         this.windDirection = weatherDetails.get("windDirection");
         this.precipitation = weatherDetails.get("percipitation");
         this.alerts = alerts;
+        this.temperatureHistory = temperatureHistory; // Initialize temperature history
     }
 
     public double getTemperature(String type) {
@@ -54,9 +56,17 @@ public class WeatherDataDTO {
     }
 
     /**
+     * Returns the temperature history.
+     * @return Map<String, Double> where keys are dates and values are temperatures.
+     */
+    public Map<String, Double> getTemperatureHistory() {
+        return temperatureHistory;
+    }
+
+    /**
      * Returns the average of all the data values in the JSONArray (assuming values are int or double)
      * @param dataArr JSONArray of values (either double or int)
-     * @return avaerage of all data values in dataArr
+     * @return average of all data values in dataArr
      * @throws org.json.JSONException if some error occurs
      */
     public static double getAverageData(JSONArray dataArr) throws JSONException {
@@ -72,5 +82,4 @@ public class WeatherDataDTO {
         }
         return sum / dataArr.length();
     }
-
 }

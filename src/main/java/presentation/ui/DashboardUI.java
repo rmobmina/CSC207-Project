@@ -7,12 +7,14 @@ import application.usecases.GetWeatherDataUseCase;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import infrastructure.adapters.OpenWeatherApiService;
+import presentation.visualization.LineGraphVisualization;
+import presentation.visualization.BarGraphVisualization;
 
 import javax.swing.*;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Map;
 
 public class DashboardUI extends JFrame {
     static final JLabel locationLabel = new JLabel("Location:");
@@ -21,8 +23,8 @@ public class DashboardUI extends JFrame {
     static final JLabel temperatureLabel = new JLabel("Temperature:");
     static final JLabel temperatureValue = new JLabel("N/A");
     static final String temperatureType = "cel";
-    static final JLabel percipitationLabel = new JLabel("Percipitation Sum:");
-    static final JLabel percipitationValue = new JLabel("N/A");
+    static final JLabel precipitationLabel = new JLabel("Precipitation Sum:");
+    static final JLabel precipitationValue = new JLabel("N/A");
     static final JLabel humidityLabel = new JLabel("Humidity:");
     static final JLabel humidityValue = new JLabel("N/A");
     static final JLabel windLabel = new JLabel("Wind Speed (and Dominant Direction):");
@@ -38,6 +40,7 @@ public class DashboardUI extends JFrame {
     static final JButton refreshButton = new JButton("Refresh");
     static final JButton setRangeOfTimeButton = new JButton("Set Range of Time");
     static final JButton compareTwoCitiesButton = new JButton("Compare Two Cities");
+    static final JButton visualizeButton = new JButton("Visualize!");
 
     static final JFrame rangeWindow = new JFrame("Range of Time");
 
@@ -49,11 +52,11 @@ public class DashboardUI extends JFrame {
 
     public DashboardUI() {
         setTitle("Weather Dashboard");
-        setSize(500, 600);
+        setSize(500, 650);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(9, 2, 10, 10)); // Updated layout for additional components
+        panel.setLayout(new GridLayout(10, 2, 10, 10));
 
         panel.add(locationLabel);
         panel.add(menu);
@@ -61,8 +64,8 @@ public class DashboardUI extends JFrame {
         panel.add(temperatureLabel);
         panel.add(temperatureValue);
 
-        panel.add(percipitationLabel);
-        panel.add(percipitationValue);
+        panel.add(precipitationLabel);
+        panel.add(precipitationValue);
 
         panel.add(humidityLabel);
         panel.add(humidityValue);
@@ -76,17 +79,17 @@ public class DashboardUI extends JFrame {
         panel.add(setRangeOfTimeButton);
         panel.add(compareTwoCitiesButton);
 
+        panel.add(visualizeButton);
+
         initRangeWindowComponents();
         add(panel);
 
-        // Existing buttons' action listeners
         getInfoButton.addActionListener(e -> displayWeatherData());
         refreshButton.addActionListener(e -> refreshAll());
         updateRangeOfTimeButton.addActionListener(e -> updateRangeOfTime());
         setRangeOfTimeButton.addActionListener(e -> openRangeOfTimeWindow());
-
-        // New button for comparing two cities
         compareTwoCitiesButton.addActionListener(e -> openCompareTwoCitiesWindow());
+        visualizeButton.addActionListener(e -> openVisualization());
     }
 
     public void setAPIkey(String newAPIkey) {
@@ -135,7 +138,7 @@ public class DashboardUI extends JFrame {
         DecimalFormat df = new DecimalFormat("#.##");
         temperatureValue.setText(df.format(weatherDataDTO.getTemperature(temperatureType)) + " °C");
         humidityValue.setText(weatherDataDTO.humidity + " %");
-        percipitationValue.setText(weatherDataDTO.precipitation + " mm");
+        precipitationValue.setText(weatherDataDTO.precipitation + " mm");
         windValue.setText(weatherDataDTO.windSpeed + " km/h " + weatherDataDTO.windDirection + " °");
     }
 
@@ -167,13 +170,26 @@ public class DashboardUI extends JFrame {
 
     private void showWeatherDataFields(boolean enable) {
         temperatureValue.setVisible(enable);
-        percipitationValue.setVisible(enable);
+        precipitationValue.setVisible(enable);
         humidityValue.setVisible(enable);
         windValue.setVisible(enable);
     }
 
     private void openErrorWindow(String errorMessage) {
         JOptionPane.showMessageDialog(this, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void openVisualization() {
+        if (weatherDataDTO == null) {
+            openErrorWindow("No data available to visualize.");
+            return;
+        }
+
+        LineGraphVisualization lineGraph = new LineGraphVisualization("Weather Trends");
+        for (Map.Entry<String, Double> entry : weatherDataDTO.getTemperatureHistory().entrySet()) {
+            lineGraph.addData("Temperature", entry.getKey(), entry.getValue());
+        }
+        lineGraph.display();
     }
 
     public static void main(String[] args) {
