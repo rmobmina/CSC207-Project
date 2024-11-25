@@ -2,39 +2,50 @@ package presentation.ui;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import infrastructure.adapters.WeatherAPIService;
 
+/**
+ *
+ */
 public class WeatherAlertFunction {
-    private final WeatherAPIService weatherAPIService;
+    private final WeatherAPIService weatherApiService;
 
     // Constructor
-    public WeatherAlertFunction(WeatherAPIService weatherAPIService) {
-        this.weatherAPIService = weatherAPIService;
+    public WeatherAlertFunction(WeatherAPIService weatherApiService) {
+        this.weatherApiService = weatherApiService;
     }
 
     // Fetch and process severe weather alerts
+    /**
+     *
+     * @param latitude
+     * @param longitude
+     * @return
+     */
     public String getSevereWeather(double latitude, double longitude) {
         try {
             // Fetch data using WeatherAPIService
-            String response = weatherAPIService.fetchWeatherData(latitude, longitude);
+            final String response = weatherApiService.fetchWeatherData(latitude, longitude);
 
             // Parse the JSON response
-            JSONObject jsonResponse = new JSONObject(response);
+            final JSONObject jsonResponse = new JSONObject(response);
             if (!jsonResponse.has("alerts")) {
                 return "No weather alerts available.";
             }
 
-            JSONArray alertsArray = jsonResponse.getJSONArray("alerts");
-            StringBuilder severeAlerts = new StringBuilder();
+            final JSONArray alertsArray = jsonResponse.getJSONArray("alerts");
+            final StringBuilder severeAlerts = new StringBuilder();
 
             for (int i = 0; i < alertsArray.length(); i++) {
-                JSONObject alert = alertsArray.getJSONObject(i);
+                final JSONObject alert = alertsArray.getJSONObject(i);
 
                 // Extract severity, urgency, and event type
-                String severity = alert.optString("severity", "Unknown");
-                String urgency = alert.optString("urgency", "Unknown");
-                String event = alert.optString("event", "Unknown");
-                String description = alert.optString("desc", "");
+                final String defaultValue = "Unknown";
+                final String severity = alert.optString("severity", defaultValue);
+                final String urgency = alert.optString("urgency", defaultValue);
+                final String event = alert.optString("event", defaultValue);
+                final String description = alert.optString("desc", "");
 
                 // Identify if the alert qualifies as severe
                 if ("Severe".equalsIgnoreCase(severity) || "Immediate".equalsIgnoreCase(urgency)) {

@@ -1,25 +1,36 @@
 package presentation.ui;
 
+import java.awt.GridLayout;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import application.dto.WeatherDataDTO;
-import application.usecases.GetLocationDataUseCase;
-import application.usecases.GetWeatherDataUseCase;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import infrastructure.adapters.OpenWeatherApiService;
 import infrastructure.adapters.WeatherAPIService;
 import utils.ApiKeys;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import javax.swing.*;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.util.*;
-
-public class DashboardUI extends JFrame {
+/**
+ * DashboardUI That runs the interface to use the program with its features.
+ * Initialized variables are seperated based on type and usage.
+ */
+public class DashboardUi extends JFrame {
 
     // UI Components
     private JLabel locationLabel;
@@ -28,7 +39,7 @@ public class DashboardUI extends JFrame {
     private JLabel humidityLabel;
     private JLabel windLabel;
 
-    private JTextField apiKeyField;
+    private final JTextField apiKeyField;
     private JLabel temperatureValue;
     private JLabel conditionValue;
     private JLabel humidityValue;
@@ -40,36 +51,42 @@ public class DashboardUI extends JFrame {
     private JButton simulationButton;
 
     // Data Variables
-    static final String temperatureType = "cel"; // Temperature display type
     static WeatherDataDTO weatherDataDTO = new WeatherDataDTO();
+    private static final String temperatureType = "cel";
     private final Map<String, WeatherData> weatherDataCache = new HashMap<>();
-    private final String apiKey; // API key for OpenWeather API
+    private final String apiKey;
 
     // Services and Menu
     private final OpenWeatherApiService apiService = new OpenWeatherApiService();
-    private final WeatherAPIService weatherAPIService = new WeatherAPIService(ApiKeys.WEATHER_API_KEY);
-    private final WeatherAlertFunction weatherAlertFunction = new WeatherAlertFunction(weatherAPIService);
+    private final WeatherAPIService weatherApiService = new WeatherAPIService(ApiKeys.WEATHER_API_KEY);
+    private final WeatherAlertFunction weatherAlertFunction = new WeatherAlertFunction(weatherApiService);
     private final DropDownUI menu;
 
+    // Window Measurements
+    final int height = 200;
+    final int width = 400;
 
-public DashboardUI() {
+    /**
+     * DashboardUI That runs the interface to use the program with its features.
+     */
+    public DashboardUi() {
         setTitle("Weather Dashboard");
         setSize(400, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Initialize API Key and Dropdown Menu
-        apiKey = ApiKeys.OPEN_WEATHER_API_KEY; // Use from Config class
+        apiKey = ApiKeys.OPEN_WEATHER_API_KEY;
         apiKeyField = new JTextField(apiKey, 30);
         menu = new DropDownUI(apiKey);
 
         // Call setupUI method to configure UI elements
-        setupUI();
+        setupUi();
 
         // Add Action Listeners for buttons
         setupEventListeners();
-    }
+        }
 
-    private void setupUI() {
+    private void setupUi() {
         // Initialize Components
         locationLabel = new JLabel("Location:");
         temperatureLabel = new JLabel("Temperature:");
@@ -77,6 +94,7 @@ public DashboardUI() {
         humidityLabel = new JLabel("Humidity:");
         windLabel = new JLabel("Wind:");
 
+        String placeholder = "N/A";
         temperatureValue = new JLabel("N/A");
         conditionValue = new JLabel("N/A");
         humidityValue = new JLabel("N/A");
@@ -88,7 +106,7 @@ public DashboardUI() {
         simulationButton = new JButton("Simulation");
 
         // Create and configure layout
-        JPanel panel = new JPanel();
+        final JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(9, 2, 10, 10));
 
         // Add components to panel
@@ -121,11 +139,11 @@ public DashboardUI() {
 
     private void refreshAll() {
         // Clears all the UI components
-        clearUIFields();
+        clearUiFields();
         menu.resetSelection();
     }
 
-    private void clearUIFields() {
+    private void clearUiFields() {
         apiKeyField.setText(apiKey);
         temperatureValue.setText("N/A");
         conditionValue.setText("N/A");
@@ -158,7 +176,7 @@ public DashboardUI() {
             System.out.println("Using cached weather data...");
         }
 
-        updateWeatherUI(weatherData, chosenLocation);
+        updateWeatherUi(weatherData, chosenLocation);
 
     }
 
@@ -172,41 +190,40 @@ public DashboardUI() {
     }
 
 
-private WeatherData fetchWeatherData(Location location) {
-    String apiKey = getAPIKeyFieldValue();
-    if (apiKey == null || apiKey.isEmpty()) {
-        JOptionPane.showMessageDialog(
-            this,
-            "API key cannot be empty. Please enter a valid API key.",
-            "Invalid API Key",
-            JOptionPane.ERROR_MESSAGE
-        );
-        return null;
+    private WeatherData fetchWeatherData(Location location) {
+        final String apiKey = getApiKeyFieldValue();
+        if (apiKey == null || apiKey.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                this,
+                "API key cannot be empty. Please enter a valid API key.",
+                "Invalid API Key",
+                JOptionPane.ERROR_MESSAGE
+            );
+            return null;
+        }
+
+        try {
+            return apiService.fetchWeather(location, apiKey);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    try {
-        return apiService.fetchWeather(location, apiKey);
-    } catch (Exception e) {
-        e.printStackTrace();
-        return null;
+
+    private void updateWeatherUi(WeatherData weatherData, Location location) {
+        final LocalDate date = LocalDate.now();
+        final WeatherDataDTO dto = createWeatherDataDto(weatherData.getWeatherDetails(), location, date);
+        updateTextFields(dto);
+        final String condition = fetchWeatherAlerts(location);
+        conditionValue.setText(condition);
     }
-}
 
-
-    private void updateWeatherUI(WeatherData weatherData, Location location) {
-    // Extract data and update fields
-    LocalDate date = LocalDate.now();
-    WeatherDataDTO dto = createWeatherDataDTO(weatherData.getWeatherDetails(), location, date);
-    updateTextFields(dto);
-    String condition = fetchWeatherAlerts(location); // Fetch weather alerts
-    conditionValue.setText(condition);
-}
-
-    private String getAPIKeyFieldValue(){
+    private String getApiKeyFieldValue() {
         return apiKeyField.getText();
     }
 
-    private WeatherDataDTO createWeatherDataDTO(JSONObject data, Location location, LocalDate date) {
+    private WeatherDataDTO createWeatherDataDto(JSONObject data, Location location, LocalDate date) {
         try {
             final JSONObject mainData = data.getJSONObject("main");
             final double temperatureInCelcius = mainData.getDouble("temp");
@@ -216,8 +233,8 @@ private WeatherData fetchWeatherData(Location location) {
                     temperatureInCelcius,
                     mainData.getInt("humidity"),
                     data.getJSONObject("wind").getDouble("speed"),
-                    //NOTE: may not always have percipitation data and alerts
-                    0.0, new ArrayList<String>(){ });
+                    // NOTE: may not always have percipitation data and alerts
+                    0.0, new ArrayList<String>() { });
         }
         catch (JSONException exception) {
             exception.printStackTrace();
@@ -227,25 +244,26 @@ private WeatherData fetchWeatherData(Location location) {
 
     private void extractWeatherData(WeatherData weatherData, Location location, LocalDate date) {
         if (weatherData != null) {
-            this.weatherDataDTO = createWeatherDataDTO(weatherData.getWeatherDetails(), location, date);
+            this.weatherDataDTO = createWeatherDataDto(weatherData.getWeatherDetails(), location, date);
         }
         else {
             System.out.println("Error: Could not retrieve weather data.");
         }
     }
 
-    private void updateTextFields(WeatherDataDTO weatherDataDTO) {
+    private void updateTextFields(WeatherDataDTO weatherDataDto) {
         final DecimalFormat df = new DecimalFormat("#.##");
-        temperatureValue.setText(df.format(weatherDataDTO.getTemperature(temperatureType)) + " °C");
-        humidityValue.setText(weatherDataDTO.humidity + " %");
-        windValue.setText(weatherDataDTO.windSpeed + " m/s");
+        temperatureValue.setText(df.format(weatherDataDto.getTemperature(temperatureType)) + " °C");
+        humidityValue.setText(weatherDataDto.humidity + " %");
+        windValue.setText(weatherDataDto.windSpeed + " m/s");
     }
 
     private void openInvalidLocationWindow() {
         final JFrame rangeWindow = new JFrame("Invalid Location");
-        rangeWindow.setSize(400, 200);
+        rangeWindow.setSize(width, height);
         rangeWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        final JLabel placeholderLabel = new JLabel("The location you entered is invalid. Please try again!", SwingConstants.CENTER);
+        final JLabel placeholderLabel = new JLabel("The location you entered is invalid. Please try again!",
+                SwingConstants.CENTER);
         rangeWindow.add(placeholderLabel);
         rangeWindow.setVisible(true);
     }
@@ -270,8 +288,12 @@ private WeatherData fetchWeatherData(Location location) {
         simulationWindow.setVisible(true);
     }
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
-        final DashboardUI frame = new DashboardUI();
+        final DashboardUi frame = new DashboardUi();
 
         SwingUtilities.invokeLater(() -> {
             frame.setVisible(true);
