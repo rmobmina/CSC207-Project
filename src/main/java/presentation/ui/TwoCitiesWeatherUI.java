@@ -18,6 +18,7 @@ public class TwoCitiesWeatherUI extends JFrame {
     private final JTextField firstCityField = new JTextField(20);
     private final JTextField secondCityField = new JTextField(20);
     private final JButton fetchWeatherButton = new JButton("Fetch Weather Data");
+    private final JButton refreshButton = new JButton("Refresh");
 
     private final JLabel firstCityTemperature = new JLabel("City 1 Temperature: N/A", SwingConstants.LEFT);
     private final JLabel secondCityTemperature = new JLabel("City 2 Temperature: N/A", SwingConstants.LEFT);
@@ -42,11 +43,11 @@ public class TwoCitiesWeatherUI extends JFrame {
         this.apiKey = apiKey;
 
         setTitle("Weather Comparison for Two Cities");
-        setSize(500, 600);
+        setSize(500, 650);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(10, 1, 10, 10));
+        mainPanel.setLayout(new GridLayout(11, 1, 10, 10));
 
         mainPanel.add(new JLabel("First City:"));
         mainPanel.add(firstCityField);
@@ -55,6 +56,7 @@ public class TwoCitiesWeatherUI extends JFrame {
         mainPanel.add(secondCityField);
 
         mainPanel.add(fetchWeatherButton);
+        mainPanel.add(refreshButton);
 
         mainPanel.add(firstCityTemperature);
         mainPanel.add(secondCityTemperature);
@@ -71,6 +73,7 @@ public class TwoCitiesWeatherUI extends JFrame {
         add(mainPanel);
 
         fetchWeatherButton.addActionListener(e -> handleFetchWeatherData());
+        refreshButton.addActionListener(e -> refreshFields());
     }
 
     private void handleFetchWeatherData() {
@@ -133,6 +136,25 @@ public class TwoCitiesWeatherUI extends JFrame {
 
             firstCityWindSpeed.setText("City 1 Wind Speed: " + firstCityDTO.windSpeed + " km/h " + firstCityDTO.windDirection + "°");
             secondCityWindSpeed.setText("City 2 Wind Speed: " + secondCityDTO.windSpeed + " km/h " + secondCityDTO.windDirection + "°");
+        });
+    }
+
+    private void refreshFields() {
+        SwingUtilities.invokeLater(() -> {
+            firstCityField.setText("");
+            secondCityField.setText("");
+
+            firstCityTemperature.setText("City 1 Temperature: N/A");
+            secondCityTemperature.setText("City 2 Temperature: N/A");
+
+            firstCityPrecipitation.setText("City 1 Precipitation: N/A");
+            secondCityPrecipitation.setText("City 2 Precipitation: N/A");
+
+            firstCityHumidity.setText("City 1 Humidity: N/A");
+            secondCityHumidity.setText("City 2 Humidity: N/A");
+
+            firstCityWindSpeed.setText("City 1 Wind Speed: N/A");
+            secondCityWindSpeed.setText("City 2 Wind Speed: N/A");
         });
     }
 
