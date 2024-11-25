@@ -110,11 +110,24 @@ public class DashboardUI extends JFrame {
     }
 
     private void addForcastPanel(){
+        int number_of_hours = 8;
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(8, 2, 10, 10));
         addMainComponents(panel);
 
-        // To be completed later by Arham
+        String city = getLocationFieldValue();
+        if (city == null || city.trim().isEmpty()) {
+            return;    // exit if no city is entered
+        }
+        // adding column headers
+        forcastPanel.add(new JLabel("Hour", SwingConstants.CENTER));
+        forcastPanel.add(new JLabel("Temperature (Celcius)", SwingConstants.CENTER));
+
+        // displaying only 8 hours of forecast
+        for (int i = 0; i < number_of_hours; i++) {
+            forcastPanel.add(new JLabel("Hour" + (i + 1), SwingConstants.CENTER));
+            forcastPanel.add(new JLabel(String.format("%.1f",weatherDataDTO.temperature.getDouble(i)), SwingConstants.CENTER));
+        }
 
         add(panel);
     }
