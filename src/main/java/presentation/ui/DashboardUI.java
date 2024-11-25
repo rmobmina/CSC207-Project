@@ -7,27 +7,15 @@ import application.usecases.GetWeatherDataUseCase;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import infrastructure.adapters.OpenWeatherApiService;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.*;
+import java.awt.*;
 import java.text.DecimalFormat;
-import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
 
 public class DashboardUI extends JFrame {
     static final JLabel locationLabel = new JLabel("Location:");
-
     static String apiKey = "";
 
     static final JLabel temperatureLabel = new JLabel("Temperature:");
@@ -49,6 +37,7 @@ public class DashboardUI extends JFrame {
     static final JButton updateRangeOfTimeButton = new JButton("Update");
     static final JButton refreshButton = new JButton("Refresh");
     static final JButton setRangeOfTimeButton = new JButton("Set Range of Time");
+    static final JButton compareTwoCitiesButton = new JButton("Compare Two Cities");
 
     static final JFrame rangeWindow = new JFrame("Range of Time");
 
@@ -58,18 +47,14 @@ public class DashboardUI extends JFrame {
     static OpenWeatherApiService apiService;
     static final DropDownUI menu = new DropDownUI();
 
-
-
-    // A: main dashboard, its messy for now but we'll split them up for clean architecture and for a cleaner look
     public DashboardUI() {
         setTitle("Weather Dashboard");
-        setSize(400, 500);
+        setSize(500, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(8, 2, 10, 10)); // B: Will be changed as we add more elements
+        panel.setLayout(new GridLayout(9, 2, 10, 10)); // Updated layout for additional components
 
-        // B: main compenents of GUI, most are placeholders
         panel.add(locationLabel);
         panel.add(menu);
 
@@ -86,79 +71,38 @@ public class DashboardUI extends JFrame {
         panel.add(windValue);
 
         panel.add(getInfoButton);
-
         panel.add(refreshButton);
 
-        // B: button for time range
         panel.add(setRangeOfTimeButton);
-        // Initializes the components for time range window
+        panel.add(compareTwoCitiesButton);
+
         initRangeWindowComponents();
-
-
         add(panel);
-        // Button that displays weather data given location and api key
-        getInfoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayWeatherData();
-            }
-        });
 
-        // Adding actionListeners to each button
+        // Existing buttons' action listeners
+        getInfoButton.addActionListener(e -> displayWeatherData());
+        refreshButton.addActionListener(e -> refreshAll());
+        updateRangeOfTimeButton.addActionListener(e -> updateRangeOfTime());
+        setRangeOfTimeButton.addActionListener(e -> openRangeOfTimeWindow());
 
-        // Button that resets all info/visuals and input from the user
-        refreshButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                refreshAll();
-            }
-        });
-
-        updateRangeOfTimeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateRangeOfTime();
-            }
-        });
-
-        // Buttons that make the menus for range of time and the simulation
-        setRangeOfTimeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                openRangeOfTimeWindow();
-            }
-        });
+        // New button for comparing two cities
+        compareTwoCitiesButton.addActionListener(e -> openCompareTwoCitiesWindow());
     }
 
-    public void setAPIkey(String newAPIkey){
+    public void setAPIkey(String newAPIkey) {
         this.apiKey = newAPIkey;
     }
 
-    private String getLocationFieldValue() {
-        return menu.getLocationField().getText();
-    }
-
     private void updateRangeOfTime() {
-        LocalDate newStart = startDate;
-        LocalDate newEnd = endDate;
-        // In case the user enters a date that is invalid
         try {
-            newStart = LocalDate.parse(startDateField.getText());
-            newEnd = LocalDate.parse(endDateField.getText());
-        }
-        catch (DateTimeException e) {
+            LocalDate newStart = LocalDate.parse(startDateField.getText());
+            LocalDate newEnd = LocalDate.parse(endDateField.getText());
+            startDate = newStart;
+            endDate = newEnd;
+            rangeWindow.setVisible(false);
+        } catch (Exception e) {
             openErrorWindow("Invalid Date entered.");
         }
-        startDate = newStart;
-        endDate = newEnd;
-        rangeWindow.setVisible(false);
-    }
-
-    public void showWeatherDataFields(boolean enable) {
-        temperatureValue.setVisible(enable);
-        percipitationValue.setVisible(enable);
-        humidityValue.setVisible(enable);
-        windValue.setVisible(enable);
     }
 
     private void refreshAll() {
@@ -170,23 +114,23 @@ public class DashboardUI extends JFrame {
         GetLocationDataUseCase locationUseCase = new GetLocationDataUseCase(apiService);
         GetWeatherDataUseCase weatherUseCase = new GetWeatherDataUseCase(apiService);
         WeatherDataDTOGenerator weatherDataGenerator = new WeatherDataDTOGenerator();
-        String city = getLocationFieldValue();
+        String city = menu.getLocationField().getText();
 
-        // TODO: implement user choice
-        Location chosenLocation = locationUseCase.execute(city, apiKey).get(0);
-        if (chosenLocation != null) {
-            showWeatherDataFields(true);
-            WeatherData weatherData = weatherUseCase.execute(chosenLocation, startDate, endDate);
-            weatherDataDTO = weatherDataGenerator.createWeatherDataDTO(weatherData, chosenLocation, startDate, endDate);
-            updateWeatherDataTextFields(weatherDataDTO);
-        }
-        else
-        {
-            openErrorWindow("Invalid Location entered. ");
+        try {
+            Location chosenLocation = locationUseCase.execute(city, apiKey).get(0);
+            if (chosenLocation != null) {
+                showWeatherDataFields(true);
+                WeatherData weatherData = weatherUseCase.execute(chosenLocation, startDate, endDate);
+                weatherDataDTO = weatherDataGenerator.createWeatherDataDTO(weatherData, chosenLocation, startDate, endDate);
+                updateWeatherDataTextFields(weatherDataDTO);
+            } else {
+                openErrorWindow("Invalid Location entered.");
+            }
+        } catch (Exception e) {
+            openErrorWindow("Error retrieving weather data.");
         }
     }
 
-    // Updates all the weather data text fields given the current location and dates
     private void updateWeatherDataTextFields(WeatherDataDTO weatherDataDTO) {
         DecimalFormat df = new DecimalFormat("#.##");
         temperatureValue.setText(df.format(weatherDataDTO.getTemperature(temperatureType)) + " °C");
@@ -195,31 +139,17 @@ public class DashboardUI extends JFrame {
         windValue.setText(weatherDataDTO.windSpeed + " km/h " + weatherDataDTO.windDirection + " °");
     }
 
-    private void openErrorWindow(String errorMessage) {
-        JFrame errorWindow = new JFrame("Error Window");
-        errorWindow.setSize(400, 200);
-        errorWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        // Default error message to be displayed when no input is given
-        if (errorMessage.isEmpty()) {
-            errorMessage = "Invalid information entered.";
-        }
-        JLabel placeholderLabel = new JLabel("ERROR: " + errorMessage + " Please try again!", SwingConstants.CENTER);
-        errorWindow.add(placeholderLabel);
-        errorWindow.setVisible(true);
-    }
-
     private void openRangeOfTimeWindow() {
         rangeWindow.setVisible(true);
     }
 
-    // Initializes the components
-    // checkstyle says that you must add a space when starting comments.
     private void initRangeWindowComponents() {
         rangeWindow.setVisible(false);
-        rangeWindow.setSize(300, 500);
+        rangeWindow.setSize(300, 200);
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(3, 2, 10, 10));
         rangeWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
         panel.add(startDateLabel);
         panel.add(startDateField);
         panel.add(endDateLabel);
@@ -228,19 +158,38 @@ public class DashboardUI extends JFrame {
         rangeWindow.add(panel);
     }
 
-    public void runJFrame(OpenWeatherApiService weatherApiService) {
-        apiService = weatherApiService;
-        this.showWeatherDataFields(true);
+    private void openCompareTwoCitiesWindow() {
         SwingUtilities.invokeLater(() -> {
-            this.setVisible(true);
+            TwoCitiesWeatherUI compareTwoCitiesFrame = new TwoCitiesWeatherUI(apiService, apiKey);
+            compareTwoCitiesFrame.setVisible(true);
         });
     }
 
+    private void showWeatherDataFields(boolean enable) {
+        temperatureValue.setVisible(enable);
+        percipitationValue.setVisible(enable);
+        humidityValue.setVisible(enable);
+        windValue.setVisible(enable);
+    }
+
+    private void openErrorWindow(String errorMessage) {
+        JOptionPane.showMessageDialog(this, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
     public static void main(String[] args) {
-        DashboardUI frame = new DashboardUI();
-        frame.refreshAll();
+        OpenWeatherApiService weatherApiService = new OpenWeatherApiService();
+        String testApiKey = "YOUR_API_KEY_HERE";
+
         SwingUtilities.invokeLater(() -> {
-            frame.setVisible(true);
+            DashboardUI dashboard = new DashboardUI();
+            dashboard.setAPIkey(testApiKey);
+            dashboard.runJFrame(weatherApiService);
         });
+    }
+
+    public void runJFrame(OpenWeatherApiService weatherApiService) {
+        apiService = weatherApiService;
+        this.showWeatherDataFields(true);
+        SwingUtilities.invokeLater(() -> this.setVisible(true));
     }
 }

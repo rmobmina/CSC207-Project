@@ -8,10 +8,8 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Habibis and Habibti (No relation)" />
         <module name="CSC207-Project" />
+        <module name="test" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="test" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
