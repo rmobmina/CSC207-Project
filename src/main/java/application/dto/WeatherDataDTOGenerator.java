@@ -19,7 +19,7 @@ public class WeatherDataDTOGenerator {
     public static WeatherDataDTO createWeatherDataDTO(WeatherData weatherData, Location location, LocalDate startDate, LocalDate endDate){
         JSONObject data = weatherData.getWeatherDetails();
         List<LocalDate> dates = new ArrayList<>();
-        Map<String, JSONArray> weatherDetails  = new HashMap<>();
+        Map<String, JSONArray> weatherDetails = new HashMap<>();
         dates.add(startDate);
         dates.add(endDate);
         try {
@@ -30,7 +30,9 @@ public class WeatherDataDTOGenerator {
             weatherDetails.put("windSpeed", dailyData.getJSONArray("wind_speed_10m_max"));
             weatherDetails.put("windDirection", dailyData.getJSONArray("wind_direction_10m_dominant"));
             weatherDetails.put("percipitation", dailyData.getJSONArray("precipitation_sum"));
-            return new WeatherDataDTO(location, dates, weatherDetails, new ArrayList<String>(){} );
+            // Arham: I added this to understand code, will delete later
+            System.out.println("Weather Details: " + weatherDetails);
+            return new WeatherDataDTO(location, dates, weatherDetails, new ArrayList<String>() { });
             //NOTE: Don't have alerts (for now)
         }
         catch (JSONException exception) {
