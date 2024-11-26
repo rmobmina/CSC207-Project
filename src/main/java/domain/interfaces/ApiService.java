@@ -18,7 +18,7 @@ public interface ApiService {
      * @param numberOfDays The number of days that the forcast is set to
      * @return a JSON object storing weather details for the given location
      */
-    WeatherData fetchForcastWeather(Location location, int numberOfDays);
+    WeatherData fetchForecastWeather(Location location, int numberOfDays);
 
     /**
      * Given a Location object and an API key, calls the OpenWeatherMap API to retrieve details
@@ -29,6 +29,13 @@ public interface ApiService {
      * @return a JSON object storing weather details for the given location
      */
     WeatherData fetchHistoricalWeather(Location location, LocalDate startDate, LocalDate endDate);
+
+    /**
+     * Given a valid Open-Meteo API call, return a WeatherData object storing relevant weather details.
+     * @param urlString a String object representing a valid Open-Meteo API call url.
+     * @return a WeatherData object storing weather details in JSON form.
+     */
+    WeatherData fetchWeather(String urlString);
 
     /**
      * Given a city name and an API key, calls the OpenWeatherMap API to retrieve details of up to five cities with

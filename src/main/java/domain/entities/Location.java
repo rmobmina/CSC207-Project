@@ -25,15 +25,11 @@ public class Location {
         this.longitude = longitude;
     }
 
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String fullLocationName(){
+    /**
+     * Returns the full name of the location, including the state/province name and country.
+     * @return the name of the given location in the form 'CITY_NAME, STATE_NAME, COUNTRY_NAME'
+     */
+    public String fullLocationName() {
         return city + ", " + state + ", " + country;
     }
 
