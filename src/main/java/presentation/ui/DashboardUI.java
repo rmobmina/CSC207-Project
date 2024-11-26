@@ -3,8 +3,8 @@ package presentation.ui;
 import application.dto.WeatherDataDTO;
 import application.dto.WeatherDataDTOGenerator;
 import application.usecases.GetForcastWeatherDataUseCase;
-import application.usecases.GetLocationDataUseCase;
 import application.usecases.GetHistoricalWeatherDataUseCase;
+import application.usecases.GetLocationDataUseCase;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import infrastructure.adapters.OpenWeatherApiService;
@@ -126,7 +126,7 @@ public class DashboardUI extends JFrame {
         // displaying only 8 hours of forecast
         for (int i = 0; i < number_of_hours; i++) {
             forcastPanel.add(new JLabel("Hour" + (i + 1), SwingConstants.CENTER));
-            forcastPanel.add(new JLabel(String.format("%.1f",weatherDataDTO.temperature.getDouble(i)), SwingConstants.CENTER));
+            forcastPanel.add(new JLabel(String.format("%.1f", weatherDataDTO.temperature.getDouble(i)), SwingConstants.CENTER));
         }
 
         add(panel);
