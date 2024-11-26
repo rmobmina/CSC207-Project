@@ -15,7 +15,7 @@ public class BarGraphVisualization extends JFrame {
         super(title);
         dataset = new DefaultCategoryDataset();
         JFreeChart barChart = ChartFactory.createBarChart(
-                "Weather Comparison",
+                title,
                 "Category",
                 "Value",
                 dataset

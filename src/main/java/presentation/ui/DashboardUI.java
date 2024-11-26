@@ -185,11 +185,25 @@ public class DashboardUI extends JFrame {
             return;
         }
 
-        LineGraphVisualization lineGraph = new LineGraphVisualization("Weather Trends");
-        for (Map.Entry<String, Double> entry : weatherDataDTO.getTemperatureHistory().entrySet()) {
-            lineGraph.addData("Temperature", entry.getKey(), entry.getValue());
-        }
-        lineGraph.display();
+        SwingUtilities.invokeLater(() -> {
+            GraphSelectionWindow graphWindow = new GraphSelectionWindow(graphType -> {
+                if ("line".equals(graphType)) {
+                    LineGraphVisualization lineGraph = new LineGraphVisualization("Weather Trends");
+                    weatherDataDTO.getTemperatureHistory().forEach((date, value) ->
+                            lineGraph.addData("Temperature", date, value)
+                    );
+                    lineGraph.display();
+                } else if ("bar".equals(graphType)) {
+                    BarGraphVisualization barGraph = new BarGraphVisualization("Weather Data");
+                    barGraph.addData("Temperature", "Average", weatherDataDTO.getTemperature("cel"));
+                    barGraph.addData("Precipitation", "Sum", weatherDataDTO.precipitation);
+                    barGraph.addData("Humidity", "Average", weatherDataDTO.humidity);
+                    barGraph.addData("Wind Speed", "Average", weatherDataDTO.windSpeed);
+                    barGraph.display();
+                }
+            });
+            graphWindow.setVisible(true);
+        });
     }
 
     public static void main(String[] args) {

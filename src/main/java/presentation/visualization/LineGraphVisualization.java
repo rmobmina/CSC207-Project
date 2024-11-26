@@ -15,7 +15,7 @@ public class LineGraphVisualization extends JFrame {
         super(title);
         dataset = new DefaultCategoryDataset();
         JFreeChart lineChart = ChartFactory.createLineChart(
-                "Weather Trends",
+                title,
                 "Date",
                 "Value",
                 dataset
