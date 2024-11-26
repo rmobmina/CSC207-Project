@@ -10,10 +10,10 @@ import domain.interfaces.ApiService;
  * Use case for the weather application.
  * This class retrieves forcast weather data and returns it as a WeatherData object.
  */
-public class GetForcastWeatherDataUseCase {
+public class GetForecastWeatherDataUseCase {
     private final ApiService apiService;
 
-    public GetForcastWeatherDataUseCase(ApiService apiService) {
+    public GetForecastWeatherDataUseCase(ApiService apiService) {
         this.apiService = apiService;
     }
 
@@ -25,6 +25,6 @@ public class GetForcastWeatherDataUseCase {
      */
     public WeatherData execute(Location location, int numberOfDays) {
         // calls the API service to extract weather information in JSON format
-        return apiService.fetchForcastWeather(location, numberOfDays);
+        return apiService.fetchForecastWeather(location, numberOfDays);
     }
 }

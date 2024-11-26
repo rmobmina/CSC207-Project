@@ -6,9 +6,14 @@ import java.util.List;
  * Class for visualizing and comparing weather data trends.
  */
 public class Visualization {
-    private String graphType; // Type of graph (e.g., line, bar)
-    private List<WeatherData> dataPoints; // Data points for visualization
-    private List<WeatherData> comparisonData; // Comparison data points for visualization
+    // Type of graph (e.g., line, bar)
+    private String graphType;
+
+    // Data points for visualization
+    private List<WeatherData> dataPoints;
+
+    // Comparison data points for visualization
+    private List<WeatherData> comparisonData;
 
     /**
      * Constructor to initialize visualization with two data sets and a graph type.
@@ -21,22 +26,6 @@ public class Visualization {
         this.graphType = graphType;
         this.dataPoints = dataPoints;
         this.comparisonData = comparisonData;
-    }
-
-    /**
-     * Compares temperature trends between two data sets and outputs the differences.
-     *
-     * @param city1Trends List of temperature trends for the first city.
-     * @param city2Trends List of temperature trends for the second city.
-     */
-    public void displayComparison(List<Double> city1Trends, List<Double> city2Trends) {
-        System.out.println("Comparing temperature trends:");
-        for (int i = 0; i < Math.min(city1Trends.size(), city2Trends.size()); i++) {
-            System.out.printf("Day %d: City1=%.2f°C, City2=%.2f°C, Difference=%.2f°C%n",
-                    i + 1, city1Trends.get(i), city2Trends.get(i),
-                    Math.abs(city1Trends.get(i) - city2Trends.get(i)));
-        }
-        // add graphical visualization here not sure what library lmao
     }
 
     /**
