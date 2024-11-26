@@ -21,6 +21,7 @@ public class TwoCitiesWeatherUI extends JFrame {
     private final JButton fetchWeatherButton = new JButton("Fetch Weather Data");
     private final JButton refreshButton = new JButton("Refresh");
     private final JButton visualizeButton = new JButton("Visualize!");
+    private final JButton backButton = new JButton("Back"); // New Back button
 
     private final JLabel firstCityTemperature = new JLabel("City 1 Temperature: N/A", SwingConstants.LEFT);
     private final JLabel secondCityTemperature = new JLabel("City 2 Temperature: N/A", SwingConstants.LEFT);
@@ -48,11 +49,11 @@ public class TwoCitiesWeatherUI extends JFrame {
         this.apiKey = apiKey;
 
         setTitle("Weather Comparison for Two Cities");
-        setSize(600, 750);
+        setSize(600, 800);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(13, 2, 10, 10));
+        mainPanel.setLayout(new GridLayout(14, 2, 10, 10));
 
         mainPanel.add(new JLabel("First City:"));
         mainPanel.add(firstCityField);
@@ -76,12 +77,14 @@ public class TwoCitiesWeatherUI extends JFrame {
         mainPanel.add(secondCityWindSpeed);
 
         mainPanel.add(visualizeButton);
+        mainPanel.add(backButton); // Add Back button to the layout
 
         add(mainPanel);
 
         fetchWeatherButton.addActionListener(e -> handleFetchWeatherData());
         refreshButton.addActionListener(e -> refreshFields());
         visualizeButton.addActionListener(e -> openVisualization());
+        backButton.addActionListener(e -> returnToDashboard()); // Back button action
     }
 
     private void handleFetchWeatherData() {
@@ -191,6 +194,16 @@ public class TwoCitiesWeatherUI extends JFrame {
 
     private void showError(String errorMessage) {
         JOptionPane.showMessageDialog(this, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void returnToDashboard() {
+        // Dispose of the current window and show the main Dashboard
+        this.dispose();
+        SwingUtilities.invokeLater(() -> {
+            DashboardUI dashboard = new DashboardUI();
+            dashboard.setAPIkey(apiKey);
+            dashboard.runJFrame(apiService); // Initialize with API service
+        });
     }
 
     public static void main(String[] args) {
