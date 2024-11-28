@@ -2,7 +2,7 @@ package presentation.ui;
 
 import application.dto.WeatherDataDTO;
 import application.dto.WeatherDataDTOGenerator;
-import application.usecases.GetForcastWeatherDataUseCase;
+import application.usecases.GetForecastWeatherDataUseCase;
 import application.usecases.GetLocationDataUseCase;
 import application.usecases.GetHistoricalWeatherDataUseCase;
 import domain.entities.Location;
@@ -53,7 +53,7 @@ public class DashboardUI extends JFrame {
     static final JFrame rangeWindow = new JFrame("Range of Time");
 
     static final JPanel historicalPanel = new JPanel();
-    static final JPanel forcastPanel = new JPanel();
+    static final JPanel forecastPanel = new JPanel();
 
     static LocalDate startDate = LocalDate.of(2021, 1, 1);
     static LocalDate endDate = LocalDate.of(2021, 1, 2);
@@ -71,7 +71,7 @@ public class DashboardUI extends JFrame {
         // Initializes the components for time range window
         initRangeWindowComponents();
 
-        addForcastPanel();
+        addForecastPanel();
 
         addHistoricalPanel();
 
@@ -109,7 +109,7 @@ public class DashboardUI extends JFrame {
         });
     }
 
-    private void addForcastPanel(){
+    private void addForecastPanel(){
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(8, 2, 10, 10));
         addMainComponents(panel);
@@ -194,7 +194,7 @@ public class DashboardUI extends JFrame {
     private void displayWeatherData() {
         GetLocationDataUseCase locationUseCase = new GetLocationDataUseCase(apiService);
         GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase = new GetHistoricalWeatherDataUseCase(apiService);
-        GetForcastWeatherDataUseCase forcastWeatherDataUseCase = new GetForcastWeatherDataUseCase(apiService);
+        GetForecastWeatherDataUseCase ForecastWeatherDataUseCase = new GetForecastWeatherDataUseCase(apiService);
         String city = getLocationFieldValue();
 
         // TODO: implement user choice
@@ -205,8 +205,8 @@ public class DashboardUI extends JFrame {
             WeatherData weatherData;
 
             // To be changed later to adhere to CA
-            if (userOption.equals("Forcast")) {
-                weatherData = forcastWeatherDataUseCase.execute(chosenLocation, 7);
+            if (userOption.equals("Forecast")) {
+                weatherData = ForecastWeatherDataUseCase.execute(chosenLocation, 7);
             }
             else{
                 weatherData = historicalWeatherDataUseCase.execute(chosenLocation, startDate, endDate);
