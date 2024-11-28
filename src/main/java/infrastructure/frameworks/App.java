@@ -2,8 +2,10 @@ package infrastructure.frameworks;
 
 import java.util.Scanner;
 
+import application.usecases.GetLocationsWindowUseCase;
 import infrastructure.adapters.OpenWeatherApiService;
-import presentation.ui.DashboardUI;
+import presentation.ui.DashBoardUi;
+import presentation.ui.views.UserOptionsView;
 
 /**
  * A class used to run the project.
@@ -18,9 +20,11 @@ public class App {
      */
     public static void main(String[] args) {
         // instantiates important variables
-        final DashboardUI dashboardUi = new DashboardUI();
         String apiKey;
         final OpenWeatherApiService apiService = new OpenWeatherApiService();
+        GetLocationsWindowUseCase getLocationsWindowUseCase = new GetLocationsWindowUseCase();
+        UserOptionsView userOptionsView = new UserOptionsView();
+        final DashBoardUi dashBoard = new DashBoardUi(apiService, userOptionsView, getLocationsWindowUseCase);
         boolean validKeyEntered = false;
         final Scanner scanner = new Scanner(System.in);
 
@@ -31,7 +35,7 @@ public class App {
 
             // OpenWeatherApiService objects have a method to check the validity of the key
             if (apiService.isApiKeyValid(apiKey)) {
-                dashboardUi.setAPIkey(apiKey);
+                dashBoard.setAPIkey(apiKey);
                 validKeyEntered = true;
             }
 
@@ -39,6 +43,6 @@ public class App {
                 System.out.println("Your last key was invalid. Please try again.\n");
             }
         }
-        dashboardUi.runJFrame(apiService);
+        dashBoard.runJFrame(apiService);
     }
 }
