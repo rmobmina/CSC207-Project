@@ -1,5 +1,7 @@
 package presentation.visualization;
 
+import utils.Constants;
+
 /**
  * A class used to convert a location's longitude and latitude into Mercator Projection coordinates.
  *  FINISH LATER
@@ -25,22 +27,20 @@ public class MercatorAlgorithm {
      */
     public double[] normalizeCoordinates(double height, double width) {
         // get x value
-        x = (longitude + 180) * (width / 360);
+        x = (longitude + Constants.MERCATOR_MAX_DEGREE / 2.0) * (width / Constants.MERCATOR_MAX_DEGREE);
 
         // convert from degrees to radians
-        final double latRad = latitude * Math.PI / 180;
+        final double latRad = latitude * Math.PI / 180.0;
 
         // get y value
-        final double mercN = Math.log(Math.tan((Math.PI/4)+(latRad/2)));
-        y = (height / 2) - (width * mercN/(2 * Math.PI));
-        System.out.println(x);
-        System.out.println(y);
+        final double mercN = Math.log(Math.tan((Math.PI / 4.0) + (latRad / 2.0)));
+        y = (height / 2.0) - (width * mercN / (2.0 * Math.PI));
 
         return new double[] {x, y};
     }
 
     public static void main(String[] args) {
-        MercatorAlgorithm mercatorAlgorithm = new MercatorAlgorithm(41.145556, 121.2322);
+        final MercatorAlgorithm mercatorAlgorithm = new MercatorAlgorithm(41.145556, 121.2322);
         mercatorAlgorithm.normalizeCoordinates(100, 200);
     }
 
