@@ -8,7 +8,7 @@ public class UserOptionsView {
 
     private final JPanel userOptionsPanel = new JPanel();
 
-
+    private static final JLabel optionsLabel = new JLabel("Choose one of the options below: ");
 
     private static JButton forecastOption = new JButton("Forecast");
     private static JButton historicalOption = new JButton("Historical");
@@ -20,6 +20,8 @@ public class UserOptionsView {
         userOptionsPanel.setName("User Options");
         userOptionsPanel.setLayout(new GridLayout(5, 1, 5, 5));
         userOptionsPanel.setVisible(true);
+
+        userOptionsPanel.add(optionsLabel);
 
         userOptionsPanel.add(forecastOption);
         userOptionsPanel.add(historicalOption);
