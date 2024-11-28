@@ -1,9 +1,16 @@
 package presentation.visualization;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
+import utils.Constants;
+
+import java.awt.Color;
 import java.awt.geom.Point2D;
+import java.awt.Graphics;
+import java.awt.Image;
+
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -29,13 +36,13 @@ public class MercatorMapApp extends JFrame {
             }
         }
 
-        catch (IOException e) {
-            throw new RuntimeException("Error loading map image: " + e.getMessage(), e);
+        catch (IOException exception) {
+            throw new RuntimeException("Error loading map image: " + exception.getMessage(), exception);
         }
 
         // Calculate the Mercator coordinates
-        MercatorAlgorithm mercatorAlgorithm = new MercatorAlgorithm(latitude, longitude);
-        double[] coordinates = mercatorAlgorithm.normalizeCoordinates(
+        final MercatorAlgorithm mercatorAlgorithm = new MercatorAlgorithm(latitude, longitude);
+        final double[] coordinates = mercatorAlgorithm.normalizeCoordinates(
                 mapImage.getHeight(null), mapImage.getWidth(null)
         );
 
@@ -43,6 +50,9 @@ public class MercatorMapApp extends JFrame {
         this.mercatorPoint = new Point2D.Double(coordinates[0], coordinates[1]);
     }
 
+    /**
+     * A method to display a Mercator Map with points representing cities drawn on said map.
+     */
     public void displayMercatorMap() {
         // Set up the JFrame
         setTitle("Mercator Map");
@@ -62,29 +72,31 @@ public class MercatorMapApp extends JFrame {
         private final Image mapImage;
         private final Point2D point;
 
-        public MapPanel(Image mapImage, Point2D point) {
+        MapPanel(Image mapImage, Point2D point) {
             this.mapImage = mapImage;
             this.point = point;
         }
 
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
+        protected void paintComponent(Graphics graphicsObject) {
+            super.paintComponent(graphicsObject);
 
             // Draw the map image
-            g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);
+            graphicsObject.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);
 
             // Draw the dot
-            g.setColor(Color.RED);
-            System.out.println(point.getY());
-            g.fillOval((int) (point.getX()) - 5, (int) (point.getY()) - 5, 10, 10);
+            graphicsObject.setColor(Color.RED);
+            graphicsObject.fillOval(
+                    (int) Math.round(point.getX() - Constants.MERCATOR_POINT_RADIUS / 2.0),
+                    (int) Math.round(point.getY() - Constants.MERCATOR_POINT_RADIUS / 2.0),
+                    Constants.MERCATOR_POINT_RADIUS,
+                    Constants.MERCATOR_POINT_RADIUS);
         }
     }
 
     // Main method to test the application
     public static void main(String[] args) {
         // Coordinates for Toronto
-        MercatorMapApp app = new MercatorMapApp(52.1579, -106.6702);
+        final MercatorMapApp app = new MercatorMapApp(43.6532, -79.3832);
         app.displayMercatorMap();
     }
 }

@@ -132,6 +132,7 @@ public class OpenWeatherApiService implements ApiService {
             if (HttpUtils.makeApiCall(urlString) == null) {
                 valid = false;
             }
+
         }
 
         catch (IOException exception) {
