@@ -24,7 +24,7 @@ public class App {
         final OpenWeatherApiService apiService = new OpenWeatherApiService();
         GetLocationsWindowUseCase getLocationsWindowUseCase = new GetLocationsWindowUseCase();
         UserOptionsView userOptionsView = new UserOptionsView();
-        final DashBoardUi dashBoard = new DashBoardUi(apiService, userOptionsView, getLocationsWindowUseCase);
+        // final DashBoardUi dashBoard = new DashBoardUi(apiService, userOptionsView, getLocationsWindowUseCase);
         boolean validKeyEntered = false;
         final Scanner scanner = new Scanner(System.in);
 
@@ -35,7 +35,7 @@ public class App {
 
             // OpenWeatherApiService objects have a method to check the validity of the key
             if (apiService.isApiKeyValid(apiKey)) {
-                dashBoard.setAPIkey(apiKey);
+                // dashBoard.setAPIkey(apiKey);
                 validKeyEntered = true;
             }
 
@@ -43,6 +43,6 @@ public class App {
                 System.out.println("Your last key was invalid. Please try again.\n");
             }
         }
-        dashBoard.runJFrame(apiService);
+        //dashBoard.runJFrame(apiService);
     }
 }
