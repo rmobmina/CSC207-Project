@@ -7,6 +7,10 @@ import presentation.ui.windows.LocationsWindow;
  * temperatures and humidities each hour of certain day
  */
 public class ForecastHourlyView extends LocationsWindow {
+
+    // This is the name of the option that generates this window
+    public static final String OPTION_NAME = "Forecast Hourly";
+
     public ForecastHourlyView(String name) {
         super(name);
     }

@@ -16,6 +16,8 @@ public abstract class LocationsWindow {
         return panel;
     }
 
+    public String getName() { return panel.getName(); }
+
     public LocationsWindow(String name) {
         panel.setName(name);
     }

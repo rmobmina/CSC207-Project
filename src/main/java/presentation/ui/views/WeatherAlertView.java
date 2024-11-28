@@ -7,6 +7,10 @@ import presentation.ui.windows.LocationsWindow;
  * and provides details for dealing with weather hazards.
  */
 public class WeatherAlertView extends LocationsWindow {
+
+    // This is the name of the option that generates this window
+    public static final String OPTION_NAME = "Weather Alert";
+
     public WeatherAlertView(String name) {
         super(name);
     }

@@ -7,6 +7,10 @@ import presentation.ui.windows.LocationsWindow;
  * of a given location. (Alternative: HistoricalWeatherComparisonView)
  */
 public class HistoricalWeatherView extends LocationsWindow {
+
+    // This is the name of the option that generates this window
+    public static final String OPTION_NAME = "Historical";
+
     public HistoricalWeatherView(String name) {
         super(name);
     }

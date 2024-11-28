@@ -7,6 +7,10 @@ import presentation.ui.windows.MultipleLocationsWindow;
  * and provide brief weather details through visuals
  */
 public class MercatorMapView extends MultipleLocationsWindow {
+
+    // This is the name of the option that generates this window
+    public static final String OPTION_NAME = "Mercator Map";
+
     public MercatorMapView(String name, int numOfLocations) {
         super(name, numOfLocations);
     }

@@ -7,7 +7,12 @@ import presentation.ui.windows.LocationsWindow;
  * temperature, percipitation sum, and wind speed (with dominant wind direction).
  */
 public class ForecastDailyView extends LocationsWindow {
+
+    // This is the name of the option that generates this window
+    public static final String OPTION_NAME = "Forecast Daily";
+
     public ForecastDailyView(String name) {
         super(name);
+        panel.setVisible(true);
     }
 }
