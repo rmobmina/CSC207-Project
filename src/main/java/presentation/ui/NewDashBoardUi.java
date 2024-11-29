@@ -34,6 +34,9 @@ public class NewDashBoardUi extends JFrame {
     final String LOCATIONS_WINDOW_NAME = "Locations";
     final String NUMBER_LOCATIONS_WINDOW_NAME = "Number Locations";
 
+    final int locationsWindowWidth = 500;
+    final int locationsWindowHeight = 500;
+
     private String userOption;
 
     public NewDashBoardUi(GetLocationsWindowUseCase locationsWindowUseCase,
@@ -50,8 +53,8 @@ public class NewDashBoardUi extends JFrame {
         setSize(400, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        add(userOptionsView.getWindow());
-        add(numberLocationsView.getWindow());
+        add(userOptionsView.getPanel());
+        add(numberLocationsView.getPanel());
 
         switchToWindow(OPTIONS_NAME);
 
@@ -74,11 +77,18 @@ public class NewDashBoardUi extends JFrame {
     }
 
     private void setButtonListeners(){
-        userOptionsView.setForecastHourlyActionListener(e -> getLocationsWindow(ForecastHourlyView.OPTION_NAME));
+        userOptionsView.setForecastHourlyActionListener(e -> {
+            getLocationsWindow(ForecastHourlyView.OPTION_NAME, locationsWindowWidth, locationsWindowHeight);
+            userOptionsView.hideForecastOptionsWindow();
+        });
 
-        userOptionsView.setForecastDailyActionListener(e -> getLocationsWindow(ForecastDailyView.OPTION_NAME));
+        userOptionsView.setForecastDailyActionListener(e -> {
+            getLocationsWindow(ForecastDailyView.OPTION_NAME, locationsWindowWidth, locationsWindowHeight);
+            userOptionsView.hideForecastOptionsWindow();
+        });
 
-        userOptionsView.setHistoricalActionListener(e -> getLocationsWindow(HistoricalWeatherView.OPTION_NAME));
+        userOptionsView.setHistoricalActionListener(e -> getLocationsWindow(HistoricalWeatherView.OPTION_NAME,
+                locationsWindowWidth, locationsWindowHeight));
 
         userOptionsView.setComparisonActionListener(e -> {
                 // Ask user to enter how many locations they want
@@ -86,7 +96,8 @@ public class NewDashBoardUi extends JFrame {
                 userOption = HistoricalWeatherComparisonView.OPTION_NAME;
         });
 
-        userOptionsView.setAlertActionListener(e -> getLocationsWindow(WeatherAlertView.OPTION_NAME));
+        userOptionsView.setAlertActionListener(e -> getLocationsWindow(WeatherAlertView.OPTION_NAME,
+                locationsWindowWidth, locationsWindowHeight));
 
         userOptionsView.setMercatorMapActionListener(e -> {
                 // Ask user to enter how many locations they want
@@ -95,18 +106,18 @@ public class NewDashBoardUi extends JFrame {
         });
 
         numberLocationsView.setActionListener(e -> getLocationsWindowMultiple(
-                userOption, numberLocationsView.getNumOfLocations()));
+                userOption, locationsWindowWidth, locationsWindowHeight, numberLocationsView.getNumOfLocations()));
     }
 
-    private void getLocationsWindow(String userOption){
-        getLocationsWindowMultiple(userOption, 1);
+    private void getLocationsWindow(String userOption, int width, int height){
+        getLocationsWindowMultiple(userOption, width, height, 1);
     }
 
-    private void getLocationsWindowMultiple(String userOption, int numOfLocations){
-        this.locationsWindow = locationsWindowUseCase.execute(userOption, 200, 200, numOfLocations);
-        add(locationsWindow.getPanel());
+    private void getLocationsWindowMultiple(String userOption, int width, int height, int numOfLocations){
+        System.out.println(userOption);
+        this.locationsWindow = locationsWindowUseCase.execute(userOption, width, height, numOfLocations);
+        locationsWindow.setBackButtonListener(e -> backToDashBoard());
         switchToWindow(LOCATIONS_WINDOW_NAME);
-        System.out.println(locationsWindow.getName());
     }
 
     // Opens up a window to get the desired number of locations before applying it to the chosen use case
@@ -118,25 +129,35 @@ public class NewDashBoardUi extends JFrame {
         hideAllWindows();
         switch(windowName){
             case OPTIONS_NAME:
-                userOptionsView.showWindow();
-                this.setContentPane(userOptionsView.getWindow()); break;
+                userOptionsView.showPanel();
+                this.setContentPane(userOptionsView.getPanel()); break;
             case LOCATIONS_WINDOW_NAME:
                 locationsWindow.openWindow();
-                this.setContentPane(locationsWindow.getPanel()); break;
+                toggleShowDashBoard(false); break; // closes the current window
             case NUMBER_LOCATIONS_WINDOW_NAME:
-                numberLocationsView.showWindow();
-                this.setContentPane(numberLocationsView.getWindow()); break;
+                numberLocationsView.showPanel();
+                this.setContentPane(numberLocationsView.getPanel()); break;
             default:
                 errorLocationsWindow.openWindow();
                 this.setContentPane(errorLocationsWindow.getPanel()); break;
         }
     }
 
+    // Closes the current locations window and opens up the dahboard window
+    private void backToDashBoard(){
+        toggleShowDashBoard(true);
+        switchToWindow(OPTIONS_NAME);
+    }
+
+    private void toggleShowDashBoard(boolean toggle){
+        this.setVisible(toggle);
+    }
+
     private void hideAllWindows() {
-        userOptionsView.hideWindow();
-        if (locationsWindow != null) locationsWindow.hideWindow();
-        numberLocationsView.hideWindow();
+        userOptionsView.hidePanel();
+        numberLocationsView.hidePanel();
         errorLocationsWindow.hideWindow();
+        if (locationsWindow != null) locationsWindow.hideWindow();
     }
 
     public void runJFrame(OpenWeatherApiService weatherApiService) {

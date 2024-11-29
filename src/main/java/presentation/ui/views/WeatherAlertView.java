@@ -4,7 +4,7 @@ import presentation.ui.windows.LocationsWindow;
 
 /**
  * Class that handles UI to display weather alerts for storms and other weather hazards
- * and provides details for dealing with weather hazards.
+ * and provides details for dealing with these alerts.
  */
 public class WeatherAlertView extends LocationsWindow {
 

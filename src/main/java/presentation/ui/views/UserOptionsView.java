@@ -9,6 +9,8 @@ public class UserOptionsView extends View{
 
     private static final JLabel optionsLabel = new JLabel("Choose one of the options below: ");
 
+    private static JFrame forecastOptionsWindow = new JFrame("Forecast Options");
+
     private static JButton forecastOption = new JButton("Forecast");
     private static JButton forecastHourlyOption = new JButton("Hourly");
     private static JButton forecastDailyOption = new JButton("Daily");
@@ -30,27 +32,21 @@ public class UserOptionsView extends View{
         panel.add(comparisonOption);
         panel.add(mercatorMapOption);
 
-        forecastOption.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                openForecastOptionsWindow();
-            }
-        });
+        forecastOption.addActionListener(e -> openForecastOptionsWindow());
         panel.setVisible(true);
     }
 
-    // Pops a new window with two additional options to the forecast option
+    // Pops up a new window with two additional options to the forecast option
     private void openForecastOptionsWindow() {
-        JFrame frame = new JFrame();
         JPanel panel = new JPanel();
-        frame.setTitle("Forecast Options");
-        frame.setSize(200, 200);
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        forecastOptionsWindow.setTitle("Forecast Options");
+        forecastOptionsWindow.setSize(200, 200);
+        forecastOptionsWindow.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         panel.setLayout(new GridLayout(1, 2, 10, 10));
         panel.add(forecastHourlyOption);
         panel.add(forecastDailyOption);
-        frame.add(panel);
-        frame.setVisible(false);
+        forecastOptionsWindow.add(panel);
+        forecastOptionsWindow.setVisible(true);
     }
 
     // Sets the action listeners for all the buttons
@@ -60,6 +56,10 @@ public class UserOptionsView extends View{
 
     public void setForecastDailyActionListener(ActionListener listener) {
         forecastDailyOption.addActionListener(listener);
+    }
+
+    public void hideForecastOptionsWindow() {
+        forecastOptionsWindow.setVisible(false);
     }
 
     public void setHistoricalActionListener(ActionListener listener) {

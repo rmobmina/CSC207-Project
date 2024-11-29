@@ -12,7 +12,7 @@ public class MultipleLocationsWindow extends LocationsWindow {
 
     public MultipleLocationsWindow(String name, int width, int height, int numOfLocations) {
         super(name, width, height);
-        panel.setLayout(new BorderLayout());
+        this.setVisible(true);
     }
 
     private List<String> getCities(){

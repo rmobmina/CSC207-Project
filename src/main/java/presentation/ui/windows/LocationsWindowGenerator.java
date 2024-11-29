@@ -8,8 +8,9 @@ import presentation.ui.views.*;
 public class LocationsWindowGenerator {
 
     public static LocationsWindow generateLocationsWindow(String option, int width, int height, int numOfLocations) {
+        ErrorLocationsWindow errorWindow = new ErrorLocationsWindow("ERROR: Invalid number of locations!", width, height);
         if (numOfLocations < 1) {
-            return new ErrorLocationsWindow("ERROR: Invalid number of locations!", width, height);
+            return errorWindow;
         }
         // Generates a new window that display an error if no option is chosen
         switch(option){
