@@ -1,6 +1,7 @@
-package presentation.ui;
+package presentation.ui.windows;
 
 import domain.entities.Location;
+import presentation.ui.DropDownUI;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -8,12 +9,10 @@ import java.util.List;
 
 public class MultipleLocationsWindow extends LocationsWindow {
     private List<Location> chosenLocations;
-    private DropDownUI locationsDropdown = new DropDownUI();
 
-    public MultipleLocationsWindow(List<Location> locations) {
-        panel.setLayout(new BorderLayout());
-        panel.setName("Multiple Locations");
-        this.chosenLocations = locations;
+    public MultipleLocationsWindow(String name, int width, int height, int numOfLocations) {
+        super(name, width, height);
+        this.setVisible(true);
     }
 
     private List<String> getCities(){

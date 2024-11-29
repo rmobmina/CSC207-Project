@@ -2,8 +2,15 @@ package infrastructure.frameworks;
 
 import java.util.Scanner;
 
+import application.usecases.GetForecastWeatherDataUseCase;
+import application.usecases.GetHistoricalWeatherDataUseCase;
+import application.usecases.GetLocationDataUseCase;
+import application.usecases.GetLocationsWindowUseCase;
 import infrastructure.adapters.OpenWeatherApiService;
-import presentation.ui.DashboardUI;
+import org.jetbrains.annotations.NotNull;
+import presentation.ui.NewDashBoardUi;
+import presentation.ui.views.SelectNumberLocationsView;
+import presentation.ui.views.UserOptionsView;
 
 /**
  * A class used to run the project.
@@ -18,9 +25,12 @@ public class App {
      */
     public static void main(String[] args) {
         // instantiates important variables
-        final DashboardUI dashboardUi = new DashboardUI();
         String apiKey;
         final OpenWeatherApiService apiService = new OpenWeatherApiService();
+        GetLocationDataUseCase locationDataUseCase = new GetLocationDataUseCase(apiService);
+        GetForecastWeatherDataUseCase forecastWeatherDataUseCase = new GetForecastWeatherDataUseCase(apiService);
+        GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase = new GetHistoricalWeatherDataUseCase(apiService);
+        final NewDashBoardUi dashBoard = generateDashBoardUI(locationDataUseCase, forecastWeatherDataUseCase, historicalWeatherDataUseCase);
         boolean validKeyEntered = false;
         final Scanner scanner = new Scanner(System.in);
 
@@ -31,7 +41,7 @@ public class App {
 
             // OpenWeatherApiService objects have a method to check the validity of the key
             if (apiService.isApiKeyValid(apiKey)) {
-                dashboardUi.setAPIkey(apiKey);
+                dashBoard.setAPIkey(apiKey);
                 validKeyEntered = true;
             }
 
@@ -39,6 +49,14 @@ public class App {
                 System.out.println("Your last key was invalid. Please try again.\n");
             }
         }
-        dashboardUi.runJFrame(apiService);
+        dashBoard.runJFrame(apiService);
+    }
+
+    private static NewDashBoardUi generateDashBoardUI(GetLocationDataUseCase locationDataUseCase,
+                                                    GetForecastWeatherDataUseCase forecastWeatherDataUseCase,
+                                                    GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase) {
+        return new NewDashBoardUi(new GetLocationsWindowUseCase(),
+                locationDataUseCase, forecastWeatherDataUseCase, historicalWeatherDataUseCase,
+                new UserOptionsView(), new SelectNumberLocationsView());
     }
 }
