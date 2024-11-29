@@ -5,7 +5,7 @@ import presentation.ui.windows.LocationsWindowGenerator;
 
 public class GetLocationsWindowUseCase {
 
-    public LocationsWindow execute(String type, int numOfLocations) {
-        return LocationsWindowGenerator.generateLocationsWindow(type, numOfLocations);
+    public LocationsWindow execute(String type, int width, int height, int numOfLocations) {
+        return LocationsWindowGenerator.generateLocationsWindow(type, width, height, numOfLocations);
     }
 }

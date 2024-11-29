@@ -11,8 +11,8 @@ public class ForecastDailyView extends LocationsWindow {
     // This is the name of the option that generates this window
     public static final String OPTION_NAME = "Forecast Daily";
 
-    public ForecastDailyView(String name) {
-        super(name);
+    public ForecastDailyView(String name, int width, int height) {
+        super(name, width, height);
         panel.setVisible(true);
     }
 }

@@ -2,9 +2,14 @@ package infrastructure.frameworks;
 
 import java.util.Scanner;
 
+import application.usecases.GetForecastWeatherDataUseCase;
+import application.usecases.GetHistoricalWeatherDataUseCase;
+import application.usecases.GetLocationDataUseCase;
 import application.usecases.GetLocationsWindowUseCase;
 import infrastructure.adapters.OpenWeatherApiService;
-import presentation.ui.DashBoardUi;
+import org.jetbrains.annotations.NotNull;
+import presentation.ui.NewDashBoardUi;
+import presentation.ui.views.SelectNumberLocationsView;
 import presentation.ui.views.UserOptionsView;
 
 /**
@@ -22,9 +27,10 @@ public class App {
         // instantiates important variables
         String apiKey;
         final OpenWeatherApiService apiService = new OpenWeatherApiService();
-        GetLocationsWindowUseCase getLocationsWindowUseCase = new GetLocationsWindowUseCase();
-        UserOptionsView userOptionsView = new UserOptionsView();
-        final DashBoardUi dashBoard = new DashBoardUi(apiService, userOptionsView, getLocationsWindowUseCase);
+        GetLocationDataUseCase locationDataUseCase = new GetLocationDataUseCase(apiService);
+        GetForecastWeatherDataUseCase forecastWeatherDataUseCase = new GetForecastWeatherDataUseCase(apiService);
+        GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase = new GetHistoricalWeatherDataUseCase(apiService);
+        final NewDashBoardUi dashBoard = generateDashBoardUI(locationDataUseCase, forecastWeatherDataUseCase, historicalWeatherDataUseCase);
         boolean validKeyEntered = false;
         final Scanner scanner = new Scanner(System.in);
 
@@ -44,5 +50,13 @@ public class App {
             }
         }
         dashBoard.runJFrame(apiService);
+    }
+
+    private static NewDashBoardUi generateDashBoardUI(GetLocationDataUseCase locationDataUseCase,
+                                                    GetForecastWeatherDataUseCase forecastWeatherDataUseCase,
+                                                    GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase) {
+        return new NewDashBoardUi(new GetLocationsWindowUseCase(),
+                locationDataUseCase, forecastWeatherDataUseCase, historicalWeatherDataUseCase,
+                new UserOptionsView(), new SelectNumberLocationsView());
     }
 }

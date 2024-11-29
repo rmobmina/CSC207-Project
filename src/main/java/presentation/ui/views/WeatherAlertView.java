@@ -11,7 +11,7 @@ public class WeatherAlertView extends LocationsWindow {
     // This is the name of the option that generates this window
     public static final String OPTION_NAME = "Weather Alert";
 
-    public WeatherAlertView(String name) {
-        super(name);
+    public WeatherAlertView(String name, int width, int height) {
+        super(name, width, height);
     }
 }

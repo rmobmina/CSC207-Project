@@ -25,7 +25,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 // Old dashboardUI class just in case (to be replaced with DashBoardUi)
-public class OldDashboardUI extends JFrame {
+public class DashboardUI extends JFrame {
     static final JLabel locationLabel = new JLabel("Location:");
 
     static String apiKey = "";
@@ -63,7 +63,7 @@ public class OldDashboardUI extends JFrame {
     static final DropDownUI menu = new DropDownUI();
 
     // A: main dashboard, its messy for now but we'll split them up for clean architecture and for a cleaner look
-    public OldDashboardUI() {
+    public DashboardUI() {
         setTitle("Weather Dashboard");
         setSize(400, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -282,7 +282,7 @@ public class OldDashboardUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        OldDashboardUI frame = new OldDashboardUI();
+        DashboardUI frame = new DashboardUI();
         frame.refreshAll();
         SwingUtilities.invokeLater(() -> {
             frame.setVisible(true);

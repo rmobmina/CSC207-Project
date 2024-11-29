@@ -1,9 +1,17 @@
 package presentation.ui.windows;
 
-public class ErrorLocationsWindow extends LocationsWindow {
-    String errorMessage = "";
+import javax.swing.*;
 
-    public ErrorLocationsWindow(String name) {
-        super(name);
+public class ErrorLocationsWindow extends LocationsWindow {
+    private JLabel errorMessageLabel = new JLabel("");
+
+    public ErrorLocationsWindow(String errorMessage, int width, int height) {
+        super("Error Locations Window", width, height);
+        setErrorMessage(errorMessage);
+        panel.add(errorMessageLabel);
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessageLabel.setText(errorMessage);
     }
 }

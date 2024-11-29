@@ -11,7 +11,7 @@ public class HistoricalWeatherView extends LocationsWindow {
     // This is the name of the option that generates this window
     public static final String OPTION_NAME = "Historical";
 
-    public HistoricalWeatherView(String name) {
-        super(name);
+    public HistoricalWeatherView(String name, int width, int height) {
+        super(name, width, height);
     }
 }

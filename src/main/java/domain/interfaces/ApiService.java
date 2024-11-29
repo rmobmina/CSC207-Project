@@ -42,7 +42,7 @@ public interface ApiService {
      *      the same name.
      * @param city is a String with the user's inputted city
      * @param apiKey is a String with the user's entered API key
-     * @return a JSON object storing location details
+     * @return a List of matching Locations
      */
     List<Location> fetchLocations(String city, String apiKey);
 

@@ -10,8 +10,8 @@ import java.util.List;
 public class MultipleLocationsWindow extends LocationsWindow {
     private List<Location> chosenLocations;
 
-    public MultipleLocationsWindow(String name, int numOfLocations) {
-        super(name);
+    public MultipleLocationsWindow(String name, int width, int height, int numOfLocations) {
+        super(name, width, height);
         panel.setLayout(new BorderLayout());
     }
 

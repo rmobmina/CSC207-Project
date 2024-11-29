@@ -5,9 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class UserOptionsView {
-
-    private final JPanel userOptionsPanel = new JPanel();
+public class UserOptionsView extends View{
 
     private static final JLabel optionsLabel = new JLabel("Choose one of the options below: ");
 
@@ -20,17 +18,17 @@ public class UserOptionsView {
     private static JButton mercatorMapOption = new JButton("Mercator Map");
 
     public UserOptionsView() {
-        userOptionsPanel.setName("User Options");
-        userOptionsPanel.setLayout(new GridLayout(5, 1, 10, 5));
+        panel.setName("User Options");
+        panel.setLayout(new GridLayout(5, 1, 10, 5));
 
-        userOptionsPanel.add(optionsLabel);
-        userOptionsPanel.add(new JLabel());
+        panel.add(optionsLabel);
+        panel.add(new JLabel());
 
-        userOptionsPanel.add(forecastOption);
-        userOptionsPanel.add(historicalOption);
-        userOptionsPanel.add(alertOption);
-        userOptionsPanel.add(comparisonOption);
-        userOptionsPanel.add(mercatorMapOption);
+        panel.add(forecastOption);
+        panel.add(historicalOption);
+        panel.add(alertOption);
+        panel.add(comparisonOption);
+        panel.add(mercatorMapOption);
 
         forecastOption.addActionListener(new ActionListener() {
             @Override
@@ -38,6 +36,7 @@ public class UserOptionsView {
                 openForecastOptionsWindow();
             }
         });
+        panel.setVisible(true);
     }
 
     // Pops a new window with two additional options to the forecast option
@@ -51,7 +50,7 @@ public class UserOptionsView {
         panel.add(forecastHourlyOption);
         panel.add(forecastDailyOption);
         frame.add(panel);
-        frame.setVisible(true);
+        frame.setVisible(false);
     }
 
     // Sets the action listeners for all the buttons
@@ -77,9 +76,5 @@ public class UserOptionsView {
 
     public void setMercatorMapActionListener(ActionListener listener) {
         mercatorMapOption.addActionListener(listener);
-    }
-
-    public JPanel getPanel(){
-        return userOptionsPanel;
     }
 }
