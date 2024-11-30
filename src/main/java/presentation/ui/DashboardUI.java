@@ -108,7 +108,7 @@ public class DashboardUI extends JFrame {
         });
     }
 
-    private void addForcastPanel(){
+    private void addForcastPanel() {
         int number_of_hours = 8;
         forcastPanel.setLayout(new GridLayout(8, 2, 10, 10));
         addMainComponents(forcastPanel);
@@ -130,7 +130,7 @@ public class DashboardUI extends JFrame {
         add(forcastPanel);
     }
 
-    private void addHistoricalPanel(){
+    private void addHistoricalPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(8, 2, 10, 10));
         addMainComponents(panel);

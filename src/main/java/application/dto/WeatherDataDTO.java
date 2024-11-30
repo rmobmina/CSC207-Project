@@ -14,7 +14,7 @@ public class WeatherDataDTO {
     public LocalDate startDate;
     public LocalDate endDate;
     // These represent all the weather details over the given time interval as lists by category of data
-    public JSONArray temperature;
+    public static JSONArray temperature;
     public JSONArray humidity;
     public JSONArray windSpeed;
     public JSONArray windDirection;
