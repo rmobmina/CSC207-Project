@@ -40,7 +40,8 @@ public class ForecastHourlyView extends LocationsWindow {
         // Clear any previous content
         final String messageDialogueTitle = "Error";
         final int gap = 10;
-        final int TempThreshold = -24;
+        final int tempThreshold = -24;
+        final int numberHoursofForecast = 8;
         this.getContentPane().removeAll();
 
         // Create the panel for displaying forecast data
@@ -52,57 +53,42 @@ public class ForecastHourlyView extends LocationsWindow {
         forecastPanel.add(new JLabel("Hour", SwingConstants.CENTER));
         forecastPanel.add(new JLabel("Temperature (Celsius)", SwingConstants.CENTER));
 
-        if (city == null || city.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "City name cannot be empty!",
-                    messageDialogueTitle, JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
         // Initialize API service and fetching the location
         final OpenWeatherApiService apiService = new OpenWeatherApiService();
         final GetLocationDataUseCase locationUseCase = new GetLocationDataUseCase(apiService);
         final List<Location> possibleLocations = locationUseCase.execute(city, "0e85f616a96a624a0bf65bad89ff68c5");
 
-        if (possibleLocations.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No location found for the given city!", messageDialogueTitle,
+        if (city == null || city.trim().isEmpty() || possibleLocations.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Location Not Found", messageDialogueTitle,
                     JOptionPane.ERROR_MESSAGE);
-            return;
+
         }
 
         final Location chosenLocation = possibleLocations.get(0);
 
         // Fetch weather data for the location
         final GetForecastWeatherDataUseCase forecastUseCase = new GetForecastWeatherDataUseCase(apiService);
-        final WeatherData weatherData = forecastUseCase.execute(chosenLocation, 8);
+        final WeatherData weatherData = forecastUseCase.execute(chosenLocation, numberHoursofForecast);
 
         // Extract hourly temperature data
         final JSONObject weatherDetails = weatherData.getWeatherDetails();
-        // debuggingg
-        System.out.println(weatherDetails.toString());
 
-        if (!weatherDetails.has("hourly")) {
-            JOptionPane.showMessageDialog(this, "Hourly data is unavailable!",
-                    messageDialogueTitle, JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        JSONObject hourlyData = weatherDetails.getJSONObject("hourly");
+        final JSONObject hourlyData = weatherDetails.getJSONObject("hourly");
         if (!hourlyData.has("temperature_2m")) {
             JOptionPane.showMessageDialog(this, "Hourly temperature data is unavailable!", messageDialogueTitle,
                     JOptionPane.ERROR_MESSAGE);
-            return;
         }
 
         // Getting the hourly temperatures
-        JSONArray temperatureData = hourlyData.getJSONArray("temperature_2m");
+        final JSONArray temperatureData = hourlyData.getJSONArray("temperature_2m");
 
         // Populate data for up to 8 hours
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < numberHoursofForecast; i++) {
             forecastPanel.add(new JLabel("Hour " + (i + 1), SwingConstants.CENTER));
             forecastPanel.add(new JLabel(String.format("%.1f", temperatureData.getDouble(i)), SwingConstants.CENTER));
 
             // If the temp is less than the variable "TempThreshold", we get a pop-up reminder to wear multiple layers
-            if (temperatureData.getDouble(i) < TempThreshold) {
+            if (temperatureData.getDouble(i) < tempThreshold) {
                 JOptionPane.showMessageDialog(this, "Hour " + (i + 1) + ": Don't forget to wear multiple layers!",
                         "Reminder", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -112,12 +98,19 @@ public class ForecastHourlyView extends LocationsWindow {
         this.getContentPane().add(forecastPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * Main method to test if the file is running as it's supposed to.
+     * Used Regina as a sample city since the Dropdown UI is not working as of right now, so this is,
+     * therefore I pass the location to the functions using this main method.
+     *
+     * @param args Command-line arguments.
+     */
 
     public static void main(String[] args) {
         // Example usage
         final ForecastHourlyView view = new ForecastHourlyView(OPTION_NAME, 800, 600);
 
-        // Display the frame
+        // Displaying the frame
         view.addForecastPanel("Regina");
         view.setVisible(true);
     }
