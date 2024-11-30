@@ -2,7 +2,6 @@ package presentation.ui.windows;
 
 import application.usecases.GetLocationDataUseCase;
 import domain.interfaces.ApiService;
-import infrastructure.adapters.OpenWeatherApiService;
 
 import javax.swing.*;
 
@@ -13,9 +12,9 @@ public class ErrorLocationsWindow extends LocationsWindow {
                                 ApiService apiService) {
         super("Error Locations Window", dimensions, locationDataUseCase, apiKey, apiService);
         setErrorMessage(errorMessage);
-        panel.remove(dropDown);
-        panel.remove(enterLocationButton);
-        panel.add(errorMessageLabel);
+        mainPanel.remove(dropDown);
+        mainPanel.remove(enterLocationButton);
+        mainPanel.add(errorMessageLabel);
     }
 
     @Override

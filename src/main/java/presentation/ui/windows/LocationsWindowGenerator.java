@@ -2,7 +2,6 @@ package presentation.ui.windows;
 
 import application.usecases.GetLocationDataUseCase;
 import domain.interfaces.ApiService;
-import infrastructure.adapters.OpenWeatherApiService;
 import presentation.ui.views.*;
 
 /**

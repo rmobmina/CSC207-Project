@@ -1,19 +1,15 @@
 package application.dto;
 
 import domain.entities.Location;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import domain.entities.WeatherData;
 import static utils.Constants.DAILY;
 import static utils.Constants.HOURLY;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 // Generates the weather data object to be used by the dashboard and the rest of the application

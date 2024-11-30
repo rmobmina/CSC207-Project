@@ -18,11 +18,10 @@ public class WeatherDataDTO {
     private LocalDate endDate;
     // These represent all the weather details over the given time interval as JSONArrays by category of data
     private Map<String, JSONArray> weatherDetails = new HashMap<>();
+    private Map<String, String> weatherUnits = new HashMap<>();
     // Represents the units for each weather detail
     private JSONObject unitsObject;
     private JSONObject weatherDetailsObject;
-    private Map<String, String> weatherUnits = new HashMap<>();
-    //public List<String> alerts; <- This is not used (yet?)
 
     // Constructor for mapping from domain entities
     public WeatherDataDTO(Location location, List<LocalDate> timeInterval, JSONObject weatherDetailsObject, JSONObject unitsObject) {
@@ -68,7 +67,7 @@ public class WeatherDataDTO {
      * @return a String representation of the data value formmated with its units
      */
     public String dataToString(String weatherDetail, int index) {
-        return dataToString(weatherDetail, index, unitsObject.getString(weatherDetail));
+        return dataToString(weatherDetail, index, weatherUnits.get(weatherDetail));
     }
 
     public String dataToString(String category, int index, String units) {
@@ -98,7 +97,7 @@ public class WeatherDataDTO {
     }
 
     public String temperatureToString(String temperatureCategory, int index, String unitType) {
-        return getTemperature(temperatureCategory, index, unitType) + " " + unitsObject.getString(temperatureCategory);
+        return getTemperature(temperatureCategory, index, unitType) + " " + weatherUnits.get(temperatureCategory);
     }
 
     private double getTemperatureInKelvin(double temperature) {
