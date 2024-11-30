@@ -72,7 +72,7 @@ public class ForecastHourlyView extends LocationsWindow {
             for (int i = 0; i <8; i++) {
                 forecastPanel.add(new JLabel("Hour " + (i + 1), SwingConstants.CENTER));
                 forecastPanel.add(new JLabel(String.format("%.1f", temperatureData.getDouble(i)), SwingConstants.CENTER));
-                // If the temperature is less than negative 24, we get a pop up reminder with the message
+                // If the temperature is less than negative 24 Celcius, we get a pop up reminder with the message
                 if (temperatureData.getDouble(i) < -24) {
                     JOptionPane.showMessageDialog(this, "Hour " + (i + 1) + ": Don't forget to wear multiple layers!", "Reminder", JOptionPane.INFORMATION_MESSAGE);
                     }
