@@ -8,6 +8,7 @@ import application.usecases.GetHistoricalWeatherDataUseCase;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import infrastructure.adapters.OpenWeatherApiService;
+import utils.Constants;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -60,7 +61,7 @@ public class DashboardUI extends JFrame {
     static String userOption = "Historical";
     WeatherDataDTO weatherDataDTO;
     static OpenWeatherApiService apiService;
-    static final DropDownUI menu = new DropDownUI();
+    static final DropDownUI menu = new DropDownUI(apiKey, new GetLocationDataUseCase(apiService));
 
     // A: main dashboard, its messy for now but we'll split them up for clean architecture and for a cleaner look
     public DashboardUI() {
@@ -124,7 +125,7 @@ public class DashboardUI extends JFrame {
         // displaying only 8 hours of forecast
         for (int i = 0; i < number_of_hours; i++) {
             forcastPanel.add(new JLabel("Hour" + (i + 1), SwingConstants.CENTER));
-            forcastPanel.add(new JLabel(String.format("%.1f",weatherDataDTO.temperature.getDouble(i)), SwingConstants.CENTER));
+            forcastPanel.add(new JLabel(String.format("%.1f",weatherDataDTO.getWeatherDataValue("temperatureHourly", i)), SwingConstants.CENTER));
         }
 
         add(forcastPanel);
@@ -145,7 +146,6 @@ public class DashboardUI extends JFrame {
     private void addMainComponents(JPanel panel){
         panel.add(locationLabel);
         panel.add(menu);
-        menu.setApiKey(apiKey);
 
         panel.add(temperatureLabel);
         panel.add(temperatureValue);
@@ -234,10 +234,10 @@ public class DashboardUI extends JFrame {
     // Updates all the weather data text fields given the current location and dates
     private void updateWeatherDataTextFields(WeatherDataDTO weatherDataDTO) {
         DecimalFormat df = new DecimalFormat("#.##");
-        temperatureValue.setText(df.format(weatherDataDTO.getTemperature(TEMPERATURE_TYPE, 0)) + " °C");
-        humidityValue.setText(weatherDataDTO.humidity.get(0) + " %");
-        percipitationValue.setText(weatherDataDTO.precipitation.get(0) + " mm");
-        windValue.setText(weatherDataDTO.windSpeed.get(0) + " km/h " + weatherDataDTO.windDirection.get(0) + " °");
+        temperatureValue.setText(weatherDataDTO.temperatureToString("temperatureHourly", 0, Constants.CELCIUS_UNIT_TYPE));
+//        humidityValue.setText(weatherDataDTO.getWeatherData("humidityHourly").get(0) + " %");
+//        percipitationValue.setText(weatherDataDTO.precipitation.get(0) + " mm");
+//        windValue.setText(weatherDataDTO.windSpeed.get(0) + " km/h " + weatherDataDTO.windDirection.get(0) + " °");
     }
 
     private void openErrorWindow(String errorMessage) {
