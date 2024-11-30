@@ -1,16 +1,29 @@
 package presentation.ui.views;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.util.List;
+
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import application.usecases.GetForecastWeatherDataUseCase;
 import application.usecases.GetLocationDataUseCase;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import infrastructure.adapters.OpenWeatherApiService;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import presentation.ui.windows.LocationsWindow;
-import java.util.List;
+
+/**
+ * This class displays the hourly forecast for the next 8 hours for a given location.
+ * If the temperature is below -24 degree Celcius,
+ * it gives a pop-up reminder to wear multiple layers of clothing (can add more features later).
+ */
 
 public class ForecastHourlyView extends LocationsWindow {
     public static final String OPTION_NAME = "Forecast Hourly";
@@ -19,6 +32,10 @@ public class ForecastHourlyView extends LocationsWindow {
         super(name, width, height);
     }
 
+    /**
+     * Displays the hourly forecast of the city for the next 8 hours.
+     * @param city the name of the city you want to see the forecast of.
+     */
     public void addForecastPanel(String city) {
         // Clear any previous content
         this.getContentPane().removeAll();
