@@ -1,5 +1,8 @@
 package presentation.ui.views;
 
+import application.usecases.GetLocationDataUseCase;
+import domain.interfaces.ApiService;
+import infrastructure.adapters.OpenWeatherApiService;
 import presentation.ui.windows.MultipleLocationsWindow;
 
 import javax.swing.*;
@@ -14,7 +17,9 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
     // This is the name of the option that generates this window
     public static final String OPTION_NAME = "Historical Comparison";
 
-    public HistoricalWeatherComparisonView(String name, int width, int height, int numOfLocations) {
-        super(name, width, height, numOfLocations);
+    public HistoricalWeatherComparisonView(String name, int[] dimensions, int numOfLocations,
+                                           GetLocationDataUseCase locationDataUseCase, String apiKey,
+                                           ApiService apiService) {
+        super(name, dimensions, numOfLocations, locationDataUseCase, apiKey, apiService);
     }
 }

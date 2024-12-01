@@ -28,7 +28,6 @@ public class NewDashBoardUi extends JFrame {
     LocationsWindow locationsWindow;
     UserOptionsView userOptionsView;
     SelectNumberLocationsView numberLocationsView;
-    ErrorLocationsWindow errorLocationsWindow = new ErrorLocationsWindow("ERROR", 100, 100);
 
     final String OPTIONS_NAME = "Options";
     final String LOCATIONS_WINDOW_NAME = "Locations";
@@ -96,6 +95,7 @@ public class NewDashBoardUi extends JFrame {
                 userOption = HistoricalWeatherComparisonView.OPTION_NAME;
         });
 
+        // Remove later (this will automatically pop up when the user enters a location)
         userOptionsView.setAlertActionListener(e -> getLocationsWindow(WeatherAlertView.OPTION_NAME,
                 locationsWindowWidth, locationsWindowHeight));
 
@@ -114,8 +114,7 @@ public class NewDashBoardUi extends JFrame {
     }
 
     private void getLocationsWindowMultiple(String userOption, int width, int height, int numOfLocations){
-        System.out.println(userOption);
-        this.locationsWindow = locationsWindowUseCase.execute(userOption, width, height, numOfLocations);
+        this.locationsWindow = locationsWindowUseCase.execute(userOption, new int[]{width, height}, numOfLocations, locationDataUseCase, apiKey, apiService);
         locationsWindow.setBackButtonListener(e -> backToDashBoard());
         switchToWindow(LOCATIONS_WINDOW_NAME);
     }
@@ -138,8 +137,7 @@ public class NewDashBoardUi extends JFrame {
                 numberLocationsView.showPanel();
                 this.setContentPane(numberLocationsView.getPanel()); break;
             default:
-                errorLocationsWindow.openWindow();
-                this.setContentPane(errorLocationsWindow.getPanel()); break;
+
         }
     }
 
@@ -156,7 +154,6 @@ public class NewDashBoardUi extends JFrame {
     private void hideAllWindows() {
         userOptionsView.hidePanel();
         numberLocationsView.hidePanel();
-        errorLocationsWindow.hideWindow();
         if (locationsWindow != null) locationsWindow.hideWindow();
     }
 

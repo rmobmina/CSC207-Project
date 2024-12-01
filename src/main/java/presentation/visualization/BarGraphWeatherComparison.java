@@ -6,9 +6,11 @@
 //import org.jfree.chart.JFreeChart;
 //import org.jfree.chart.plot.PlotOrientation;
 //import org.jfree.data.category.DefaultCategoryDataset;
+//import org.json.JSONArray;
 //
 //import javax.swing.*;
 //import java.awt.*;
+//import java.util.ArrayList;
 //
 //public class BarGraphWeatherComparison extends JFrame {
 //
