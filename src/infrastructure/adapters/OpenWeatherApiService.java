@@ -1,9 +1,12 @@
 package infrastructure.adapters;
 
 // importing needed tools
+
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -49,8 +52,7 @@ public class OpenWeatherApiService implements ApiService {
                     testLocation = new Location(city, locData.getDouble("lat"), locData.getDouble("lon"));
                 }
             }
-        }
-        catch (JSONException | IOException exception) {
+        } catch (JSONException | IOException exception) {
             exception.printStackTrace();
         }
 
@@ -60,14 +62,17 @@ public class OpenWeatherApiService implements ApiService {
     // Used in DropDownUI to fetch and drop down MULTIPLE Locations in the menu
     public List<Location> fetchLocations(String city, String apiKey) {
         final List<Location> locations = new ArrayList<>();
-        // Checkstyle fix
         final String unknown = "Unknown";
-        final String urlString = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=5&appid=" + apiKey;
 
         try {
+            // Encode the city name to handle spaces and special characters
+            String encodedCity = URLEncoder.encode(city.trim(), "UTF-8");
+
+            final String urlString = "http://api.openweathermap.org/geo/1.0/direct?q=" + encodedCity + "&limit=5&appid=" + apiKey;
+
             final HttpURLConnection conn = callApi(urlString);
 
-            if (conn.getResponseCode() == responseTreshold) {
+            if (conn.getResponseCode() == 200) { // Check for a successful response
                 final StringBuilder resultJson = new StringBuilder();
                 final Scanner scanner = new Scanner(conn.getInputStream());
 
@@ -88,13 +93,13 @@ public class OpenWeatherApiService implements ApiService {
                         locations.add(new Location(cityName + ", " + country, lat, lon));
                     }
                 }
-            }
-            else {
+            } else {
                 System.err.println("Error: API returned response code " + conn.getResponseCode());
             }
-        }
-        catch (JSONException | IOException exception) {
-            System.err.println("Error fetching locations: " + exception.getMessage());
+        } catch (UnsupportedEncodingException e) {
+            System.err.println("Error encoding city name: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Error fetching locations: " + e.getMessage());
         }
 
         return locations;
@@ -129,8 +134,7 @@ public class OpenWeatherApiService implements ApiService {
                 weatherObject = new JSONObject(resultJson.toString());
                 weatherData = new WeatherData(weatherObject);
             }
-        }
-        catch (JSONException | IOException exception) {
+        } catch (JSONException | IOException exception) {
             exception.printStackTrace();
         }
         return weatherData;

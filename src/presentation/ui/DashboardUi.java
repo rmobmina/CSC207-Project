@@ -1,21 +1,16 @@
 package presentation.ui;
 
 import java.awt.GridLayout;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
+import application.usecases.GetCurrentWeatherConditionUseCase;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,7 +25,7 @@ import utils.ApiKeys;
  * DashboardUI That runs the interface to use the program with its features.
  * Initialized variables are seperated based on type and usage.
  */
-public class DashboardUi extends JFrame {
+public class DashboardUi extends JFrame implements WeatherAlertObserver {
 
     // UI Components
     private JLabel locationLabel;
@@ -38,12 +33,16 @@ public class DashboardUi extends JFrame {
     private JLabel conditionLabel;
     private JLabel humidityLabel;
     private JLabel windLabel;
+//    private JLabel weatherIconLabel = new JLabel(); // New JLabel for the weather icon
 
     private final JTextField apiKeyField;
     private JLabel temperatureValue;
     private JLabel conditionValue;
     private JLabel humidityValue;
     private JLabel windValue;
+    private JLabel severeAlertLabel;
+    private JLabel severeAlertValue;
+
 
     private JButton getInfoButton;
     private JButton refreshButton;
@@ -59,8 +58,10 @@ public class DashboardUi extends JFrame {
     // Services and Menu
     private final OpenWeatherApiService apiService = new OpenWeatherApiService();
     private final WeatherAPIService weatherApiService = new WeatherAPIService(ApiKeys.WEATHER_API_KEY);
-    private final WeatherAlertFunction weatherAlertFunction = new WeatherAlertFunction(weatherApiService);
+    private final WeatherAlertFunction weatherAlertFunction;
+    private final GetCurrentWeatherConditionUseCase currentWeatherConditionUseCase;
     private final DropDownUI menu;
+
 
     // Window Measurements
     final int height = 200;
@@ -79,12 +80,19 @@ public class DashboardUi extends JFrame {
         apiKeyField = new JTextField(apiKey, 30);
         menu = new DropDownUI(apiKey);
 
+        // use case intialized in dashboard, might change to main
+        currentWeatherConditionUseCase = new GetCurrentWeatherConditionUseCase(new OpenWeatherApiService());
+
+        // register WeatherAlertFunction as an observer
+        weatherAlertFunction = new WeatherAlertFunction(weatherApiService);
+        weatherAlertFunction.addObserver(this);
+
         // Call setupUI method to configure UI elements
         setupUi();
 
         // Add Action Listeners for buttons
         setupEventListeners();
-        }
+    }
 
     private void setupUi() {
         // Initialize Components
@@ -93,12 +101,16 @@ public class DashboardUi extends JFrame {
         conditionLabel = new JLabel("Condition:");
         humidityLabel = new JLabel("Humidity:");
         windLabel = new JLabel("Wind:");
+//        weatherIconLabel = new JLabel();
+        severeAlertLabel = new JLabel("Severe Alert:");
+
 
         String placeholder = "N/A";
         temperatureValue = new JLabel("N/A");
         conditionValue = new JLabel("N/A");
         humidityValue = new JLabel("N/A");
         windValue = new JLabel("N/A");
+        severeAlertValue = new JLabel("N/A");
 
         getInfoButton = new JButton("Get Info");
         refreshButton = new JButton("Refresh");
@@ -107,7 +119,7 @@ public class DashboardUi extends JFrame {
 
         // Create and configure layout
         final JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(9, 2, 10, 10));
+        panel.setLayout(new GridLayout(10, 2, 10, 10)); // Add space for the icon
 
         // Add components to panel
         panel.add(locationLabel);
@@ -116,26 +128,45 @@ public class DashboardUi extends JFrame {
         panel.add(temperatureValue);
         panel.add(conditionLabel);
         panel.add(conditionValue);
+//        panel.add(weatherIconLabel); // Add the weather icon to the layout
         panel.add(humidityLabel);
         panel.add(humidityValue);
         panel.add(windLabel);
         panel.add(windValue);
+        panel.add(severeAlertLabel);
+        panel.add(severeAlertValue);
         panel.add(getInfoButton);
         panel.add(refreshButton);
         panel.add(rangeOfTimeButton);
         panel.add(simulationButton);
 
+
         // Add panel to JFrame
         add(panel);
     }
 
+    private String getCustomConditionDescription(String originalDescription) {
+        switch (originalDescription.toLowerCase()) {
+            case "light rain":
+                return "Flood";
+            case "heavy rain":
+                return "Downpour";
+            case "clear sky":
+                return "Sunny";
+            case "overcast clouds":
+                return "Cloudy";
+            default:
+                return originalDescription; // Use the original if no match
+        }
+    }
+
     private void setupEventListeners() {
-        // Add Action Listeners for buttons
         getInfoButton.addActionListener(e -> displayWeatherData());
         refreshButton.addActionListener(e -> refreshAll());
         rangeOfTimeButton.addActionListener(e -> openRangeOfTimeWindow());
         simulationButton.addActionListener(e -> openSimulationWindow());
     }
+
 
     private void refreshAll() {
         // Clears all the UI components
@@ -149,7 +180,21 @@ public class DashboardUi extends JFrame {
         conditionValue.setText("N/A");
         humidityValue.setText("N/A");
         windValue.setText("N/A");
+        severeAlertValue.setText("N/A"); // Reset severe weather alert to default
+        menu.clearLocationField();
     }
+
+
+    @Override
+    public void onSevereWeatherAlert(String alertMessage) {
+        System.out.println("DashboardUi received severe weather alert: " + alertMessage);
+
+        if (!alertMessage.equals("No severe weather alerts available.") && !alertMessage.startsWith("Error")) {
+            JOptionPane.showMessageDialog(this, alertMessage, "Severe Weather Alert", JOptionPane.WARNING_MESSAGE);
+        }
+        conditionValue.setText(alertMessage); // Update the UI with the alert message
+    }
+
 
     private void displayWeatherData() {
         final Location chosenLocation = menu.getSelectedLocation();
@@ -158,6 +203,9 @@ public class DashboardUi extends JFrame {
             openInvalidLocationWindow();
             return;
         }
+
+        // Set loading message while fetching data
+        conditionValue.setText("Loading...");
 
         final String locationKey = chosenLocation.getCity();
         WeatherData weatherData = weatherDataCache.get(locationKey);
@@ -169,16 +217,57 @@ public class DashboardUi extends JFrame {
                 weatherDataCache.put(locationKey, weatherData);
             } else {
                 System.out.println("Weather data could not be retrieved.");
-                temperatureValue.setText("N/A");
+                conditionValue.setText("Error: Unable to fetch weather data.");
                 return;
             }
         } else {
             System.out.println("Using cached weather data...");
         }
 
-        updateWeatherUi(weatherData, chosenLocation);
+        // Mock logic for TestCity
+        if ("TestCity".equalsIgnoreCase(chosenLocation.getCity())) {
+            conditionValue.setText("Heavy Rain");
+            temperatureValue.setText("4 °C"); // Mock temperature
+            humidityValue.setText("83 %");      // Mock humidity
+            windValue.setText("4.45 m/s");      // Mock wind
+            severeAlertValue.setText("Flood (check local news for more information)");
 
+            // Generalized pop-up for severe alerts
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Severe Weather Alert: check local news for more information",
+                    "Severe Weather Alert",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return; // Skip real API updates for TestCity
+        }
+
+        // Fetch severe weather alert for other cities
+        String severeAlert = weatherAlertFunction.getSevereWeather(
+                chosenLocation.getLatitude(),
+                chosenLocation.getLongitude()
+        );
+
+        if (severeAlert.equals("No severe weather alerts available.")) {
+            severeAlertValue.setText("No severe weather alerts");
+        } else if (severeAlert.startsWith("Error")) {
+            severeAlertValue.setText("Error fetching severe weather data");
+        } else {
+            severeAlertValue.setText(severeAlert);
+
+            // Generalized pop-up for all severe alerts
+            JOptionPane.showMessageDialog(
+                    this,
+                    severeAlert,
+                    "Severe Weather Alert",
+                    JOptionPane.WARNING_MESSAGE
+            );
+        }
+
+        // Update other UI details
+        updateWeatherUi(weatherData, chosenLocation);
     }
+
 
     private String fetchWeatherAlerts(Location location) {
         try {
@@ -194,10 +283,10 @@ public class DashboardUi extends JFrame {
         final String apiKey = getApiKeyFieldValue();
         if (apiKey == null || apiKey.isEmpty()) {
             JOptionPane.showMessageDialog(
-                this,
-                "API key cannot be empty. Please enter a valid API key.",
-                "Invalid API Key",
-                JOptionPane.ERROR_MESSAGE
+                    this,
+                    "API key cannot be empty. Please enter a valid API key.",
+                    "Invalid API Key",
+                    JOptionPane.ERROR_MESSAGE
             );
             return null;
         }
@@ -215,9 +304,25 @@ public class DashboardUi extends JFrame {
         final LocalDate date = LocalDate.now();
         final WeatherDataDTO dto = createWeatherDataDto(weatherData.getWeatherDetails(), location, date);
         updateTextFields(dto);
-        final String condition = fetchWeatherAlerts(location);
-        conditionValue.setText(condition);
+
+        // Update condition label with the current weather condition
+        conditionValue.setText(weatherData.getCondition());
+
+        // Set the weather icon (if available)
+//    String iconCode = weatherData.getIconCode();
+//    if (iconCode != null) {
+//        try {
+//            String iconUrl = "https://openweathermap.org/img/wn/" + iconCode + "@2x.png";
+//            weatherIconLabel.setIcon(new ImageIcon(new URL(iconUrl))); // Load icon from the URL
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            weatherIconLabel.setIcon(null); // Clear the icon if there's an issue
+//        }
+//    } else {
+//        weatherIconLabel.setIcon(null); // Clear the icon if no icon is available
+//    }
     }
+
 
     private String getApiKeyFieldValue() {
         return apiKeyField.getText();
@@ -234,9 +339,9 @@ public class DashboardUi extends JFrame {
                     mainData.getInt("humidity"),
                     data.getJSONObject("wind").getDouble("speed"),
                     // NOTE: may not always have percipitation data and alerts
-                    0.0, new ArrayList<String>() { });
-        }
-        catch (JSONException exception) {
+                    0.0, new ArrayList<String>() {
+            });
+        } catch (JSONException exception) {
             exception.printStackTrace();
             return null;
         }
@@ -245,8 +350,7 @@ public class DashboardUi extends JFrame {
     private void extractWeatherData(WeatherData weatherData, Location location, LocalDate date) {
         if (weatherData != null) {
             this.weatherDataDTO = createWeatherDataDto(weatherData.getWeatherDetails(), location, date);
-        }
-        else {
+        } else {
             System.out.println("Error: Could not retrieve weather data.");
         }
     }
@@ -289,7 +393,6 @@ public class DashboardUi extends JFrame {
     }
 
     /**
-     *
      * @param args
      */
     public static void main(String[] args) {
