@@ -28,6 +28,7 @@ public class NewDashBoardUi extends JFrame {
     LocationsWindow locationsWindow;
     UserOptionsView userOptionsView;
     SelectNumberLocationsView numberLocationsView;
+    FavoritesManager favoritesManager;
 
     final String OPTIONS_NAME = "Options";
     final String LOCATIONS_WINDOW_NAME = "Locations";
@@ -52,6 +53,7 @@ public class NewDashBoardUi extends JFrame {
         setSize(400, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        favoritesManager = new FavoritesManager(); // Initialized FavoritesManager
         add(userOptionsView.getPanel());
         add(numberLocationsView.getPanel());
 
@@ -66,7 +68,7 @@ public class NewDashBoardUi extends JFrame {
                                GetForecastWeatherDataUseCase forecastWeatherDataUseCase,
                                GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase,
                                UserOptionsView userOptionsView,
-                               SelectNumberLocationsView numberLocationsView){
+                               SelectNumberLocationsView numberLocationsView) {
         this.locationsWindowUseCase = getLocationsWindowUseCase;
         this.locationDataUseCase = locationDataUseCase;
         this.forecastWeatherDataUseCase = forecastWeatherDataUseCase;
@@ -75,7 +77,7 @@ public class NewDashBoardUi extends JFrame {
         this.numberLocationsView = numberLocationsView;
     }
 
-    private void setButtonListeners(){
+    private void setButtonListeners() {
         userOptionsView.setForecastHourlyActionListener(e -> {
             getLocationsWindow(ForecastHourlyView.OPTION_NAME, locationsWindowWidth, locationsWindowHeight);
             userOptionsView.hideForecastOptionsWindow();
@@ -90,9 +92,9 @@ public class NewDashBoardUi extends JFrame {
                 locationsWindowWidth, locationsWindowHeight));
 
         userOptionsView.setComparisonActionListener(e -> {
-                // Ask user to enter how many locations they want
-                showNumberOfLocationsWindow();
-                userOption = HistoricalWeatherComparisonView.OPTION_NAME;
+            // Ask user to enter how many locations they want
+            showNumberOfLocationsWindow();
+            userOption = HistoricalWeatherComparisonView.OPTION_NAME;
         });
 
         // Remove later (this will automatically pop up when the user enters a location)
@@ -100,54 +102,70 @@ public class NewDashBoardUi extends JFrame {
                 locationsWindowWidth, locationsWindowHeight));
 
         userOptionsView.setMercatorMapActionListener(e -> {
-                // Ask user to enter how many locations they want
-                showNumberOfLocationsWindow();
-                userOption = MercatorMapView.OPTION_NAME;
+            // Ask user to enter how many locations they want
+            showNumberOfLocationsWindow();
+            userOption = MercatorMapView.OPTION_NAME;
         });
 
         numberLocationsView.setActionListener(e -> getLocationsWindowMultiple(
                 userOption, locationsWindowWidth, locationsWindowHeight, numberLocationsView.getNumOfLocations()));
     }
 
-    private void getLocationsWindow(String userOption, int width, int height){
+    private void getLocationsWindow(String userOption, int width, int height) {
         getLocationsWindowMultiple(userOption, width, height, 1);
     }
 
-    private void getLocationsWindowMultiple(String userOption, int width, int height, int numOfLocations){
-        this.locationsWindow = locationsWindowUseCase.execute(userOption, new int[]{width, height}, numOfLocations, locationDataUseCase, apiKey, apiService);
+    private void getLocationsWindowMultiple(String userOption, int width, int height, int numOfLocations) {
+        this.locationsWindow = locationsWindowUseCase.execute(
+                userOption, new int[]{width, height}, numOfLocations, locationDataUseCase, apiKey, apiService
+        );
+
+        // Corrected button listeners
+        locationsWindow.setFavoritesButtonListener(e -> openFavoritesView());
+        locationsWindow.setAddToFavoritesButtonListener(favoritesManager);
         locationsWindow.setBackButtonListener(e -> backToDashBoard());
         switchToWindow(LOCATIONS_WINDOW_NAME);
     }
 
+    private void openFavoritesView() {
+        // Pass `this` as the parent window (LocationsWindow is a subclass of JFrame)
+        FavoritesView favoritesView = new FavoritesView(favoritesManager, apiKey, locationsWindow);
+        favoritesView.setVisible(true);
+    }
+
+
     // Opens up a window to get the desired number of locations before applying it to the chosen use case
-    private void showNumberOfLocationsWindow(){
+    private void showNumberOfLocationsWindow() {
         switchToWindow(NUMBER_LOCATIONS_WINDOW_NAME);
     }
 
-    private void switchToWindow(String windowName){
+    private void switchToWindow(String windowName) {
         hideAllWindows();
-        switch(windowName){
+        switch (windowName) {
             case OPTIONS_NAME:
                 userOptionsView.showPanel();
-                this.setContentPane(userOptionsView.getPanel()); break;
+                this.setContentPane(userOptionsView.getPanel());
+                break;
             case LOCATIONS_WINDOW_NAME:
                 locationsWindow.openWindow();
-                toggleShowDashBoard(false); break; // closes the current window
+                toggleShowDashBoard(false);
+                break; // closes the current window
             case NUMBER_LOCATIONS_WINDOW_NAME:
                 numberLocationsView.showPanel();
-                this.setContentPane(numberLocationsView.getPanel()); break;
+                this.setContentPane(numberLocationsView.getPanel());
+                break;
             default:
 
         }
     }
 
     // Closes the current locations window and opens up the dahboard window
-    private void backToDashBoard(){
+    private void backToDashBoard() {
         toggleShowDashBoard(true);
         switchToWindow(OPTIONS_NAME);
     }
 
-    private void toggleShowDashBoard(boolean toggle){
+    private void toggleShowDashBoard(boolean toggle) {
         this.setVisible(toggle);
     }
 
@@ -168,4 +186,10 @@ public class NewDashBoardUi extends JFrame {
     public void setAPIkey(String apiKey) {
         this.apiKey = apiKey;
     }
+
+    // added a getter to retrieve api key for favorites
+    public String getAPIkey() {
+        return this.apiKey;
+    }
+
 }

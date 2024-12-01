@@ -53,8 +53,7 @@ public class DropDownUI extends JPanel {
                         locationDropdown.requestFocus();
                         locationDropdown.setPopupVisible(true);
                     }
-                }
-                else {
+                } else {
                     // Restart the timer for other keys
                     updateTimer.restart();
                 }
@@ -81,16 +80,16 @@ public class DropDownUI extends JPanel {
     private void updateDropdown(String input, GetLocationDataUseCase locationDataUseCase) {
         locationDropdown.removeAllItems();
 
-        if (input.isEmpty()) {
+        // Trim the input but allow leading/trailing spaces in the text field
+        if (input.trim().isEmpty()) { // Check if the input is empty or just spaces
             locationDropdown.setVisible(false);
             return;
         }
 
-        matchingLocations = locationDataUseCase.execute(input, apiKey);
+        matchingLocations = locationDataUseCase.execute(input.trim(), apiKey); // Use trimmed input for API calls
         if (matchingLocations.isEmpty()) {
             locationDropdown.setVisible(false);
-        }
-        else {
+        } else {
             for (Location location : matchingLocations) {
                 locationDropdown.addItem(location.fullLocationName());
             }
@@ -100,16 +99,18 @@ public class DropDownUI extends JPanel {
         locationDropdown.setSelectedIndex(-1);
     }
 
-    public JTextField getLocationField()
-    {
+
+    public JTextField getLocationField() {
         return locationField;
     }
+
     public Location getSelectedLocation() {
         if (locationDropdown.getSelectedIndex() >= 0) {
             return matchingLocations.get(locationDropdown.getSelectedIndex());
         }
         return null;
     }
+
 
 //    public static void main(String[] args) {
 //        final JFrame frame = new JFrame("DropDown UI Example");

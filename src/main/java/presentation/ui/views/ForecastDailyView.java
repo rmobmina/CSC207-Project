@@ -2,6 +2,7 @@ package presentation.ui.views;
 
 import application.usecases.GetForecastWeatherDataUseCase;
 import application.usecases.GetLocationDataUseCase;
+import domain.entities.Location;
 import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
 import presentation.ui.windows.LocationsWindow;
@@ -53,7 +54,7 @@ public class ForecastDailyView extends LocationsWindow {
             initComponents();
         }
 
-        private void initComponents(){
+        private void initComponents() {
             this.add(dateLabel);
             JPanel weatherPanel = new JPanel();
             weatherPanel.setLayout(new GridLayout(3, 1, 1, 1));
@@ -66,11 +67,10 @@ public class ForecastDailyView extends LocationsWindow {
             this.add(weatherPanel);
         }
 
-        public void setDate(LocalDate date, boolean dayIsCurrent){
+        public void setDate(LocalDate date, boolean dayIsCurrent) {
             if (dayIsCurrent) {
                 dateLabel.setText("Today");
-            }
-            else {
+            } else {
                 DayOfWeek dayOfWeek = date.getDayOfWeek();
                 dateLabel.setText(dayOfWeek.toString() + " " + date);
             }
@@ -114,37 +114,66 @@ public class ForecastDailyView extends LocationsWindow {
     }
 
     // Selects the next day from the current selected day
-    private void showNextDay(){
+    private void showNextDay() {
         selectedDayIndex = Math.min(selectedDayIndex + 1, numberOfDays - 1);
         showSelectedDayPanel();
     }
 
     // Selects the previous day from the current selected day
-    private void showPrevDay(){
+    private void showPrevDay() {
         selectedDayIndex = Math.max(selectedDayIndex - 1, 0);
         showSelectedDayPanel();
     }
 
+    @Override
     protected void getWeatherData() {
-        WeatherData weatherData = forecastWeatherDataUseCase.execute(location, 16);
-        // The date {numberOfDays} days later after the current date
-        LocalDate lastDate = currentDate.plusDays(16);
-        generateWeatherDataDTO(weatherData, currentDate, lastDate);
-
         try {
-            int numDays = Integer.parseInt(numberOfDaysField.getText());
-            if (numDays > 0 && numDays <= 16) { // Must be between 1 and 16 (inclusive)
-                this.numberOfDays = numDays;
-            } else {
-                showNumberOfDaysError();
+            // Fetch weather data for up to 16 days
+            WeatherData weatherData = forecastWeatherDataUseCase.execute(location, 16);
+
+            if (weatherData == null) {
+                JOptionPane.showMessageDialog(mainPanel,
+                        "Error: Could not fetch weather data for the selected location.",
+                        "Weather Data Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
             }
-        }
-        catch (NumberFormatException e) {
-            showNumberOfDaysError();
+
+            // Generate the WeatherDataDTO object for UI updates
+            LocalDate startDate = currentDate;
+            LocalDate endDate = startDate.plusDays(16); // 16-day range
+            generateWeatherDataDTO(weatherData, startDate, endDate);
+
+            // Parse the number of days entered by the user (from the text field)
+            String userInput = numberOfDaysField.getText().trim();
+            if (userInput.isEmpty()) {
+                showNumberOfDaysError(); // Show an error and stop processing
+                return;
+            }
+
+            // Parse the number of days entered by the user
+            try {
+                int numDays = Integer.parseInt(userInput);
+                if (numDays > 0 && numDays <= 16) { // Validate the range
+                    this.numberOfDays = numDays;
+                } else {
+                    showNumberOfDaysError(); // Invalid range, show error
+                }
+            } catch (NumberFormatException e) {
+                showNumberOfDaysError(); // Invalid input, show error
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(mainPanel,
+                    "An unexpected error occurred while fetching weather data: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(); // Log the error for debugging
         }
     }
 
-    protected void displayWeatherData(){
+
+    protected void displayWeatherData() {
         if (dayPanel != null) {
             showSelectedDayPanel();
         }
@@ -158,14 +187,42 @@ public class ForecastDailyView extends LocationsWindow {
     }
 
     private void showNumberOfDaysError() {
-        JOptionPane.showMessageDialog(mainPanel,"ERROR: Invalid number of days entered.");
+        JOptionPane.showMessageDialog(mainPanel, "ERROR: Invalid number of days entered.");
     }
 
     private void updateDayPanel(int index) {
-        dayPanel.setMaxTemperatureValue(weatherDataDTO.temperatureToString(
-                    "temperatureMaxDaily", index, Constants.CELCIUS_UNIT_TYPE));
-        dayPanel.setMinTemperatureValue(weatherDataDTO.temperatureToString(
-                    "temperatureMinDaily", index, Constants.CELCIUS_UNIT_TYPE));
-        dayPanel.setPercipitationValue(weatherDataDTO.dataToString("percipitationDaily", index));
+        try {
+            // Update temperature values
+            dayPanel.setMaxTemperatureValue(
+                    weatherDataDTO.temperatureToString("temperatureMaxDaily", index, Constants.CELCIUS_UNIT_TYPE));
+            dayPanel.setMinTemperatureValue(
+                    weatherDataDTO.temperatureToString("temperatureMinDaily", index, Constants.CELCIUS_UNIT_TYPE));
+
+            // Update precipitation value
+            dayPanel.setPercipitationValue(
+                    weatherDataDTO.dataToString("percipitationDaily", index));
+
+            // Optionally, update additional fields like wind speed and direction
+            String windSpeed = weatherDataDTO.dataToString("windSpeedDaily", index);
+            String windDirection = weatherDataDTO.dataToString("windDirectionDaily", index);
+
+            System.out.println("Wind Speed: " + windSpeed + ", Wind Direction: " + windDirection); // Debugging purposes
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(mainPanel,
+                    "Error displaying weather data: " + e.getMessage(),
+                    "Data Error",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }
+
+
+    // added this method for usage in FavoriteView
+    public void setLocation(Location location) {
+        this.location = location;
+        getWeatherData(); // Fetch weather data immediately
+        displayWeatherData(); // Display the fetched data
+    }
+
 }
