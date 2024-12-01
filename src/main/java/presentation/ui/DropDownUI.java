@@ -108,6 +108,8 @@ public class DropDownUI extends JPanel {
         if (locationDropdown.getSelectedIndex() >= 0) {
             return matchingLocations.get(locationDropdown.getSelectedIndex());
         }
+        System.out.println(matchingLocations);
+        System.out.println(matchingLocations.get(locationDropdown.getSelectedIndex()));
         return null;
     }
 

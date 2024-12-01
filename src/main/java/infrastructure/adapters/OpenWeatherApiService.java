@@ -35,7 +35,8 @@ public class OpenWeatherApiService implements ApiService {
                         + "latitude=" + location.getLatitude() + "&longitude=" + location.getLongitude()
                         + "&hourly=temperature_2m,relative_humidity_2m"
                         + "&daily=temperature_2m_max,temperature_2m_min,temperature_2m_mean,precipitation_sum,"
-                        + "wind_speed_10m_max,wind_direction_10m_dominant&forecast_days=" + numberOfDays;
+                        + "wind_speed_10m_max,wind_direction_10m_dominant&forecast_days=" + numberOfDays
+                        + "&timezone=auto";
 
         return fetchWeather(urlString);
     }
