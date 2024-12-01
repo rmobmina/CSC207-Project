@@ -30,8 +30,19 @@ public class MercatorDisplayApp {
 
             // Load the map image
             final String mapFilePath = new File("").getAbsolutePath() + Constants.MERCATOR_IMAGE_PATH;
-            final Image mapImage = loadMapImageUseCase.execute(mapFilePath);
+            System.out.println(mapFilePath);
 
+            // Combine the paths to get the full path
+            File file = new File(mapFilePath);
+
+            // Check if the file exists
+            if (file.exists()) {
+                System.out.println("File found: " + file.getAbsolutePath());
+            } else {
+                System.out.println("File not found " + file.getAbsolutePath());
+            }
+
+            final Image mapImage = loadMapImageUseCase.execute(mapFilePath);
             if (mapImage == null) {
                 throw new RuntimeException("Map image could not be loaded. Check the file path.");
             }
@@ -50,9 +61,7 @@ public class MercatorDisplayApp {
             final Coordinate coordinate = new Coordinate(43.6532, -79.3832);
             app.displayCoordinate(coordinate, mapImage.getWidth(null), mapImage.getHeight(null));
 
-        }
-
-        catch (IOException exception) {
+        } catch (IOException exception) {
             System.err.println("Failed to load the map image: " + exception.getMessage());
             exception.printStackTrace();
         }
