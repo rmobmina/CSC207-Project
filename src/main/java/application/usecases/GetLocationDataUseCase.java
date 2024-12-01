@@ -25,4 +25,15 @@ public class GetLocationDataUseCase {
     public List<Location> execute(String city, String apiKey) {
         return apiService.fetchLocations(city, apiKey);
     }
+
+//    public Location execute(String city, String state, String country, String apiKey) {
+//        List<Location> possibleLocations = apiService.fetchLocations(city, apiKey);
+//        for (Location location : possibleLocations) {
+//            if (location.getState().equals(state) && location.getCountry().equals(country)) {
+//                return location;
+//            }
+//        }
+//        // If no location matches the desired location
+//        return null;
+//    }
 }

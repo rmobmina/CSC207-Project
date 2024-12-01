@@ -8,6 +8,7 @@ import application.usecases.GetHistoricalWeatherDataUseCase;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import infrastructure.adapters.OpenWeatherApiService;
+import utils.Constants;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -22,9 +23,9 @@ import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.*;
 import java.util.List;
 
+// Old dashboardUI class just in case (to be replaced with DashBoardUi)
 public class DashboardUI extends JFrame {
     static final JLabel locationLabel = new JLabel("Location:");
 
@@ -32,7 +33,7 @@ public class DashboardUI extends JFrame {
 
     static final JLabel temperatureLabel = new JLabel("Temperature:");
     static final JLabel temperatureValue = new JLabel("N/A");
-    static final String temperatureType = "cel";
+    static final String TEMPERATURE_TYPE = "cel";
     static final JLabel percipitationLabel = new JLabel("Percipitation Sum:");
     static final JLabel percipitationValue = new JLabel("N/A");
     static final JLabel humidityLabel = new JLabel("Humidity:");
@@ -53,14 +54,14 @@ public class DashboardUI extends JFrame {
     static final JFrame rangeWindow = new JFrame("Range of Time");
 
     static final JPanel historicalPanel = new JPanel();
-    static final JPanel forecastPanel = new JPanel();
+    static final JPanel forcastPanel = new JPanel();
 
     static LocalDate startDate = LocalDate.of(2021, 1, 1);
     static LocalDate endDate = LocalDate.of(2021, 1, 2);
     static String userOption = "Historical";
     WeatherDataDTO weatherDataDTO;
     static OpenWeatherApiService apiService;
-    static final DropDownUI menu = new DropDownUI();
+    static final DropDownUI menu = new DropDownUI(apiKey, new GetLocationDataUseCase(apiService));
 
     // A: main dashboard, its messy for now but we'll split them up for clean architecture and for a cleaner look
     public DashboardUI() {
@@ -68,10 +69,9 @@ public class DashboardUI extends JFrame {
         setSize(400, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Initializes the components for time range window
         initRangeWindowComponents();
 
-        addForecastPanel();
+        addForcastPanel();
 
         addHistoricalPanel();
 
@@ -109,14 +109,26 @@ public class DashboardUI extends JFrame {
         });
     }
 
-    private void addForecastPanel(){
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(8, 2, 10, 10));
-        addMainComponents(panel);
+    private void addForcastPanel(){
+        int number_of_hours = 8;
+        forcastPanel.setLayout(new GridLayout(8, 2, 10, 10));
+        addMainComponents(forcastPanel);
 
-        // To be completed later by Arham
+        String city = getLocationFieldValue();
+        if (city == null || city.trim().isEmpty()) {
+            return;    // exit if no city is entered
+        }
+        // adding column headers
+        forcastPanel.add(new JLabel("Hour", SwingConstants.CENTER));
+        forcastPanel.add(new JLabel("Temperature (Celcius)", SwingConstants.CENTER));
 
-        add(panel);
+        // displaying only 8 hours of forecast
+        for (int i = 0; i < number_of_hours; i++) {
+            forcastPanel.add(new JLabel("Hour" + (i + 1), SwingConstants.CENTER));
+            forcastPanel.add(new JLabel(String.format("%.1f",weatherDataDTO.getWeatherDataValue("temperatureHourly", i)), SwingConstants.CENTER));
+        }
+
+        add(forcastPanel);
     }
 
     private void addHistoricalPanel(){
@@ -134,7 +146,6 @@ public class DashboardUI extends JFrame {
     private void addMainComponents(JPanel panel){
         panel.add(locationLabel);
         panel.add(menu);
-        menu.setApiKey(apiKey);
 
         panel.add(temperatureLabel);
         panel.add(temperatureValue);
@@ -194,7 +205,7 @@ public class DashboardUI extends JFrame {
     private void displayWeatherData() {
         GetLocationDataUseCase locationUseCase = new GetLocationDataUseCase(apiService);
         GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase = new GetHistoricalWeatherDataUseCase(apiService);
-        GetForecastWeatherDataUseCase ForecastWeatherDataUseCase = new GetForecastWeatherDataUseCase(apiService);
+        GetForecastWeatherDataUseCase forcastWeatherDataUseCase = new GetForecastWeatherDataUseCase(apiService);
         String city = getLocationFieldValue();
 
         // TODO: implement user choice
@@ -205,8 +216,8 @@ public class DashboardUI extends JFrame {
             WeatherData weatherData;
 
             // To be changed later to adhere to CA
-            if (userOption.equals("Forecast")) {
-                weatherData = ForecastWeatherDataUseCase.execute(chosenLocation, 7);
+            if (userOption.equals("Forcast")) {
+                weatherData = forcastWeatherDataUseCase.execute(chosenLocation, 7);
             }
             else{
                 weatherData = historicalWeatherDataUseCase.execute(chosenLocation, startDate, endDate);
@@ -223,10 +234,10 @@ public class DashboardUI extends JFrame {
     // Updates all the weather data text fields given the current location and dates
     private void updateWeatherDataTextFields(WeatherDataDTO weatherDataDTO) {
         DecimalFormat df = new DecimalFormat("#.##");
-        temperatureValue.setText(df.format(weatherDataDTO.getTemperature(temperatureType, 0)) + " °C");
-        humidityValue.setText(weatherDataDTO.humidity.get(0) + " %");
-        percipitationValue.setText(weatherDataDTO.precipitation.get(0) + " mm");
-        windValue.setText(weatherDataDTO.windSpeed.get(0) + " km/h " + weatherDataDTO.windDirection.get(0) + " °");
+        temperatureValue.setText(weatherDataDTO.temperatureToString("temperatureHourly", 0, Constants.CELCIUS_UNIT_TYPE));
+//        humidityValue.setText(weatherDataDTO.getWeatherData("humidityHourly").get(0) + " %");
+//        percipitationValue.setText(weatherDataDTO.precipitation.get(0) + " mm");
+//        windValue.setText(weatherDataDTO.windSpeed.get(0) + " km/h " + weatherDataDTO.windDirection.get(0) + " °");
     }
 
     private void openErrorWindow(String errorMessage) {
