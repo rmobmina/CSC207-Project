@@ -2,10 +2,16 @@ package presentation.ui.views;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.text.DecimalFormat;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+
+import org.json.JSONArray;
 
 import application.usecases.GetForecastWeatherDataUseCase;
 import application.usecases.GetLocationDataUseCase;
@@ -13,11 +19,6 @@ import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
 import infrastructure.adapters.OpenWeatherApiService;
 import presentation.ui.windows.LocationsWindow;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import java.text.DecimalFormat;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
 
 /**
  * This class displays the hourly forecast for the next 8 hours for a given location.
@@ -26,15 +27,15 @@ import java.time.ZoneOffset;
  */
 public class ForecastHourlyView extends LocationsWindow {
 
-    public static final String OPTION_NAME = "Forecast Hourly";
 
-    private WeatherData weatherData;
+    private final OpenWeatherApiService apiService = new OpenWeatherApiService();
 
     private static final String MESSAGE_DIALOGUE_TITLE = "Error";
     private static final int GAP = 10;
     private static final int TEMP_THRESHOLD = 0;
     private static final int NUMBER_HOURS_OF_FORECAST = 8;
-    final OpenWeatherApiService apiService = new OpenWeatherApiService();
+    public WeatherData weatherData;
+    public static final String OPTION_NAME = "Forecast Hourly";
 
     public ForecastHourlyView(String name, int[] dimensions, GetLocationDataUseCase locationDataUseCase, String apiKey,
                               ApiService apiService) {
@@ -49,7 +50,7 @@ public class ForecastHourlyView extends LocationsWindow {
             return;
         }
 
-        // Fetch hourly forecast data for the selected location
+        // Fetchhourly forecast data for the selected location
         final GetForecastWeatherDataUseCase forecastUseCase = new GetForecastWeatherDataUseCase(apiService);
         this.weatherData = forecastUseCase.execute(location, NUMBER_HOURS_OF_FORECAST);
     }
@@ -113,9 +114,9 @@ public class ForecastHourlyView extends LocationsWindow {
             final DecimalFormat onedecimal = new DecimalFormat("#.#");
             final String roundedAvgTemp = onedecimal.format(avgTemp);
             JOptionPane.showMessageDialog(this,
-                    "The average temperature for the next 8 hours: " + roundedAvgTemp + "°C!\n"
-                            + "Don't forget to wear warm clothing.",
-                    "Temperature Warning", JOptionPane.INFORMATION_MESSAGE);
+                    "The average temperature for the next 8 hours: " + roundedAvgTemp
+                            + "°C!\n" + "Don't forget to wear warm clothing.",
+                       "Temperature Warning", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 }
