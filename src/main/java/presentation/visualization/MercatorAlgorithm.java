@@ -41,18 +41,18 @@ public class MercatorAlgorithm {
 
     /**
      * Converts Mercator projection (x, y) coordinates to longitude and latitude.
-     * @param xVal a double representing the x-coordinate in pixels (relative to image width).
-     * @param yVal a double representing the y-coordinate in pixels (relative to image height).
+     * @param x a double representing the x-coordinate in pixels (relative to image width).
+     * @param y a double representing the y-coordinate in pixels (relative to image height).
      * @param width a double representing the width of the image in pixels.
      * @param height a double representing the height of the image in pixels.
      * @return A double array [longitude, latitude] where longitude and latitude are in degrees.
      */
-    public static double[] reverseCoordinates(double xVal, double yVal, double width, double height)  {
+    public static double[] reverseCoordinates(double x, double y, double width, double height)  {
         // Reversing Longitude
-        final double lambda = (xVal / width) * Constants.MERCATOR_MAX_DEGREE - (Constants.MERCATOR_MAX_DEGREE / 2.0);
+        final double lambda = (x / width) * Constants.MERCATOR_MAX_DEGREE - (Constants.MERCATOR_MAX_DEGREE / 2.0);
 
         // Reversing Latitude
-        final double mercN = ((height / 2.0) - yVal) * (2.0 * Math.PI / width);
+        final double mercN = ((height / 2.0) - y) * (2.0 * Math.PI / width);
         final double latitude = Math.toDegrees(Math.atan(Math.sinh(mercN)));
 
         return new double[] {lambda, latitude};

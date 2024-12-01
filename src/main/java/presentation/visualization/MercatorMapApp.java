@@ -32,7 +32,6 @@ public class MercatorMapApp extends JFrame {
         final ConvertToMercatorUseCase useCase = new ConvertToMercatorUseCase();
         final double[] mercatorCoordinates = useCase.execute(coordinate, mapWidth, mapHeight);
 
-        // Pass the calculated Mercator coordinates to the renderer
         renderer.renderMap(mercatorCoordinates[0], mercatorCoordinates[1]);
     }
 }

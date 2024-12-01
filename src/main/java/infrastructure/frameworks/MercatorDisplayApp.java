@@ -4,28 +4,33 @@ import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
+import application.usecases.LoadMapImageUseCase;
 import domain.entities.Coordinate;
 import presentation.visualization.MercatorMapApp;
 import presentation.visualization.SwingMapRenderer;
+import utils.Constants;
 
 /**
- * MercatorDisplayApp entry point for the application. Sets up and displays the map with coordinates.
+ * Entry point for the Mercator Display Application.
+ * This application demonstrates displaying a Mercator map and handling user interactions.
  */
 public class MercatorDisplayApp {
 
     /**
-     * MercatorDisplayApp method to start the application.
-     * @param args command line arguments
+     * Main method to start the Mercator Display application.
+     *
+     * @param args Command-line arguments.
      */
     public static void main(String[] args) {
         try {
+            // Dependency: LoadMapImageUseCase
+            final LoadMapImageUseCase loadMapImageUseCase = new LoadMapImageUseCase();
+
             // Load the map image
-            final String mapPath = new File("").getAbsolutePath() + "\\src\\main\\java\\presentation\\visualization"
-                    + "\\1207px-Mercator_projection_SW.0.png";
-            final Image mapImage = ImageIO.read(new File(mapPath));
+            final String mapFilePath = new File("").getAbsolutePath() + Constants.MERCATOR_IMAGE_PATH;
+            final Image mapImage = loadMapImageUseCase.execute(mapFilePath);
 
             if (mapImage == null) {
                 throw new RuntimeException("Map image could not be loaded. Check the file path.");
@@ -41,15 +46,15 @@ public class MercatorDisplayApp {
             app.add(renderer);
             app.setVisible(true);
 
-            // Display a coordinate
+            // Example: Display a specific coordinate
             final Coordinate coordinate = new Coordinate(43.6532, -79.3832);
             app.displayCoordinate(coordinate, mapImage.getWidth(null), mapImage.getHeight(null));
 
         }
 
         catch (IOException exception) {
-            exception.printStackTrace();
             System.err.println("Failed to load the map image: " + exception.getMessage());
+            exception.printStackTrace();
         }
     }
 }
