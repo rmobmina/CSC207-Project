@@ -89,7 +89,7 @@ public class OpenWeatherApiService implements ApiService {
             final String response = HttpUtils.makeApiCall(urlString);
 
             // if we receive a response from the API, we try to initialize our locations as Location objects
-            if (response != null) {
+            if (response != null && city != null) {
                 final JSONArray locationArray = new JSONArray(response);
 
                 for (int i = 0; i < locationArray.length(); i++) {
@@ -109,6 +109,7 @@ public class OpenWeatherApiService implements ApiService {
         } catch (JSONException | IOException exception) {
             System.err.println("Error fetching locations: " + exception.getMessage());
         }
+
         return locations;
     }
 
