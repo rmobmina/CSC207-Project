@@ -9,12 +9,13 @@ public class Constants {
     public static final double CELSIUS_TO_KELVIN_OFFSET = 273.15;
     public static final double CELSIUS_TO_FAHRENHEIT_FACTOR = 1.8;
     public static final int CELSIUS_TO_FAHRENHEIT_OFFSET = 32;
+    public static final String CELCIUS_UNIT_TYPE = "CEL";
+    public static final String FAHRENHEIT_UNIT_TYPE = "FAH";
+    public static final String KELVIN_UNIT_TYPE = "KEL";
+    public static final String DAILY = "daily";
+    public static final String HOURLY = "hourly";
 
-    public static final int SIDE_WINDOW_WIDTH = 300;
-    public static final int SIDE_WINDOW_HEIGHT = 200;
-
-    public static final int GRID_ROWS = 3;
-    public static final int GRID_COLS = 2;
-    public static final int GRID_GAP = 10;
+    public static final int MERCATOR_POINT_RADIUS = 10;
+    public static final double MERCATOR_MAX_DEGREE = 360.0;
 
 }
