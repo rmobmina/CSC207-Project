@@ -1,4 +1,4 @@
-package presentation.ui.views;
+package java.presentation.ui.windows;
 
 import domain.entities.Location;
 import presentation.ui.FavoritesManager;
