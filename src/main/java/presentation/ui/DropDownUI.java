@@ -1,43 +1,44 @@
 package presentation.ui;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-
-import javax.swing.*;
-
+import application.usecases.GetLocationDataUseCase;
 import domain.entities.Location;
 import infrastructure.adapters.OpenWeatherApiService;
+
 
 public class DropDownUI extends JPanel {
     private final JTextField locationField = new JTextField(20);
     private final JComboBox<String> locationDropdown = new JComboBox<>();
-    private final OpenWeatherApiService apiService = new OpenWeatherApiService(); // Imported API to dropdown to show the city names
-    private String apiKey;
+    private final String apiKey;
 
     private final Timer updateTimer;
     private boolean selectionMade;
     private List<Location> matchingLocations = new ArrayList<>();
 
-    public DropDownUI() {
+    public DropDownUI(String apiKey, GetLocationDataUseCase locationDataUseCase) {
+        this.apiKey = apiKey;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(locationField);
         add(locationDropdown);
         locationDropdown.setVisible(false);
 
+        // Initialize the timer with a 500ms delay
         updateTimer = new Timer(500, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                updateDropdown(locationField.getText());
+                updateDropdown(locationField.getText(), locationDataUseCase);
             }
         });
         updateTimer.setRepeats(false);
 
-        selectionMade = false;
         locationField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
@@ -45,12 +46,16 @@ public class DropDownUI extends JPanel {
                     selectionMade = false;
                 }
 
+                // Check if the down arrow key is pressed
                 if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                    // If dropdown has items, focus on it and show it
                     if (locationDropdown.getItemCount() > 0) {
                         locationDropdown.requestFocus();
                         locationDropdown.setPopupVisible(true);
                     }
-                } else {
+                }
+                else {
+                    // Restart the timer for other keys
                     updateTimer.restart();
                 }
             }
@@ -68,12 +73,12 @@ public class DropDownUI extends JPanel {
         });
     }
 
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
+    public void resetSelection() {
+        locationDropdown.removeAllItems(); // Clear all items
+        locationDropdown.setVisible(false); // Hide the dropdown
     }
 
-    private void updateDropdown(String input) {
-        System.out.println("Location entered (so far): " + input);
+    private void updateDropdown(String input, GetLocationDataUseCase locationDataUseCase) {
         locationDropdown.removeAllItems();
 
         if (input.isEmpty()) {
@@ -81,8 +86,8 @@ public class DropDownUI extends JPanel {
             return;
         }
 
-        matchingLocations = apiService.fetchLocations(input, apiKey);
-        if (matchingLocations == null || matchingLocations.isEmpty()) {
+        matchingLocations = locationDataUseCase.execute(input, apiKey);
+        if (matchingLocations.isEmpty()) {
             locationDropdown.setVisible(false);
         }
         else {
@@ -92,14 +97,13 @@ public class DropDownUI extends JPanel {
             locationDropdown.setVisible(true);
             locationDropdown.showPopup();
         }
-
         locationDropdown.setSelectedIndex(-1);
     }
 
-    public JTextField getLocationField() {
+    public JTextField getLocationField()
+    {
         return locationField;
     }
-
     public Location getSelectedLocation() {
         if (locationDropdown.getSelectedIndex() >= 0) {
             return matchingLocations.get(locationDropdown.getSelectedIndex());
@@ -107,16 +111,15 @@ public class DropDownUI extends JPanel {
         return null;
     }
 
-    public static void main(String[] args) {
-        final JFrame frame = new JFrame("DropDown UI Example");
-        final String testApiKey = "0e85f616a96a624a0bf65bad89ff68c5"; // Bader's API Key
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        DropDownUI dropDownUI = new DropDownUI();
-        dropDownUI.setApiKey(testApiKey);
-        frame.add(dropDownUI);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    }
+//    public static void main(String[] args) {
+//        final JFrame frame = new JFrame("DropDown UI Example");
+//        final String testApiKey = "0e85f616a96a624a0bf65bad89ff68c5"; // Bader's API Key
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        DropDownUI dropDownUI = new DropDownUI(testApiKey);
+//        frame.add(dropDownUI);
+//        frame.pack();
+//        frame.setLocationRelativeTo(null);
+//        frame.setVisible(true);
+//    }
 }
 
