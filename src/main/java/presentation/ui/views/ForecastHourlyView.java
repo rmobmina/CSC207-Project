@@ -6,7 +6,10 @@ import java.text.DecimalFormat;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 
-import javax.swing.*;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import org.json.JSONArray;
 
@@ -23,13 +26,15 @@ import presentation.ui.windows.LocationsWindow;
  * it gives a pop-up reminder to wear multiple layers of clothing (can add more features later).
  */
 public class ForecastHourlyView extends LocationsWindow {
-    private final OpenWeatherApiService apiService = new OpenWeatherApiService();
+
+    public static final String OPTION_NAME = "Forecast Hourly";
     private static final String MESSAGE_DIALOGUE_TITLE = "Error";
     private static final int GAP = 10;
     private static final int TEMP_THRESHOLD = 0;
     private static final int NUMBER_HOURS_OF_FORECAST = 8;
-    public WeatherData weatherData;
-    public static final String OPTION_NAME = "Forecast Hourly";
+
+    private final OpenWeatherApiService apiService = new OpenWeatherApiService();
+    private WeatherData weatherData;
 
     public ForecastHourlyView(String name, int[] dimensions, GetLocationDataUseCase locationDataUseCase, String apiKey,
                               ApiService apiService) {
@@ -44,7 +49,7 @@ public class ForecastHourlyView extends LocationsWindow {
             return;
         }
 
-        // Fetchhourly forecast data for the selected location
+        // Fetch hourly forecast data for the selected location
         final GetForecastWeatherDataUseCase forecastUseCase = new GetForecastWeatherDataUseCase(apiService);
         this.weatherData = forecastUseCase.execute(location, NUMBER_HOURS_OF_FORECAST);
     }
@@ -58,7 +63,7 @@ public class ForecastHourlyView extends LocationsWindow {
         }
 
         // Creating or updating a panel to display forecast data
-        JPanel forecastPanel = new JPanel(new GridLayout(0, 2, GAP, GAP));
+        final JPanel forecastPanel = new JPanel(new GridLayout(0, 2, GAP, GAP));
 
         forecastPanel.add(new JLabel("Local Time", SwingConstants.CENTER));
         forecastPanel.add(new JLabel("Temperature (Celsius)", SwingConstants.CENTER));
@@ -84,7 +89,7 @@ public class ForecastHourlyView extends LocationsWindow {
             // Get temperature for this hour
             final double temperature = hourlyTemperatures.getDouble(i);
 
-            forecastPanel.add(new JLabel(String.valueOf(forecastLocalTime.getHour()) + ":00", SwingConstants.CENTER));
+            forecastPanel.add(new JLabel(forecastLocalTime.getHour() + ":00", SwingConstants.CENTER));
             forecastPanel.add(new JLabel(String.valueOf(temperature), SwingConstants.CENTER));
 
             // Calculating the total temp for avg
@@ -106,8 +111,8 @@ public class ForecastHourlyView extends LocationsWindow {
             final String roundedAvgTemp = onedecimal.format(avgTemp);
             JOptionPane.showMessageDialog(this,
                     "The average temperature for the next 8 hours: " + roundedAvgTemp
-                            + "°C!\n" + "Don't forget to wear warm clothing.",
-                    "Temperature Warning", JOptionPane.INFORMATION_MESSAGE);
+                            + "C!\n Don't forget to wear warm clothing.", "Temperature Warning",
+                    JOptionPane.INFORMATION_MESSAGE);
         }
     }
 }
