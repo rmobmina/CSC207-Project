@@ -82,7 +82,17 @@ public class OpenWeatherApiService implements ApiService {
 
     @Override
     public List<Location> fetchLocations(String city, String apiKey) {
-        // instantiating our return object and use variables
+        // Validate the inputs
+        if (city == null || city.isEmpty()) {
+            System.err.println("City cannot be null or empty.");
+            return new ArrayList<>(); // or throw an exception based on your design choice
+        }
+        if (apiKey == null || apiKey.isEmpty()) {
+            System.err.println("API key cannot be null or empty.");
+            return new ArrayList<>(); // or throw an exception
+        }
+
+        // Initialize the return object
         final List<Location> locations = new ArrayList<>();
         final String unknown = "Unknown";
         final String urlString = "http://api.openweathermap.org/geo/1.0/direct?q=" + city.replace(" ", "%20") + "&limit=5&appid=" + apiKey;
@@ -90,8 +100,8 @@ public class OpenWeatherApiService implements ApiService {
         try {
             final String response = HttpUtils.makeApiCall(urlString);
 
-            // if we receive a response from the API, we try to initialize our locations as Location objects
-            if (response != null && city != null) {
+            // Process response
+            if (response != null) {
                 final JSONArray locationArray = new JSONArray(response);
 
                 for (int i = 0; i < locationArray.length(); i++) {
@@ -114,6 +124,7 @@ public class OpenWeatherApiService implements ApiService {
 
         return locations;
     }
+
 
     /**
      * Tests if the given OpenWeatherMap API key is valid by checking for the location data of Toronto, ON, CA.

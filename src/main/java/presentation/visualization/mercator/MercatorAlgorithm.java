@@ -1,4 +1,4 @@
-package presentation.visualization;
+package presentation.visualization.mercator;
 
 import utils.Constants;
 

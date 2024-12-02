@@ -1,4 +1,4 @@
-package presentation.visualization;
+package presentation.visualization.mercator;
 
 import javax.swing.JFrame;
 
