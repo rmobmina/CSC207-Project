@@ -8,7 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Habibis and Habibti (No relation)" />
         <module name="CSC207-Project" />
-        <module name="test" />
+        <module name="mockito" />
       </profile>
     </annotationProcessing>
   </component>
