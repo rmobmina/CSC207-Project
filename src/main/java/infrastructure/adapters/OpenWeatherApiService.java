@@ -1,6 +1,7 @@
 package infrastructure.adapters;
 
 // importing needed tools
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -19,7 +20,7 @@ import utils.HttpUtils;
 /**
  * An implementation of the ApiService interface.
  * Parses the OpenWeatherMap API to retrieve a location and the OpenMeteo Weather API,
- *      given a valid location and API key.
+ * given a valid location and API key.
  */
 public class OpenWeatherApiService implements ApiService {
     private JSONObject locData;
@@ -72,9 +73,7 @@ public class OpenWeatherApiService implements ApiService {
                 weatherObject = new JSONObject(response);
                 weatherData = new WeatherData(weatherObject);
             }
-        }
-
-        catch (JSONException | IOException exception) {
+        } catch (JSONException | IOException exception) {
             exception.printStackTrace();
         }
 
@@ -86,7 +85,7 @@ public class OpenWeatherApiService implements ApiService {
         // instantiating our return object and use variables
         final List<Location> locations = new ArrayList<>();
         final String unknown = "Unknown";
-        final String urlString = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=5&appid=" + apiKey;
+        final String urlString = "http://api.openweathermap.org/geo/1.0/direct?q=" + city.replace(" ", "%20") + "&limit=5&appid=" + apiKey;
 
         try {
             final String response = HttpUtils.makeApiCall(urlString);
@@ -109,9 +108,7 @@ public class OpenWeatherApiService implements ApiService {
                     }
                 }
             }
-        }
-
-        catch (JSONException | IOException exception) {
+        } catch (JSONException | IOException exception) {
             System.err.println("Error fetching locations: " + exception.getMessage());
         }
 
@@ -120,6 +117,7 @@ public class OpenWeatherApiService implements ApiService {
 
     /**
      * Tests if the given OpenWeatherMap API key is valid by checking for the location data of Toronto, ON, CA.
+     *
      * @param apiKey is a user-entered String object representing their OpenWeatherMap API key.
      * @return true if the call is successful, false otherwise.
      */
@@ -136,9 +134,7 @@ public class OpenWeatherApiService implements ApiService {
                 valid = false;
             }
 
-        }
-
-        catch (IOException exception) {
+        } catch (IOException exception) {
             exception.printStackTrace();
             valid = false;
         }

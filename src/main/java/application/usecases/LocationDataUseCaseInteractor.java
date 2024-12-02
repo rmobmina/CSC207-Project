@@ -1,6 +1,5 @@
-package infrastructure;
+package application.usecases;
 
-import application.usecases.GetLocationDataUseCase;
 import domain.entities.Location;
 
 import java.util.List;
