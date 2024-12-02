@@ -14,9 +14,10 @@ public class Constants {
     public static final String KELVIN_UNIT_TYPE = "KEL";
     public static final String DAILY = "daily";
     public static final String HOURLY = "hourly";
-
+    public static final int MAX_FORECAST_DAYS = 16;
     public static final int MERCATOR_POINT_RADIUS = 10;
     public static final double MERCATOR_MAX_DEGREE = 360.0;
     public static final String MERCATOR_IMAGE_PATH = "//src//main//java//presentation//visualization//1207px-Mercator_projection_SW.0.png";
+    public static final String API_KEY = "your_api_key_here";
 
 }
