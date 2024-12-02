@@ -87,9 +87,6 @@ public class NewDashBoardUi extends JFrame {
             userOptionsView.hideForecastOptionsWindow();
         });
 
-        userOptionsView.setHistoricalActionListener(e -> getLocationsWindow(HistoricalWeatherView.OPTION_NAME,
-                locationsWindowWidth, locationsWindowHeight));
-
         userOptionsView.setComparisonActionListener(e -> {
             // Ask user to enter how many locations they want
             showNumberOfLocationsWindow();

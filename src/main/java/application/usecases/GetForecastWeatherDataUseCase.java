@@ -13,6 +13,8 @@ import domain.interfaces.ApiService;
 public class GetForecastWeatherDataUseCase {
     private final ApiService apiService;
 
+    private boolean useCaseFailed;
+
     public GetForecastWeatherDataUseCase(ApiService apiService) {
         this.apiService = apiService;
     }
@@ -25,6 +27,12 @@ public class GetForecastWeatherDataUseCase {
      */
     public WeatherData execute(Location location, int numberOfDays) {
         // calls the API service to extract weather information in JSON format
-        return apiService.fetchForecastWeather(location, numberOfDays);
+        final WeatherData weatherData = apiService.fetchForecastWeather(location, numberOfDays);
+        useCaseFailed = weatherData == null;
+        return weatherData;
+    }
+
+    public boolean isUseCaseFailed() {
+        return useCaseFailed;
     }
 }
