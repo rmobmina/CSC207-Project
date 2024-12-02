@@ -55,8 +55,8 @@ public class ForecastHourlyView extends LocationsWindow {
     }
     // Track the weather details panel so that we can remove the pprevious weather details
     // when entered a new location in the dropdown
-    private JPanel forecastpanel;
 
+    private JPanel forecastpanel;
     @Override
     protected void displayWeatherData() {
         if (weatherData == null) {
