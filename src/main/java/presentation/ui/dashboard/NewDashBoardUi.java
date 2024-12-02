@@ -33,8 +33,8 @@ public class NewDashBoardUi extends JFrame {
     final String LOCATIONS_WINDOW_NAME = "Locations";
     final String NUMBER_LOCATIONS_WINDOW_NAME = "Number Locations";
 
-    final int locationsWindowWidth = 500;
-    final int locationsWindowHeight = 500;
+    final int locationsWindowWidth = 710;
+    final int locationsWindowHeight = 350;
 
     private String userOption;
 
@@ -49,7 +49,7 @@ public class NewDashBoardUi extends JFrame {
                 userOptionsView, numberLocationsView);
 
         setTitle("Weather Dashboard");
-        setSize(400, 700);
+        setSize(500, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         favoritesManager = new FavoritesManager(); // Initialized FavoritesManager

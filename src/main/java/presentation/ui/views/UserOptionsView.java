@@ -40,7 +40,7 @@ public class UserOptionsView extends View{
     private void openForecastOptionsWindow() {
         JPanel panel = new JPanel();
         forecastOptionsWindow.setTitle("Forecast Options");
-        forecastOptionsWindow.setSize(200, 200);
+        forecastOptionsWindow.setSize(350, 200);
         forecastOptionsWindow.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         panel.setLayout(new GridLayout(1, 2, 10, 10));
         panel.add(forecastHourlyOption);
