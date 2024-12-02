@@ -24,5 +24,5 @@ Each team member is responsible for implementing a specific user story, detailed
 | "As a user, I want a summarized forecast for each day of the upcoming week, including general temperature trends, precipitation likelihood, and significant weather changes, so I can easily plan my weekly activities without delving into detailed data." | **Akram Klai** |
 | "As a user, I want to compare the average temperature trends between two cities, so I can analyze the differences in climate." | **Reena Obmina** |
 | "As a user, I want to see a comparison of the average temperature trends over the past 20 years to identify signs of climate change in my city." | **Edison Yao** |
-| "As a user, I want to be alerted of severe weather conditions in my selected area, so I can take necessary precautions to keep me and the people I care for safe." | **Bader Alseiari** |
+| "As a user, I want to have the ability to save my favorite locations, so I can quickly access weather data for those locations without re-entering them each time, and easily manage them by adding or removing entries as needed." | **Bader Alseiari** |
 | "As a user, I want a detailed hourly temperature forecast for the current day, including expected highs, lows, and significant shifts, so I can make informed decisions about specific activities during the day." | **Arham Mohammed** |
