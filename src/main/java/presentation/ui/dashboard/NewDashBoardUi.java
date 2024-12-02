@@ -140,7 +140,8 @@ public class NewDashBoardUi extends JFrame {
             case LOCATIONS_WINDOW_NAME:
                 locationsWindow.openWindow();
                 toggleShowDashBoard(false);
-                break; // closes the current window
+                // closes the current window
+                break;
             case NUMBER_LOCATIONS_WINDOW_NAME:
                 numberLocationsView.showPanel();
                 this.setContentPane(numberLocationsView.getPanel());
