@@ -6,10 +6,7 @@ import java.text.DecimalFormat;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import org.json.JSONArray;
 
@@ -60,13 +57,9 @@ public class ForecastHourlyView extends LocationsWindow {
             return;
         }
 
-        // Clearing previous content
-        this.getContentPane().removeAll();
+        // Creating or updating a panel to display forecast data
+        JPanel forecastPanel = new JPanel(new GridLayout(0, 2, GAP, GAP));
 
-        // Creating a panel to display forecast data
-        final JPanel forecastPanel = new JPanel(new GridLayout(0, 2, GAP, GAP));
-
-        // Adding column headers
         forecastPanel.add(new JLabel("Local Time", SwingConstants.CENTER));
         forecastPanel.add(new JLabel("Temperature (Celsius)", SwingConstants.CENTER));
 
@@ -81,10 +74,9 @@ public class ForecastHourlyView extends LocationsWindow {
         // Getting current UTC time
         final LocalTime currentUtcTime = LocalTime.now(ZoneOffset.UTC);
 
-        // Prepare for calculating the average temperature
         double totalTemp = 0.0;
 
-        // Display hourly data
+        // Displaying hourly data
         for (int i = 0; i < NUMBER_HOURS_OF_FORECAST; i++) {
             // Adjust current UTC time to local time
             final LocalTime forecastLocalTime = currentUtcTime.plusHours(utcOffsetHours + i + 1);
@@ -99,21 +91,23 @@ public class ForecastHourlyView extends LocationsWindow {
             totalTemp += temperature;
         }
 
-        // Add the panel to the frame
-        this.getContentPane().add(forecastPanel, BorderLayout.CENTER);
-        this.revalidate();
-        this.repaint();
+        // Add forecast panel below the input fields
+        mainPanel.add(forecastPanel, BorderLayout.CENTER);
+        mainPanel.revalidate();
+        mainPanel.repaint();
 
         // Calculate and display the average temperature
         final double avgTemp = totalTemp / NUMBER_HOURS_OF_FORECAST;
-        // show a warning pop-up if the average temperature for the next 8 hours is below/equal to the threshold
+
+        // Show a warning pop-up if the average temperature for the next 8 hours is below/equal to the threshold
         if (avgTemp <= TEMP_THRESHOLD) {
+            // cutting the average temperature after one decimal place.
             final DecimalFormat onedecimal = new DecimalFormat("#.#");
             final String roundedAvgTemp = onedecimal.format(avgTemp);
             JOptionPane.showMessageDialog(this,
                     "The average temperature for the next 8 hours: " + roundedAvgTemp
                             + "°C!\n" + "Don't forget to wear warm clothing.",
-                       "Temperature Warning", JOptionPane.INFORMATION_MESSAGE);
+                    "Temperature Warning", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 }
