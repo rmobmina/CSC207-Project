@@ -26,7 +26,7 @@ public class WeatherDataDTOGenerator {
             unitsData.put(DAILY, dailyUnits.toMap());
             unitsData.put(HOURLY, hourlyUnits.toMap());
 
-            System.out.println(unitsData.toString(4));
+            System.out.println(data.toString(4));
 
             WeatherDataDTO weatherDataDTO = new WeatherDataDTO(location, dates, data, unitsData);
             weatherDataDTO.addWeatherDetail(HOURLY, "temperature_2m", "temperatureHourly");

@@ -15,13 +15,13 @@
 // */
 //class MercatorMapAppTest {
 //
-//    private SwingMapRenderer mockRenderer;
+//    private SwingMapView mockRenderer;
 //    private MercatorMapApp app;
 //
 //    @BeforeEach
 //    void setUp() {
 //        // Mock the renderer
-//        mockRenderer = Mockito.mock(SwingMapRenderer.class);
+//        mockRenderer = Mockito.mock(SwingMapView.class);
 //
 //        // Initialize the MercatorMapApp with the mocked renderer
 //        app = new MercatorMapApp(mockRenderer);
