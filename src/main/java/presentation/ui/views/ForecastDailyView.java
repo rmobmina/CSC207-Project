@@ -180,21 +180,7 @@ public class ForecastDailyView extends LocationsWindow {
 
     private void updateDayPanel(int index) {
         try {
-            // Update temperature values
-            dayPanel.setMaxTemperatureValue(
-                    weatherDataDTO.temperatureToString("temperatureMaxDaily", index, CELCIUS_UNIT_TYPE));
-            dayPanel.setMinTemperatureValue(
-                    weatherDataDTO.temperatureToString("temperatureMinDaily", index, CELCIUS_UNIT_TYPE));
 
-            // Update precipitation value
-            dayPanel.setPercipitationValue(
-                    weatherDataDTO.dataToString("percipitationDaily", index));
-
-            // Optionally, update additional fields like wind speed and direction
-            String windSpeed = weatherDataDTO.dataToString("windSpeedDaily", index);
-            String windDirection = weatherDataDTO.dataToString("windDirectionDaily", index);
-
-            System.out.println("Wind Speed: " + windSpeed + ", Wind Direction: " + windDirection); // Debugging purposes
 
         }
         catch (Exception exception) {
@@ -223,60 +209,5 @@ public class ForecastDailyView extends LocationsWindow {
         this.numberOfDaysField.setText(numDays);
     }
 
-    // This is class that constructs a panel for a specific day (with weather details)
-    private class DayPanel extends JPanel {
-        JLabel dateLabel = new JLabel();
-        JLabel maxTemperatureLabel = new JLabel();
-        JLabel maxTemperatureValue = new JLabel();
-        JLabel minTemperatureLabel = new JLabel();
-        JLabel minTemperatureValue = new JLabel();
-        JLabel percipitationLabel = new JLabel();
-        JLabel percipitationValue = new JLabel();
-
-        DayPanel(LocalDate date, boolean dayIsCurrent) {
-            this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-            setDate(date, dayIsCurrent);
-            this.setBorder(BorderFactory.createTitledBorder(""));
-            maxTemperatureLabel.setText("Max Temperature: ");
-            minTemperatureLabel.setText("Min Temperature: ");
-            percipitationLabel.setText("Percipitation: ");
-            initComponents();
-        }
-
-        private void initComponents() {
-            this.add(dateLabel);
-            final JPanel weatherPanel = new JPanel();
-            weatherPanel.setLayout(new GridLayout(3, 1, 1, 1));
-            weatherPanel.add(maxTemperatureLabel);
-            weatherPanel.add(maxTemperatureValue);
-            weatherPanel.add(minTemperatureLabel);
-            weatherPanel.add(minTemperatureValue);
-            weatherPanel.add(percipitationLabel);
-            weatherPanel.add(percipitationValue);
-            this.add(weatherPanel);
-        }
-
-        public void setDate(LocalDate date, boolean dayIsCurrent) {
-            if (dayIsCurrent) {
-                dateLabel.setText("Today");
-            }
-            else {
-                final DayOfWeek dayOfWeek = date.getDayOfWeek();
-                dateLabel.setText(dayOfWeek.toString() + " " + date);
-            }
-        }
-
-        public void setMaxTemperatureValue(String maxTemperature) {
-            this.maxTemperatureValue.setText(maxTemperature);
-        }
-
-        public void setMinTemperatureValue(String minTemperature) {
-            this.minTemperatureValue.setText(minTemperature);
-        }
-
-        public void setPercipitationValue(String percipitation) {
-            this.percipitationValue.setText(percipitation);
-        }
-    }
 
 }
