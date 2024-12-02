@@ -12,9 +12,8 @@ public class FavoritesManager {
 
     // Constructor: Initializes the favorites list
     public FavoritesManager() {
-        favorites = new ArrayList<>();
+        loadFavorites();
     }
-
 
     // Add a location to the favorites list
     public void addFavorite(Location location) {

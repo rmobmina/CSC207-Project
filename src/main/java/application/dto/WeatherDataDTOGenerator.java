@@ -32,6 +32,7 @@ public class WeatherDataDTOGenerator {
             weatherDataDTO.addWeatherDetail(HOURLY, "temperature_2m", "temperatureHourly");
             weatherDataDTO.addWeatherDetail(HOURLY, "relative_humidity_2m", "humidityHourly");
             weatherDataDTO.addWeatherDetail(DAILY, "temperature_2m_max", "temperatureMaxDaily");
+            weatherDataDTO.addWeatherDetail(DAILY, "temperature_2m_mean", "temperatureMeanDaily");
             weatherDataDTO.addWeatherDetail(DAILY, "temperature_2m_min", "temperatureMinDaily");
             weatherDataDTO.addWeatherDetail(DAILY, "precipitation_sum", "percipitationDaily");
             weatherDataDTO.addWeatherDetail(DAILY, "wind_speed_10m_max", "windSpeedDaily");

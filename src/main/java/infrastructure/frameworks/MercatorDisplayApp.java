@@ -6,14 +6,15 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.*;
+
+import application.usecases.GetForecastWeatherDataUseCase;
 import application.usecases.GetLocationDataUseCase;
 import application.usecases.LoadMapImageUseCase;
-import domain.entities.Coordinate;
 import domain.entities.Location;
 import infrastructure.adapters.OpenWeatherApiService;
-import presentation.visualization.MercatorAlgorithm;
-import presentation.visualization.MercatorMapApp;
-import presentation.visualization.SwingMapRenderer;
+import presentation.visualization.mercator.MercatorAlgorithm;
+import presentation.visualization.mercator.MercatorMapApp;
+import presentation.visualization.mercator.SwingMapRenderer;
 import presentation.ui.DropDownUI;
 import utils.Constants;
 
