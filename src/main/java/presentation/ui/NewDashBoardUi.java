@@ -16,7 +16,6 @@ import javax.swing.*;
  * Class that handles UI to display a specific view panel (one for each use case) based on the user option
  * and an options view panel to receive the user's input.
  */
-
 public class NewDashBoardUi extends JFrame {
     String apiKey = "";
     ApiService apiService;
@@ -97,14 +96,10 @@ public class NewDashBoardUi extends JFrame {
             userOption = HistoricalWeatherComparisonView.OPTION_NAME;
         });
 
-        // Remove later (this will automatically pop up when the user enters a location)
-        userOptionsView.setAlertActionListener(e -> getLocationsWindow(WeatherAlertView.OPTION_NAME,
-                locationsWindowWidth, locationsWindowHeight));
-
+        // Add Mercator Map action
         userOptionsView.setMercatorMapActionListener(e -> {
-            // Ask user to enter how many locations they want
-            showNumberOfLocationsWindow();
-            userOption = MercatorMapView.OPTION_NAME;
+            // Open Mercator Map directly
+            new infrastructure.frameworks.MercatorDisplayApp().startMercatorMap(apiKey, locationDataUseCase, (OpenWeatherApiService) apiService);
         });
 
         numberLocationsView.setActionListener(e -> getLocationsWindowMultiple(
@@ -133,7 +128,6 @@ public class NewDashBoardUi extends JFrame {
         favoritesView.setVisible(true);
     }
 
-
     // Opens up a window to get the desired number of locations before applying it to the chosen use case
     private void showNumberOfLocationsWindow() {
         switchToWindow(NUMBER_LOCATIONS_WINDOW_NAME);
@@ -155,11 +149,10 @@ public class NewDashBoardUi extends JFrame {
                 this.setContentPane(numberLocationsView.getPanel());
                 break;
             default:
-
         }
     }
 
-    // Closes the current locations window and opens up the dahboard window
+    // Closes the current locations window and opens up the dashboard window
     private void backToDashBoard() {
         toggleShowDashBoard(true);
         switchToWindow(OPTIONS_NAME);
@@ -183,13 +176,16 @@ public class NewDashBoardUi extends JFrame {
         });
     }
 
+    public UserOptionsView getOptionsView() {
+        return userOptionsView;
+    }
+
     public void setAPIkey(String apiKey) {
         this.apiKey = apiKey;
     }
 
-    // added a getter to retrieve api key for favorites
+    // added a getter to retrieve API key for favorites
     public String getAPIkey() {
         return this.apiKey;
     }
-
 }

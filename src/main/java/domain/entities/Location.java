@@ -56,22 +56,12 @@ public class Location implements Serializable {
         return city + ", " + state + ", " + country;
     }
 
-    /**
-     * Returns the latitude as a String.
-     *
-     * @return the latitude of the location.
-     */
-    public String getLatitude() {
-        return Double.toString(latitude);
+    public double getLatitude() {
+        return latitude;
     }
 
-    /**
-     * Returns the longitude as a String.
-     *
-     * @return the longitude of the location.
-     */
-    public String getLongitude() {
-        return Double.toString(longitude);
+    public double getLongitude() {
+        return longitude;
     }
 
     /**

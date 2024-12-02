@@ -18,5 +18,6 @@ public class Constants {
     public static final int MERCATOR_POINT_RADIUS = 10;
     public static final double MERCATOR_MAX_DEGREE = 360.0;
     public static final String MERCATOR_IMAGE_PATH = "//src//main//java//presentation//visualization//1207px-Mercator_projection_SW.0.png";
+    public static final String API_KEY = "your_api_key_here";
 
 }

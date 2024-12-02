@@ -7,7 +7,6 @@ import application.usecases.GetHistoricalWeatherDataUseCase;
 import application.usecases.GetLocationDataUseCase;
 import application.usecases.GetLocationsWindowUseCase;
 import infrastructure.adapters.OpenWeatherApiService;
-import org.jetbrains.annotations.NotNull;
 import presentation.ui.NewDashBoardUi;
 import presentation.ui.views.SelectNumberLocationsView;
 import presentation.ui.views.UserOptionsView;
@@ -21,42 +20,60 @@ public class App {
     /**
      * The main method of the App class.
      * Runs the project by getting the user's API key and launching the rest of the project.
-     * @param args an Array of String objects representing arguments (not used)
+     *
+     * @param args Command-line arguments.
      */
     public static void main(String[] args) {
-        // instantiates important variables
-        String apiKey;
+        // Initialize apiKey with a default value
+        String apiKey = "";
         final OpenWeatherApiService apiService = new OpenWeatherApiService();
         GetLocationDataUseCase locationDataUseCase = new GetLocationDataUseCase(apiService);
         GetForecastWeatherDataUseCase forecastWeatherDataUseCase = new GetForecastWeatherDataUseCase(apiService);
         GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase = new GetHistoricalWeatherDataUseCase(apiService);
         final NewDashBoardUi dashBoard = generateDashBoardUI(locationDataUseCase, forecastWeatherDataUseCase, historicalWeatherDataUseCase);
+
+        // Loop to validate API key input
         boolean validKeyEntered = false;
         final Scanner scanner = new Scanner(System.in);
 
-        // while the key we have is not usable, keep bugging the user for one
         while (!validKeyEntered) {
-            System.out.println("Enter your OpenWeatherMap API key.");
+            System.out.println("Enter your OpenWeatherMap API key:");
             apiKey = scanner.nextLine();
 
-            // OpenWeatherApiService objects have a method to check the validity of the key
+            // Validate API key
             if (apiService.isApiKeyValid(apiKey)) {
                 dashBoard.setAPIkey(apiKey);
                 validKeyEntered = true;
-            }
-
-            else {
+            } else {
                 System.out.println("Your last key was invalid. Please try again.\n");
             }
         }
+
+        // Set action listeners for Mercator map
+        setupMercatorMapIntegration(dashBoard, apiKey, locationDataUseCase, apiService);
+
+        // Launch the main dashboard
         dashBoard.runJFrame(apiService);
     }
 
     private static NewDashBoardUi generateDashBoardUI(GetLocationDataUseCase locationDataUseCase,
-                                                    GetForecastWeatherDataUseCase forecastWeatherDataUseCase,
-                                                    GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase) {
-        return new NewDashBoardUi(new GetLocationsWindowUseCase(),
-                locationDataUseCase, forecastWeatherDataUseCase, historicalWeatherDataUseCase,
-                new UserOptionsView(), new SelectNumberLocationsView());
+                                                      GetForecastWeatherDataUseCase forecastWeatherDataUseCase,
+                                                      GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase) {
+        return new NewDashBoardUi(
+                new GetLocationsWindowUseCase(),
+                locationDataUseCase,
+                forecastWeatherDataUseCase,
+                historicalWeatherDataUseCase,
+                new UserOptionsView(),
+                new SelectNumberLocationsView()
+        );
+    }
+
+    private static void setupMercatorMapIntegration(NewDashBoardUi dashBoard, String apiKey,
+                                                    GetLocationDataUseCase locationDataUseCase,
+                                                    OpenWeatherApiService apiService) {
+        dashBoard.getOptionsView().setMercatorMapActionListener(e -> {
+            new MercatorDisplayApp().startMercatorMap(apiKey, locationDataUseCase, apiService);
+        });
     }
 }
