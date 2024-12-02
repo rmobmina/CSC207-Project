@@ -5,15 +5,14 @@ package application.usecases;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
+import utils.UseCaseInteractor;
 
 /**
  * Use case for the weather application.
  * This class retrieves forcast weather data and returns it as a WeatherData object.
  */
-public class GetForecastWeatherDataUseCase {
+public class GetForecastWeatherDataUseCase extends UseCaseInteractor {
     private final ApiService apiService;
-
-    private boolean useCaseFailed;
 
     public GetForecastWeatherDataUseCase(ApiService apiService) {
         this.apiService = apiService;
@@ -30,9 +29,5 @@ public class GetForecastWeatherDataUseCase {
         final WeatherData weatherData = apiService.fetchForecastWeather(location, numberOfDays);
         useCaseFailed = weatherData == null;
         return weatherData;
-    }
-
-    public boolean isUseCaseFailed() {
-        return useCaseFailed;
     }
 }

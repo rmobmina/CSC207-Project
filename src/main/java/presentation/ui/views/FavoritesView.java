@@ -13,10 +13,7 @@ import javax.swing.JScrollPane;
 
 import domain.entities.Location;
 
-import application.usecases.GetForecastWeatherDataUseCase;
-import infrastructure.adapters.OpenWeatherApiService;
 import presentation.ui.FavoritesManager;
-import presentation.ui.NewDashBoardUi;
 import presentation.ui.windows.LocationsWindow;
 
 public class FavoritesView extends JFrame {
