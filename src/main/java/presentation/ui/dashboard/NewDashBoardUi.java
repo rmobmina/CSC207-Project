@@ -1,4 +1,4 @@
-package presentation.ui;
+package presentation.ui.dashboard;
 
 import application.usecases.GetForecastWeatherDataUseCase;
 import application.usecases.GetHistoricalWeatherDataUseCase;
@@ -6,8 +6,8 @@ import application.usecases.GetLocationDataUseCase;
 import application.usecases.GetLocationsWindowUseCase;
 import domain.interfaces.ApiService;
 import infrastructure.adapters.OpenWeatherApiService;
+import presentation.ui.FavoritesManager;
 import presentation.ui.views.*;
-import presentation.ui.windows.ErrorLocationsWindow;
 import presentation.ui.windows.LocationsWindow;
 
 import javax.swing.*;
