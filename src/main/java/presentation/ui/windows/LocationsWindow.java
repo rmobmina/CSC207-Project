@@ -29,7 +29,7 @@ public abstract class LocationsWindow extends JFrame {
     private GetLocationDataUseCase locationDataUseCase;
     private String apiKey;
 
-    protected Location location;
+    public Location location;
 
     protected WeatherDataDTO weatherDataDTO;
 
