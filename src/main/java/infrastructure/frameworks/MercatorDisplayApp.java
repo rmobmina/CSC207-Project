@@ -89,6 +89,7 @@ public class MercatorDisplayApp {
                     renderer.renderMap(mercatorCoordinates[0], mercatorCoordinates[1]);
                     messageLabel.setText("Displaying: " + selectedLocation.fullLocationName());
                 }
+
                 catch (Exception ex) {
                     messageLabel.setText("Error: " + ex.getMessage());
                 }
