@@ -28,7 +28,7 @@ public class GetHistoricalWeatherDataUseCase extends UseCaseInteractor {
      */
     public WeatherData execute(Location location, LocalDate startDate, LocalDate endDate) {
         // calls the API service to extract weather information in JSON format
-        WeatherData weatherData = apiService.fetchHistoricalWeather(location, startDate, endDate);
+        final WeatherData weatherData = apiService.fetchHistoricalWeather(location, startDate, endDate);
         useCaseFailed = weatherData == null;
         return weatherData;
     }

@@ -4,9 +4,13 @@ import domain.interfaces.ApiService;
 import presentation.ui.windows.ErrorLocationsWindow;
 import presentation.ui.windows.LocationsWindow;
 import presentation.ui.windows.LocationsWindowGenerator;
-import presentation.ui.windows.VisualizationUI;
 import utils.UseCaseInteractor;
 
+/**
+ * A use case class for generating a new LocationsWindow using a simple factory pattern.
+ * This use case interacts with the LocationDataUseCase and the ApiService to create
+ * a window for displaying location data.
+ */
 public class GetLocationsWindowUseCase extends UseCaseInteractor {
     /**
      * Creates a new Locations window using a Simple Factory.
@@ -21,7 +25,8 @@ public class GetLocationsWindowUseCase extends UseCaseInteractor {
     public LocationsWindow execute(String type, int[] dimensions, int numOfLocations,
                                    GetLocationDataUseCase locationDataUseCase, String apiKey,
                                    ApiService apiService) {
-        final LocationsWindow window = LocationsWindowGenerator.generateLocationsWindow(type, dimensions, numOfLocations,
+        final LocationsWindow window =
+                LocationsWindowGenerator.generateLocationsWindow(type, dimensions, numOfLocations,
                 locationDataUseCase, apiKey, apiService);
         window.getType();
         useCaseFailed = window instanceof ErrorLocationsWindow;

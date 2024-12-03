@@ -25,7 +25,7 @@ public class LineGraphWeatherComparison extends JFrame {
         JFreeChart lineChart = ChartFactory.createLineChart(
                 title,
                 "Date",        // X-axis Label
-                "Value",       // Y-axis Label
+                "°C",       // Y-axis Label
                 dataset        // Dataset for the chart
         );
 

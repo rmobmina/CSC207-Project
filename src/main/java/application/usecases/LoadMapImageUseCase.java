@@ -1,12 +1,12 @@
 package application.usecases;
 
-import utils.UseCaseInteractor;
-
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+
+import utils.UseCaseInteractor;
 
 /**
  * Use case for loading map images.

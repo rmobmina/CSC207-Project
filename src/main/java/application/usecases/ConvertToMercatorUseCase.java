@@ -13,7 +13,6 @@ public class ConvertToMercatorUseCase extends UseCaseInteractor {
     private static final double OFFSET_LONGITUDE = 180;
     private static final double FULL_CIRCLE = 360;
     private static final double PI_OVER_FOUR = Math.PI / 4;
-    private static final double RADIANS_PER_DEGREE = Math.PI / 180;
 
     /**
      * Converts a geographical coordinate (latitude, longitude) to Mercator projection coordinates (x, y).
