@@ -21,6 +21,8 @@ public class LoadMapImageUseCase extends UseCaseInteractor {
      * @throws IOException If an error occurs while reading the file.
      */
     public Image execute(String mapFilePath) throws IOException {
-        return ImageIO.read(new File(mapFilePath));
+        final Image image = ImageIO.read(new File(mapFilePath));
+        useCaseFailed = image == null;
+        return image;
     }
 }

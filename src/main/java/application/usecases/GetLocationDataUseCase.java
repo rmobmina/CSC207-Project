@@ -24,6 +24,8 @@ public class GetLocationDataUseCase extends UseCaseInteractor {
      * @return a Location object storing the associated data.
      */
     public List<Location> execute(String city, String apiKey) {
-        return apiService.fetchLocations(city, apiKey);
+        final List<Location> locations = apiService.fetchLocations(city, apiKey);
+        useCaseFailed = locations.isEmpty() || locations.get(0) == null;
+        return locations;
     }
 }
