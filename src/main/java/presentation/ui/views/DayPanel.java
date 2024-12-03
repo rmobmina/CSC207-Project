@@ -76,9 +76,11 @@ public class DayPanel extends JPanel {
         this.windValue.setText(percipitation);
     }
 
-    public void setMeanTemperatureValue(String percipitation) { this.meanTemperatureValue.setText(percipitation); }
+    public void setMeanTemperatureValue(String percipitation) {
+        this.meanTemperatureValue.setText(percipitation);
+    }
 
-    public void updateWeatherDataValues(WeatherDataDTO weatherDataDTO, int index, String temperatureUnitType){
+    public void updateWeatherDataValues(WeatherDataDTO weatherDataDTO, int index, String temperatureUnitType) {
         // Update temperature values
         setMaxTemperatureValue(
                 weatherDataDTO.temperatureToString("temperatureMaxDaily", index, temperatureUnitType));

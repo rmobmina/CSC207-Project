@@ -1,34 +1,49 @@
 package application.dto;
 
-import domain.entities.Location;
-import org.json.JSONException;
-import org.json.JSONObject;
-import domain.entities.WeatherData;
-import static utils.Constants.DAILY_KEY;
-import static utils.Constants.HOURLY_KEY;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 
-// Generates the weather data object to be used by the dashboard and the rest of the application
+import domain.entities.Location;
+import domain.entities.WeatherData;
+
+import static utils.Constants.DAILY_KEY;
+import static utils.Constants.HOURLY_KEY;
+
+/**
+ * Generates the WeatherDataDTO object to be used by the dashboard and the rest of the application.
+ */
 public class WeatherDataDTOGenerator {
-    public static WeatherDataDTO createWeatherDataDTO(WeatherData weatherData, Location location, LocalDate startDate, LocalDate endDate){
-        JSONObject data = weatherData.getWeatherDetails();
-        List<LocalDate> dates = new ArrayList<>();
+
+    /**
+     * Creates a WeatherDataDTO object based on the given WeatherData, location, and time interval.
+     * It maps relevant weather details and units into the DTO for easy access by the application.
+     *
+     * @param weatherData The raw weather data object containing details in JSON format.
+     * @param location    The location associated with the weather data.
+     * @param startDate   The start date of the weather data interval.
+     * @param endDate     The end date of the weather data interval.
+     * @return A populated WeatherDataDTO object, or null if an error occurs during processing.
+     */
+    public static WeatherDataDTO createWeatherDataDTO(WeatherData weatherData,
+                                                      Location location, LocalDate startDate, LocalDate endDate) {
+        final JSONObject data = weatherData.getWeatherDetails();
+        final List<LocalDate> dates = new ArrayList<>();
         dates.add(startDate);
         dates.add(endDate);
         try {
-            JSONObject dailyUnits = data.getJSONObject("daily_units");
-            JSONObject hourlyUnits = data.getJSONObject("hourly_units");
-            JSONObject unitsData = new JSONObject();
+            final JSONObject dailyUnits = data.getJSONObject("daily_units");
+            final JSONObject hourlyUnits = data.getJSONObject("hourly_units");
+            final JSONObject unitsData = new JSONObject();
             unitsData.put(DAILY_KEY, dailyUnits.toMap());
             unitsData.put(HOURLY_KEY, hourlyUnits.toMap());
 
             System.out.println(data.toString(4));
 
-            WeatherDataDTO weatherDataDTO = new WeatherDataDTO(location, dates, data, unitsData);
+            final WeatherDataDTO weatherDataDTO = new WeatherDataDTO(location, dates, data, unitsData);
             weatherDataDTO.addWeatherDetail(HOURLY_KEY, "temperature_2m", "temperatureHourly");
             weatherDataDTO.addWeatherDetail(HOURLY_KEY, "relative_humidity_2m", "humidityHourly");
             weatherDataDTO.addWeatherDetail(DAILY_KEY, "temperature_2m_max", "temperatureMaxDaily");

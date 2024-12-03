@@ -18,6 +18,11 @@ public class ErrorLocationsWindow extends LocationsWindow {
     }
 
     @Override
+    protected void openVisualization() {
+
+    }
+
+    @Override
     protected void getWeatherData() {
 
     }

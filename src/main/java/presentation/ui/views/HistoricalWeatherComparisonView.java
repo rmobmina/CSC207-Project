@@ -9,6 +9,7 @@ import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
 import infrastructure.adapters.OpenWeatherApiService;
 import presentation.ui.DropDownUI;
+import presentation.ui.dashboard.NewDashBoardUi;
 import presentation.ui.windows.MultipleLocationsWindow;
 import presentation.ui.windows.GraphSelectionWindow;
 import presentation.visualization.BarGraphWeatherComparison;
@@ -58,12 +59,15 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
     private WeatherDataDTO firstCityWeatherData;
     private WeatherDataDTO secondCityWeatherData;
 
+    private final NewDashBoardUi dashboard;
+
     public HistoricalWeatherComparisonView(String name, int[] dimensions, int numOfLocations,
                                            GetLocationDataUseCase locationDataUseCase, String apiKey,
-                                           ApiService apiService) {
+                                           ApiService apiService, NewDashBoardUi dashboard) {
         super(name, dimensions, numOfLocations, locationDataUseCase, apiKey, apiService);
         this.apiService = (OpenWeatherApiService) apiService;
         this.apiKey = apiKey;
+        this.dashboard = dashboard;
 
         this.firstCityDropDown = new DropDownUI(apiKey, locationDataUseCase);
         this.secondCityDropDown = new DropDownUI(apiKey, locationDataUseCase);
@@ -71,6 +75,7 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
         mainPanel.setVisible(false);
         initializeUI();
     }
+
 
     private void initializeUI() {
         JPanel mainPanel = new JPanel();
@@ -141,7 +146,11 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
         refreshButton.addActionListener(e -> refreshFields());
         visualizeButton.addActionListener(e -> openVisualization());
         timeRangeButton.addActionListener(e -> handleSetTimeRange());
-        backButton.addActionListener(e -> this.dispose());
+        backButton.addActionListener(e -> {
+            this.dispose();
+            dashboard.backToDashBoard();
+        });
+
     }
 
     private void handleSetTimeRange() {
@@ -222,7 +231,7 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
         });
     }
 
-    private void openVisualization() {
+    protected void openVisualization() {
         if (firstCityWeatherData == null || secondCityWeatherData == null) {
             showError("Fetch weather data for both cities first.");
             return;

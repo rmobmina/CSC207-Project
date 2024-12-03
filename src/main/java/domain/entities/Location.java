@@ -74,24 +74,6 @@ public class Location implements Serializable {
     }
 
     /**
-     * Returns the state name.
-     *
-     * @return the state name.
-     */
-    public String getState() {
-        return state;
-    }
-
-    /**
-     * Returns the country name.
-     *
-     * @return the country name.
-     */
-    public String getCountry() {
-        return country;
-    }
-
-    /**
      * Checks equality of two Location objects based on city, state, and country.
      *
      * @param obj The object to compare.
