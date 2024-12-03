@@ -10,9 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class ForecastHourlyViewTest {
@@ -41,9 +38,10 @@ class ForecastHourlyViewTest {
         Location testLocation = new Location("Toronto", "Ontario", "Canada", 43.7, -79.42);
 
         forecastHourlyView.location = testLocation;
+        WeatherData data = forecastHourlyView.getWeather();
 
-        // Asserting that weather data was successfully fetched and is not null
-        assertNotNull(forecastHourlyView.weatherData(), "Weather data should not be null");
+        // Assert that the fetched weather data is not null
+        assertNotNull(data, "Weather data should not be null");
     }
 
     @Test
@@ -68,6 +66,7 @@ class ForecastHourlyViewTest {
         forecastHourlyView.getWeatherData();
 
         // Asserting that weather data is still null since no valid location was provided
-        assertNull(forecastHourlyView.weatherData, "Weather data should be null for empty input");
+        assertNull(forecastHourlyView.getWeather(), "Weather data should be null for empty input");
     }
+
 }

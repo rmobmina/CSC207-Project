@@ -4,10 +4,7 @@ import application.usecases.GetLocationDataUseCase;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
-import infrastructure.adapters.OpenWeatherApiService;
-import presentation.ui.DropDownUI;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,9 +28,8 @@ public class MultipleLocationsWindow extends LocationsWindow {
     }
 
     @Override
-    protected WeatherData getWeatherData() {
+    protected void getWeatherData() {
 
-        return null;
     }
 
     @Override

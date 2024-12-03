@@ -34,7 +34,7 @@ public class ForecastHourlyView extends LocationsWindow {
     private static final int NUMBER_HOURS_OF_FORECAST = 8;
 
     private final OpenWeatherApiService apiService = new OpenWeatherApiService();
-    public WeatherData weatherData;
+    private WeatherData weatherData;
 
     public ForecastHourlyView(String name, int[] dimensions, GetLocationDataUseCase locationDataUseCase, String apiKey,
                               ApiService apiService) {
@@ -42,7 +42,7 @@ public class ForecastHourlyView extends LocationsWindow {
     }
 
     @Override
-    protected void getWeatherData() {
+    public void getWeatherData() {
         if (location == null) {
             JOptionPane.showMessageDialog(this, "No location selected!",
                     MESSAGE_DIALOGUE_TITLE, JOptionPane.ERROR_MESSAGE);
@@ -53,8 +53,13 @@ public class ForecastHourlyView extends LocationsWindow {
         final GetForecastWeatherDataUseCase forecastUseCase = new GetForecastWeatherDataUseCase(apiService);
         this.weatherData = forecastUseCase.execute(location, NUMBER_HOURS_OF_FORECAST);
     }
+    public WeatherData getWeather() {
+        getWeatherData(); // Calls the protected method to fetch the data
+        return weatherData; // Returns the fetched data
+    }
     // Track the weather details panel so that we can remove the pprevious weather details
     // when entered a new location in the dropdown
+
 
     private JPanel forecastpanel;
 
