@@ -166,28 +166,29 @@ For more troubleshooting, refer to the [FAQ.md](FAQ.md) in the project root dire
 
 ## **Visual Examples**
 
-Hourly
-![Example UI](Screenshot 2024-12-03 at 00.33.00.png)  
-![Example UI](Screenshot 2024-12-03 at 00.34.37.png)  
-![Example UI](Screenshot 2024-12-03 at 00.35.22.png)  
+Here is how our Hourly Forecast works...
+![Example UI](Screenshot%202024-12-03%20at%2000.33.00.png)  
+![Example UI](Screenshot%202024-12-03%20at%2000.34.37.png)  
+![Example UI](Screenshot%202024-12-03%20at%2000.35.22.png)  
 
-Daily
-![Example UI](Screenshot 2024-12-03 at 00.24.29.png)  
-![Example UI](Screenshot 2024-12-03 at 00.25.08.png)  
-![Example UI](Screenshot 2024-12-03 at 00.26.08.png)  
+This is the Daily Forecast in action.
+![Example UI](Screenshot%202024-12-03%20at%2000.24.29.png)  
+![Example UI](Screenshot%202024-12-03%20at%2000.25.08.png)  
+![Example UI](Screenshot%202024-12-03%20at%2000.26.08.png)  
 
+And, of course, the favourites feature.
 Favourites
-![Example UI](Screenshot 2024-12-03 at 00.41.12.png)
-![Example UI](Screenshot 2024-12-03 at 00.41.32.png)
+![Example UI](Screenshot%202024-12-03%20at%2000.41.12.png)
+![Example UI](Screenshot%202024-12-03%20at%2000.41.32.png)
 
-Comparison
-![Example UI](Screenshot 2024-12-03 at 00.50.10.png)
-![Example UI](Screenshot 2024-12-03 at 00.51.56.png)
-![Example UI](Screenshot 2024-12-03 at 00.54.19.png)
+Users aren't restricted to a single city, we can do two!
+![Example UI](Screenshot%202024-12-03%20at%2000.50.10.png)
+![Example UI](Screenshot%202024-12-03%20at%2000.51.56.png)
+![Example UI](Screenshot%202024-12-03%20at%2000.54.19.png)
 
-Mercator
-![Example UI](Screenshot 2024-12-03 at 06.45.36.png)
-![Example UI](Screenshot 2024-12-03 at 06.45.55.png)
+The best for last.
+![Example UI](Screenshot%202024-12-03%20at%2006.45.36.png)
+![Example UI](Screenshot%202024-12-03%20at%2006.45.55.png)
 
 ---
 
