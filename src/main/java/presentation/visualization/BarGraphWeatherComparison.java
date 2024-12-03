@@ -16,8 +16,8 @@ public class BarGraphWeatherComparison extends JFrame {
         dataset = new DefaultCategoryDataset();
         JFreeChart barChart = ChartFactory.createBarChart(
                 title,
-                "Category",
-                "Value",
+                "Category",    // X-axis Label
+                "Value",       // Y-axis Label
                 dataset
         );
 
@@ -27,16 +27,16 @@ public class BarGraphWeatherComparison extends JFrame {
     }
 
     public void addData(String series, String category, double value) {
-        dataset.addValue(value, series, category);
+        dataset.addValue(value, series, category); // Add data to the dataset
     }
 
     public void display() {
-        pack();
-        setLocationRelativeTo(null);
-        setVisible(true);
+        pack(); // Adjust window size to fit content
+        setLocationRelativeTo(null); // Center the window
+        setVisible(true); // Make the window visible
     }
 
     public void reset() {
-        dataset.clear();
+        dataset.clear(); // Clear the dataset to reset the graph
     }
 }
