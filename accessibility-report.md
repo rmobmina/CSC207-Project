@@ -7,7 +7,7 @@
    - Features like dropdowns (in `DropDownUI.java`) make it easy for users with limited typing ability to select options, promoting inclusivity.
 
 2. **Flexibility in Use**
-   - Users can select single or multiple cities for comparison, as shown in `TwoCitiesWeatherUI.java` and `MultipleLocationsWindow.java`. This flexibility accommodates different user preferences.
+   - Users can select one or two for comparison, as shown in `ForecastDailyView` and `HistoricalWeatherComparisonView`. This flexibility accommodates different user preferences.
    - Future improvements could include voice command integration to cater to users with mobility impairments.
 
 3. **Simple and Intuitive Use**
