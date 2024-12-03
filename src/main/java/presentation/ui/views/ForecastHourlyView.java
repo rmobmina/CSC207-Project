@@ -28,7 +28,6 @@ import presentation.ui.windows.LocationsWindow;
 public class ForecastHourlyView extends LocationsWindow {
 
     public static final String OPTION_NAME = "Forecast Hourly";
-    private static final String MESSAGE_DIALOGUE_TITLE = "Error";
     private static final int GAP = 10;
     private static final int TEMP_THRESHOLD = 0;
     private static final int NUMBER_HOURS_OF_FORECAST = 8;
@@ -44,31 +43,42 @@ public class ForecastHourlyView extends LocationsWindow {
     @Override
     public void getWeatherData() {
         if (location == null) {
-            JOptionPane.showMessageDialog(this, "No location selected!",
-                    MESSAGE_DIALOGUE_TITLE, JOptionPane.ERROR_MESSAGE);
-            return;
+            throw new RuntimeException("No location selected!!");
         }
 
         // Fetch hourly forecast data for the selected location
         final GetForecastWeatherDataUseCase forecastUseCase = new GetForecastWeatherDataUseCase(apiService);
         this.weatherData = forecastUseCase.execute(location, NUMBER_HOURS_OF_FORECAST);
     }
+
     public WeatherData getWeather() {
-        getWeatherData(); // Calls the protected method to fetch the data
-        return weatherData; // Returns the fetched data
+        getWeatherData();
+        return weatherData;
     }
+
+    public WeatherData makeWeatherDataNull() {
+        this.weatherData = null;
+        return this.weatherData;
+    }
+
+    // made this getter method so that the tests can access this value to tests
+    public static int getTempThreshold() {
+
+        return TEMP_THRESHOLD;
+    }
+
     // Track the weather details panel so that we can remove the pprevious weather details
     // when entered a new location in the dropdown
-
-
     private JPanel forecastpanel;
+
+    public JPanel getForecastPanel() {
+        return forecastpanel;
+    }
 
     @Override
     protected void displayWeatherData() {
         if (weatherData == null) {
-            JOptionPane.showMessageDialog(this, "No weather data available to display!",
-                    MESSAGE_DIALOGUE_TITLE, JOptionPane.ERROR_MESSAGE);
-            return;
+            throw new RuntimeException("No weather data available to display!");
         }
 
         // Removing existing weather details if they exist
@@ -128,5 +138,4 @@ public class ForecastHourlyView extends LocationsWindow {
                     JOptionPane.INFORMATION_MESSAGE);
         }
     }
-
 }

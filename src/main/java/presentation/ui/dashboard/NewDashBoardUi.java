@@ -33,7 +33,7 @@ public class NewDashBoardUi extends JFrame {
     final String LOCATIONS_WINDOW_NAME = "Locations";
     final String NUMBER_LOCATIONS_WINDOW_NAME = "Number Locations";
 
-    final int locationsWindowWidth = 710;
+    final int locationsWindowWidth = 910;
     final int locationsWindowHeight = 350;
 
     private String userOption;
