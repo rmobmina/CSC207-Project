@@ -79,6 +79,7 @@ public class NewDashBoardUi extends JFrame {
         this.favoritesManager = favoritesManager;
         this.userOptionsView = userOptionsView;
         this.mainMenuView = mainMenuView;
+        this.helpInfoView = new HelpInfoView(); // Initialize HelpInfoView here
     }
 
     private void setButtonListeners() {

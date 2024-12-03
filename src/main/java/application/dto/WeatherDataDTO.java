@@ -7,8 +7,6 @@ import org.json.JSONObject;
 import utils.Constants;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -161,12 +159,12 @@ public class WeatherDataDTO {
     }
 
     /**
-     * Retrieves the temperature history as a map of dates (seperated by days to temperature values.
+     * Retrieves the temperature history as a map of dates to temperature values.
      * Invalid or missing data is skipped.
      *
      * @return A map where keys are dates (as strings) and values are temperatures.
      */
-    public Map<String, Double> getTemperatureHistory(String temperatureCategory) {
+    public Map<String, Double> getTemperatureHistory() {
         LocalDate startDate = getTimeInterval().get(0);
         LocalDate endDate = getTimeInterval().get(1);
         Map<String, Double> temperatureHistory = new HashMap<>();
@@ -175,31 +173,7 @@ public class WeatherDataDTO {
 
         for (int i = 0; i < numberOfDays; i++) {
             LocalDate currentDate = startDate.plusDays(i);
-            double temperature = getTemperature(temperatureCategory, i, Constants.CELCIUS_UNIT_TYPE);
-            if (!Double.isNaN(temperature)) { // Only include valid data
-                temperatureHistory.put(currentDate.toString(), temperature);
-            }
-        }
-
-        return temperatureHistory;
-    }
-
-    /**
-     * Retrieves the temperature history as a map of dates (seperated by hours) to temperature values.
-     * Invalid or missing data is skipped.
-     *
-     * @return A map where keys are dates (as strings) and values are temperatures.
-     */
-    public Map<String, Double> getTemperatureTimeHistory(String temperatureCategory, List<LocalDateTime> timeInterval) {
-        LocalDateTime startDate = timeInterval.get(0);
-        LocalDateTime endDate = timeInterval.get(1);
-        Map<String, Double> temperatureHistory = new HashMap<>();
-
-        long numberOfHours = ChronoUnit.HOURS.between(startDate, endDate) + 1;
-
-        for (int i = 0; i < numberOfHours; i++) {
-            LocalDateTime currentDate = startDate.plusHours(i);
-            double temperature = getTemperature(temperatureCategory, i, Constants.CELCIUS_UNIT_TYPE);
+            double temperature = getTemperature("temperatureMeanDaily", i, Constants.CELCIUS_UNIT_TYPE);
             if (!Double.isNaN(temperature)) { // Only include valid data
                 temperatureHistory.put(currentDate.toString(), temperature);
             }
