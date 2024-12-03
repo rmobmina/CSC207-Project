@@ -18,7 +18,10 @@ import application.usecases.GetLocationDataUseCase;
 import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
 import infrastructure.adapters.OpenWeatherApiService;
+import presentation.ui.windows.GraphSelectionWindow;
 import presentation.ui.windows.LocationsWindow;
+import presentation.visualization.BarGraphWeatherComparison;
+import presentation.visualization.LineGraphWeatherComparison;
 
 /**
  * This class displays the hourly forecast for the next 8 hours for a given location.
@@ -39,11 +42,85 @@ public class ForecastHourlyView extends LocationsWindow {
                               ApiService apiService) {
         super(name, dimensions, locationDataUseCase, apiKey, apiService);
     }
+
     @Override
     protected void openVisualization() {
+        openGraphSelectionWindow();
+    }
+    private void openGraphSelectionWindow() {
+        if (weatherData == null) {
+            JOptionPane.showMessageDialog(this, "No weather data available for visualization!",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
+        GraphSelectionWindow graphSelectionWindow = new GraphSelectionWindow(graphType -> {
+            if ("bar".equals(graphType)) {
+                showBarGraph();
+            } else if ("line".equals(graphType)) {
+                showLineGraph();
+            }
+        });
+        graphSelectionWindow.display();
     }
 
+    private void showBarGraph() {
+        BarGraphWeatherComparison barGraph = new BarGraphWeatherComparison("Hourly Forecast Bar Graph");
+
+        try {
+            JSONArray hourlyTemperatures = weatherData.getWeatherDetails()
+                    .getJSONObject("hourly")
+                    .getJSONArray("temperature_2m");
+
+            int utcOffsetSeconds = weatherData.getWeatherDetails().getInt("utc_offset_seconds");
+            int utcOffsetHours = utcOffsetSeconds / 3600;
+
+            LocalTime currentUtcTime = LocalTime.now(ZoneOffset.UTC);
+
+            for (int i = 0; i < NUMBER_HOURS_OF_FORECAST; i++) {
+                LocalTime forecastLocalTime = currentUtcTime.plusHours(utcOffsetHours + i + 1);
+                double temperature = hourlyTemperatures.getDouble(i);
+
+                barGraph.addData("Temperature", forecastLocalTime.getHour() + ":00", temperature);
+            }
+
+            barGraph.display();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error displaying bar graph: " + e.getMessage(),
+                    "Visualization Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    private void showLineGraph() {
+        LineGraphWeatherComparison lineGraph = new LineGraphWeatherComparison("Hourly Forecast Line Graph");
+
+        try {
+            JSONArray hourlyTemperatures = weatherData.getWeatherDetails()
+                    .getJSONObject("hourly")
+                    .getJSONArray("temperature_2m");
+
+            int utcOffsetSeconds = weatherData.getWeatherDetails().getInt("utc_offset_seconds");
+            int utcOffsetHours = utcOffsetSeconds / 3600;
+
+            LocalTime currentUtcTime = LocalTime.now(ZoneOffset.UTC);
+
+            for (int i = 0; i < NUMBER_HOURS_OF_FORECAST; i++) {
+                LocalTime forecastLocalTime = currentUtcTime.plusHours(utcOffsetHours + i + 1);
+                double temperature = hourlyTemperatures.getDouble(i);
+
+                lineGraph.addData("Temperature", forecastLocalTime.getHour() + ":00", temperature);
+            }
+
+            lineGraph.display();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error displaying line graph: " + e.getMessage(),
+                    "Visualization Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void getWeatherData() {
