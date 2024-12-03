@@ -162,6 +162,16 @@ public class SwingMapView extends JPanel {
     }
 
     /**
+     * Disposes of the weather information frame if it is open.
+     */
+    public void disposeWeatherFrame() {
+        if (weatherFrame != null) {
+            weatherFrame.dispose();
+            weatherFrame = null;
+        }
+    }
+
+    /**
      * Paints the component by drawing the map and the marker if coordinates are set.
      *
      * @param g The Graphics object used to draw on the panel.
