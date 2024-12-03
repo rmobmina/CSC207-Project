@@ -1,29 +1,41 @@
 package presentation.ui.views;
 
 import javax.swing.*;
-import java.awt.*;
 
 /**
- * A class that represents a basic view that gets its contents displayed on the dash board
+ * A class that represents a basic view to be displayed on the dashboard.
+ * It provides functionality to manage the visibility and retrieval of its panel.
  */
 public class View {
+
+    /**
+     * The JPanel associated with this view.
+     * This panel contains the content to be displayed on the dashboard.
+     */
     public JPanel panel = new JPanel();
 
-    public JPanel getPanel(){
+    /**
+     * Retrieves the panel associated with this view.
+     *
+     * @return The {@link JPanel} object for this view.
+     */
+    public JPanel getPanel() {
         return panel;
     }
 
-    public void showPanel(){
+    /**
+     * Makes the panel visible on the dashboard.
+     * This method sets the visibility of the panel to {@code true}.
+     */
+    public void showPanel() {
         panel.setVisible(true);
     }
 
-    public void hidePanel(){
+    /**
+     * Hides the panel from the dashboard.
+     * This method sets the visibility of the panel to {@code false}.
+     */
+    public void hidePanel() {
         panel.setVisible(false);
     }
-
-        // Add this later
-//    public View(LayoutManager layout){
-//        panel.setLayout(layout);
-//        panel.setVisible(true);
-//    }
 }

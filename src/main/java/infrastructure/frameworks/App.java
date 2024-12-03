@@ -11,7 +11,6 @@ import presentation.ui.FavoritesManager;
 import presentation.ui.dashboard.NewDashBoardUi;
 import presentation.ui.views.HelpInfoView;
 import presentation.ui.views.MainMenuView;
-import presentation.ui.views.SelectNumberLocationsView;
 import presentation.ui.views.UserOptionsView;
 
 /**
@@ -21,19 +20,21 @@ import presentation.ui.views.UserOptionsView;
 public class App {
 
     /**
-     * The main method of the App class.
-     * Runs the project by getting the user's API key and launching the rest of the project.
+     * The main entry point of the application.
+     * This method retrieves the OpenWeatherMap API key from the user via the command line,
+     * validates it, and then initializes the main graphical user interface (GUI).
      *
-     * @param args Command-line arguments.
+     * @param args Command-line arguments (not used in this application).
      */
     public static void main(String[] args) {
-        // Initialize apiKey with a default value
         String apiKey = "";
         final OpenWeatherApiService apiService = new OpenWeatherApiService();
         final GetLocationDataUseCase locationDataUseCase = new GetLocationDataUseCase(apiService);
         final GetForecastWeatherDataUseCase forecastWeatherDataUseCase = new GetForecastWeatherDataUseCase(apiService);
-        final GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase = new GetHistoricalWeatherDataUseCase(apiService);
-        final NewDashBoardUi dashBoard = generateDashBoardUI(locationDataUseCase, forecastWeatherDataUseCase, historicalWeatherDataUseCase);
+        final GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase =
+                new GetHistoricalWeatherDataUseCase(apiService);
+        final NewDashBoardUi dashBoard =
+                generateDashBoardUI(locationDataUseCase, forecastWeatherDataUseCase, historicalWeatherDataUseCase);
 
         // Loop to validate API key input
         boolean validKeyEntered = false;
@@ -52,11 +53,6 @@ public class App {
                 System.out.println("Your last key was invalid. Please try again.\n");
             }
         }
-
-        // Set action listeners for Mercator map
-//        setupMercatorMapIntegration(dashBoard, apiKey, locationDataUseCase, apiService);
-
-        // Launch the main dashboard
         dashBoard.runJFrame(apiService);
     }
 
@@ -74,12 +70,4 @@ public class App {
                 new HelpInfoView()
         );
     }
-
-//    private static void setupMercatorMapIntegration(NewDashBoardUi dashBoard, String apiKey,
-//                                                    GetLocationDataUseCase locationDataUseCase,
-//                                                    OpenWeatherApiService apiService) {
-//        dashBoard.getOptionsView().setMercatorMapActionListener(e -> {
-//            new MercatorDisplayApp().startMercatorMap(apiKey, locationDataUseCase, apiService);
-//        });
-//    }
 }

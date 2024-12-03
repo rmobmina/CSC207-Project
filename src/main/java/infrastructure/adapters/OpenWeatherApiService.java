@@ -73,7 +73,8 @@ public class OpenWeatherApiService implements ApiService {
                 weatherObject = new JSONObject(response);
                 weatherData = new WeatherData(weatherObject);
             }
-        } catch (JSONException | IOException exception) {
+        }
+        catch (JSONException | IOException exception) {
             exception.printStackTrace();
         }
 
@@ -85,17 +86,19 @@ public class OpenWeatherApiService implements ApiService {
         // Validate the inputs
         if (city == null || city.isEmpty()) {
             System.err.println("City cannot be null or empty.");
-            return new ArrayList<>(); // or throw an exception based on your design choice
+            return new ArrayList<>();
         }
         if (apiKey == null || apiKey.isEmpty()) {
             System.err.println("API key cannot be null or empty.");
-            return new ArrayList<>(); // or throw an exception
+            return new ArrayList<>();
         }
 
         // Initialize the return object
         final List<Location> locations = new ArrayList<>();
         final String unknown = "Unknown";
-        final String urlString = "http://api.openweathermap.org/geo/1.0/direct?q=" + city.replace(" ", "%20") + "&limit=5&appid=" + apiKey;
+        final String urlString = "http://api.openweathermap.org/geo/1.0/direct?q="
+                +
+                city.replace(" ", "%20") + "&limit=5&appid=" + apiKey;
 
         try {
             final String response = HttpUtils.makeApiCall(urlString);
@@ -118,13 +121,13 @@ public class OpenWeatherApiService implements ApiService {
                     }
                 }
             }
-        } catch (JSONException | IOException exception) {
+        }
+        catch (JSONException | IOException exception) {
             System.err.println("Error fetching locations: " + exception.getMessage());
         }
 
         return locations;
     }
-
 
     /**
      * Tests if the given OpenWeatherMap API key is valid by checking for the location data of Toronto, ON, CA.
@@ -145,7 +148,8 @@ public class OpenWeatherApiService implements ApiService {
                 valid = false;
             }
 
-        } catch (IOException exception) {
+        }
+        catch (IOException exception) {
             exception.printStackTrace();
             valid = false;
         }

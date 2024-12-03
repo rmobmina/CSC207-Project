@@ -1,31 +1,44 @@
 package application.dto;
 
-import domain.entities.Location;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import utils.Constants;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import domain.entities.Location;
+import utils.Constants;
+
+/**
+ * Data Transfer Object (DTO) for weather data.
+ * Encapsulates weather details, units, and relevant operations for a specific location and time interval.
+ */
 public class WeatherDataDTO {
-    private Location location;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private final Location location;
+    private final LocalDate startDate;
+    private final LocalDate endDate;
 
     // Weather details over the given time interval
-    private Map<String, JSONArray> weatherDetails = new HashMap<>();
-    private Map<String, String> weatherUnits = new HashMap<>();
+    private final Map<String, JSONArray> weatherDetails = new HashMap<>();
+    private final Map<String, String> weatherUnits = new HashMap<>();
 
-    private JSONObject unitsObject;
-    private JSONObject weatherDetailsObject;
+    private final JSONObject unitsObject;
+    private final JSONObject weatherDetailsObject;
 
-    // Constructor for mapping from domain entities
-    public WeatherDataDTO(Location location, List<LocalDate> timeInterval, JSONObject weatherDetailsObject, JSONObject unitsObject) {
+    /**
+     * Constructor for creating a WeatherDataDTO object.
+     *
+     * @param location             The location for which the weather data applies.
+     * @param timeInterval         A list containing the start and end dates of the time interval.
+     * @param weatherDetailsObject The JSON object containing the weather details.
+     * @param unitsObject          The JSON object containing the weather detail units.
+     */
+    public WeatherDataDTO(Location location, List<LocalDate> timeInterval,
+                          JSONObject weatherDetailsObject, JSONObject unitsObject) {
         this.location = location;
         this.startDate = timeInterval.get(0);
         this.endDate = timeInterval.get(timeInterval.size() - 1);
@@ -33,17 +46,33 @@ public class WeatherDataDTO {
         this.unitsObject = unitsObject;
     }
 
+    /**
+     * Gets the location associated with this weather data.
+     *
+     * @return The location object.
+     */
     public Location getLocation() {
         return location;
     }
 
+    /**
+     * Gets the time interval for which the weather data applies.
+     *
+     * @return A list containing the start and end dates of the time interval.
+     */
     public List<LocalDate> getTimeInterval() {
-        List<LocalDate> timeInterval = new ArrayList<>();
+        final List<LocalDate> timeInterval = new ArrayList<>();
         timeInterval.add(startDate);
         timeInterval.add(endDate);
         return timeInterval;
     }
 
+    /**
+     * Retrieves weather data for a specific category.
+     *
+     * @param category The weather detail category (e.g., "temperatureMeanDaily").
+     * @return A JSONArray containing weather data for the category.
+     */
     public JSONArray getWeatherData(String category) {
         return weatherDetails.get(category);
     }
@@ -57,21 +86,11 @@ public class WeatherDataDTO {
      * @return The numeric value, or null if the data is invalid.
      */
     public Double getWeatherDataValue(String category, int index) {
-        JSONArray dataArray = getWeatherData(category);
+        final JSONArray dataArray = getWeatherData(category);
         if (dataArray == null || index >= dataArray.length() || dataArray.isNull(index)) {
-            return null; // Return null for missing or invalid data
+            return null;
         }
         return dataArray.getDouble(index);
-    }
-
-    /**
-     * Gets the unit for a specific weather detail category.
-     *
-     * @param category The category of a weather detail.
-     * @return The units of that category.
-     */
-    public String getWeatherUnit(String category) {
-        return weatherUnits.get(category);
     }
 
     /**
@@ -85,8 +104,16 @@ public class WeatherDataDTO {
         return dataToString(weatherDetail, index, weatherUnits.get(weatherDetail));
     }
 
+    /**
+     * Converts a weather detail value to a string formatted with its unit.
+     *
+     * @param category The weather detail category.
+     * @param index    The index of the value in the array.
+     * @param units    The unit of the weather detail.
+     * @return The formatted string.
+     */
     public String dataToString(String category, int index, String units) {
-        Double value = getWeatherDataValue(category, index);
+        final Double value = getWeatherDataValue(category, index);
         return value != null ? value + " " + units : "N/A";
     }
 
@@ -111,9 +138,9 @@ public class WeatherDataDTO {
      * @return The temperature value.
      */
     public double getTemperature(String temperatureCategory, int index, String unitType) {
-        Double value = getWeatherDataValue(temperatureCategory, index);
+        final Double value = getWeatherDataValue(temperatureCategory, index);
         if (value == null) {
-            return Double.NaN; // Return NaN for missing or invalid data
+            return Double.NaN;
         }
 
         switch (unitType) {
@@ -127,18 +154,27 @@ public class WeatherDataDTO {
     }
 
     /**
-     * Returns a string representation of the temperature given a specific category (from weatherDetails) and unit.
-     * @param temperatureCategory the specific category of temperature (i.e. min, max, mean, hourly, etc.)
-     * @param index the index that repesents the data value at a specific point in time
-     * @param unitType the type of temperature unit
-     * @return a string representation of the temperature given a specific category (from weatherDetails) and unit
+     * Returns a string representation of the temperature given a specific category and unit.
+     *
+     * @param temperatureCategory The specific category of temperature (e.g., "mean").
+     * @param index               The index representing the data value at a specific point in time.
+     * @param unitType            The type of temperature unit (e.g., "cel", "kel", "fah").
+     * @return A string representation of the temperature.
      */
     public String temperatureToString(String temperatureCategory, int index, String unitType) {
         final double temperature = getTemperature(temperatureCategory, index, unitType);
-        return !Double.isNaN(temperature) ? temperature + " " + getTemperatureUnit(temperatureCategory, unitType): "N/A";
+        return !Double.isNaN(temperature) ? temperature + " "
+                +
+                getTemperatureUnit(temperatureCategory, unitType) : "N/A";
     }
 
-    // Returns the string representing the temperature unit given unitType
+    /**
+     * Returns the string representing the temperature unit given unitType.
+     *
+     * @param temperatureCategory The temperature category.
+     * @param unitType            The unit type (e.g., "cel", "kel", "fah").
+     * @return The temperature unit as a string.
+     */
     public String getTemperatureUnit(String temperatureCategory, String unitType) {
         switch (unitType) {
             case Constants.FAHRENHEIT_UNIT_TYPE:
@@ -165,16 +201,16 @@ public class WeatherDataDTO {
      * @return A map where keys are dates (as strings) and values are temperatures.
      */
     public Map<String, Double> getTemperatureHistory() {
-        LocalDate startDate = getTimeInterval().get(0);
-        LocalDate endDate = getTimeInterval().get(1);
-        Map<String, Double> temperatureHistory = new HashMap<>();
+        final LocalDate intervalStartDate = getTimeInterval().get(0);
+        final LocalDate intervalEndDate = getTimeInterval().get(1);
+        final Map<String, Double> temperatureHistory = new HashMap<>();
 
-        long numberOfDays = java.time.temporal.ChronoUnit.DAYS.between(startDate, endDate) + 1;
+        final long numberOfDays = java.time.temporal.ChronoUnit.DAYS.between(intervalStartDate, intervalEndDate) + 1;
 
         for (int i = 0; i < numberOfDays; i++) {
-            LocalDate currentDate = startDate.plusDays(i);
-            double temperature = getTemperature("temperatureMeanDaily", i, Constants.CELCIUS_UNIT_TYPE);
-            if (!Double.isNaN(temperature)) { // Only include valid data
+            final LocalDate currentDate = intervalStartDate.plusDays(i);
+            final double temperature = getTemperature("temperatureMeanDaily", i, Constants.CELCIUS_UNIT_TYPE);
+            if (!Double.isNaN(temperature)) {
                 temperatureHistory.put(currentDate.toString(), temperature);
             }
         }
@@ -189,7 +225,7 @@ public class WeatherDataDTO {
      * @return The average value.
      */
     public double getAverageWeatherData(String weatherDetail) {
-        JSONArray weatherDataArray = getWeatherData(weatherDetail);
+        final JSONArray weatherDataArray = getWeatherData(weatherDetail);
         return WeatherDataDTO.getAverageData(weatherDataArray);
     }
 
@@ -205,15 +241,16 @@ public class WeatherDataDTO {
         int count = 0;
         for (int i = 0; i < dataArr.length(); i++) {
             if (!dataArr.isNull(i)) {
-                Object dataElement = dataArr.get(i);
+                final Object dataElement = dataArr.get(i);
                 if (dataElement instanceof Double) {
                     sum += (Double) dataElement;
-                } else if (dataElement instanceof Integer) {
+                }
+                else if (dataElement instanceof Integer) {
                     sum += (Integer) dataElement;
                 }
                 count++;
             }
         }
-        return count > 0 ? sum / count : Double.NaN; // Avoid division by zero
+        return count > 0 ? sum / count : Double.NaN;
     }
 }
