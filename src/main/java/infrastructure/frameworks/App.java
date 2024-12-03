@@ -7,7 +7,8 @@ import application.usecases.GetHistoricalWeatherDataUseCase;
 import application.usecases.GetLocationDataUseCase;
 import application.usecases.GetLocationsWindowUseCase;
 import infrastructure.adapters.OpenWeatherApiService;
-import presentation.ui.FavoritesManager;
+import presentation.ui.views.SelectNumberLocationsView;
+import presentation.ui.windows.FavoritesManager;
 import presentation.ui.dashboard.NewDashBoardUi;
 import presentation.ui.views.HelpInfoView;
 import presentation.ui.views.MainMenuView;
@@ -66,6 +67,7 @@ public class App {
                 historicalWeatherDataUseCase,
                 new FavoritesManager(),
                 new UserOptionsView(),
+                new SelectNumberLocationsView(),
                 new MainMenuView(),
                 new HelpInfoView()
         );
