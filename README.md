@@ -167,27 +167,27 @@ For more troubleshooting, refer to the [FAQ.md](FAQ.md) in the project root dire
 ## **Visual Examples**
 
 Hourly
-![Example UI](Screenshot 2024-12-03 at 00.33.00)  
-![Example UI](Screenshot 2024-12-03 at 00.34.37)  
-![Example UI](Screenshot 2024-12-03 at 00.35.22)  
+![Example UI](Screenshot 2024-12-03 at 00.33.00.png)  
+![Example UI](Screenshot 2024-12-03 at 00.34.37.png)  
+![Example UI](Screenshot 2024-12-03 at 00.35.22.png)  
 
 Daily
-![Example UI](Screenshot 2024-12-03 at 00.24.29)  
-![Example UI](Screenshot 2024-12-03 at 00.25.08)  
-![Example UI](Screenshot 2024-12-03 at 00.26.08)  
+![Example UI](Screenshot 2024-12-03 at 00.24.29.png)  
+![Example UI](Screenshot 2024-12-03 at 00.25.08.png)  
+![Example UI](Screenshot 2024-12-03 at 00.26.08.png)  
 
 Favourites
-![Example UI](Screenshot 2024-12-03 at 00.41.12)
-![Example UI](Screenshot 2024-12-03 at 00.41.32)
+![Example UI](Screenshot 2024-12-03 at 00.41.12.png)
+![Example UI](Screenshot 2024-12-03 at 00.41.32.png)
 
 Comparison
-![Example UI](Screenshot 2024-12-03 at 00.50.10)
-![Example UI](Screenshot 2024-12-03 at 00.51.56)
-![Example UI](Screenshot 2024-12-03 at 00.54.19)
+![Example UI](Screenshot 2024-12-03 at 00.50.10.png)
+![Example UI](Screenshot 2024-12-03 at 00.51.56.png)
+![Example UI](Screenshot 2024-12-03 at 00.54.19.png)
 
 Mercator
-![Example UI](Screenshot 2024-12-03 at 06.45.36)
-![Example UI](Screenshot 2024-12-03 at 06.45.55)
+![Example UI](Screenshot 2024-12-03 at 06.45.36.png)
+![Example UI](Screenshot 2024-12-03 at 06.45.55.png)
 
 ---
 
