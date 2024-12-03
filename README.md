@@ -110,9 +110,6 @@ Follow these steps to install and run the Weather Application:
    ```
 
 2. **Navigate to the Project Directory**  
-   ```bash
-   cd weather-app
-   ```
 
 3. **Build the Project**  
    Use Maven to download dependencies and compile the project:  
@@ -121,10 +118,7 @@ Follow these steps to install and run the Weather Application:
    ```
 
 4. **Run the Application**  
-   After successful compilation, you can run the application using:  
-   ```bash
-   java -jar target/weather-app.jar
-   ```
+   After successful compilation, you can run the application by heading to the App.java file in infrastructure.frameworks.
 
 ---
 
@@ -143,16 +137,30 @@ For more troubleshooting, refer to the [FAQ.md](FAQ.md) in the project root dire
 
 ## **Usage Guide**
 
-1. **Launch the Application**  
-   Run the application using the terminal command mentioned above or double-click the `.jar` file.  
+### **1. Launch the Application**
+   Run the application using the provided setup instructions.  
 
-2. **Navigate the UI**  
-   - Select the desired weather dataset from the dropdown menu.  
-   - Choose a visualization type (Line Graph or Bar Graph).  
+### **2. Navigate the User Interface (UI)**
+   - Access the main menu to select a weather dataset or feature.  
+   - Choose from the following options:
+     - **Weather Forecast**: View daily or hourly weather forecasts.
+     - **Weather Comparison**: Compare weather data between two locations.
+     - **Mercator Map**: Explore an interactive map with real-time weather data.  
+   - Customize the time range or data parameters based on your needs.  
 
-3. **View Visualizations**  
-   - Customize the time range or data parameters.  
-   - Save the graphs as `.png` or `.jpeg` if needed (UI buttons provided).  
+### **3. View Visualizations**
+   - **For Weather Forecasts**:
+     - Select **daily** or **hourly** forecasts.  
+     - Generate a visualization using a **Bar Graph** or **Line Graph**.  
+   - **For Weather Comparisons**:
+     - Enter the names of two locations.  
+     - Generate either a **Bar Graph** or **Line Graph** for comparison.  
+   - **For Mercator Map**:
+     - Interact with the map to explore and visualize weather data.  
+
+### **4. Interact and Explore**
+   - Experiment with the application's features to discover insights.  
+   - Save visualizations (if applicable) as images for later use.  
 
 ---
 
@@ -175,8 +183,7 @@ Full license details can be found in the [LICENSE](LICENSE) file.
 
 We welcome your feedback to improve this project. Here's how you can provide feedback:
 
-1. **Feedback Form**: Fill out our [Google Feedback Form](https://forms.google.com/example-feedback).  
-2. **GitHub Discussions**: Open a discussion thread in the [GitHub Discussions](https://github.com/your-username/weather-app/discussions).  
+**Email Us!**: Email the repository owner Reena, rmobmina@gmail.com.  
 
 ---
 
