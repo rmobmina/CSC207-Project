@@ -110,9 +110,6 @@ Follow these steps to install and run the Weather Application:
    ```
 
 2. **Navigate to the Project Directory**  
-   ```bash
-   cd weather-app
-   ```
 
 3. **Build the Project**  
    Use Maven to download dependencies and compile the project:  
@@ -121,10 +118,7 @@ Follow these steps to install and run the Weather Application:
    ```
 
 4. **Run the Application**  
-   After successful compilation, you can run the application using:  
-   ```bash
-   java -jar target/weather-app.jar
-   ```
+   After successful compilation, you can run the application by heading to the App.java file in infrastructure.frameworks.
 
 ---
 
@@ -143,31 +137,67 @@ For more troubleshooting, refer to the [FAQ.md](FAQ.md) in the project root dire
 
 ## **Usage Guide**
 
-1. **Launch the Application**  
-   Run the application using the terminal command mentioned above or double-click the `.jar` file.  
+### **1. Launch the Application**
+   Run the application using the provided setup instructions.  
 
-2. **Navigate the UI**  
-   - Select the desired weather dataset from the dropdown menu.  
-   - Choose a visualization type (Line Graph or Bar Graph).  
+### **2. Navigate the User Interface (UI)**
+   - Access the main menu to select a weather dataset or feature.  
+   - Choose from the following options:
+     - **Weather Forecast**: View daily or hourly weather forecasts.
+     - **Weather Comparison**: Compare weather data between two locations.
+     - **Mercator Map**: Explore an interactive map with real-time weather data.  
+   - Customize the time range or data parameters based on your needs.  
 
-3. **View Visualizations**  
-   - Customize the time range or data parameters.  
-   - Save the graphs as `.png` or `.jpeg` if needed (UI buttons provided).  
+### **3. View Visualizations**
+   - **For Weather Forecasts**:
+     - Select **daily** or **hourly** forecasts.  
+     - Generate a visualization using a **Bar Graph** or **Line Graph**.  
+   - **For Weather Comparisons**:
+     - Enter the names of two locations.  
+     - Generate either a **Bar Graph** or **Line Graph** for comparison.  
+   - **For Mercator Map**:
+     - Interact with the map to explore and visualize weather data.  
+
+### **4. Interact and Explore**
+   - Experiment with the application's features to discover insights.  
+   - Save visualizations (if applicable) as images for later use.  
 
 ---
 
 ## **Visual Examples**
 
-![Example UI](images/example_ui.png)  
+Here is how our Hourly Forecast works...
+![Example UI](Screenshot%202024-12-03%20at%2000.33.00.png)  
+![Example UI](Screenshot%202024-12-03%20at%2000.34.37.png)  
+![Example UI](Screenshot%202024-12-03%20at%2000.35.22.png)  
+
+This is the Daily Forecast in action.
+![Example UI](Screenshot%202024-12-03%20at%2000.24.29.png)  
+![Example UI](Screenshot%202024-12-03%20at%2000.25.08.png)  
+![Example UI](Screenshot%202024-12-03%20at%2000.26.08.png)  
+
+And, of course, the favourites feature.
+Favourites
+![Example UI](Screenshot%202024-12-03%20at%2000.41.12.png)
+![Example UI](Screenshot%202024-12-03%20at%2000.41.32.png)
+
+Users aren't restricted to a single city, we can do two!
+![Example UI](Screenshot%202024-12-03%20at%2000.50.10.png)
+![Example UI](Screenshot%202024-12-03%20at%2000.51.56.png)
+![Example UI](Screenshot%202024-12-03%20at%2000.54.19.png)
+
+The best for last.
+![Example UI](Screenshot%202024-12-03%20at%2006.45.36.png)
+![Example UI](Screenshot%202024-12-03%20at%2006.45.55.png)
 
 ---
 
 ## **License**
 
-This project is licensed under the **MIT License**.  
-You are free to use, modify, and distribute the software as long as proper attribution is given.  
+This project does not have an official license.
+Unless explicitly stated, the code is intended for educational and non-commercial purposes only.
 
-Full license details can be found in the [LICENSE](LICENSE) file.
+If you wish to use this project for other purposes, please contact the authors for permission.
 
 ---
 
@@ -175,8 +205,7 @@ Full license details can be found in the [LICENSE](LICENSE) file.
 
 We welcome your feedback to improve this project. Here's how you can provide feedback:
 
-1. **Feedback Form**: Fill out our [Google Feedback Form](https://forms.google.com/example-feedback).  
-2. **GitHub Discussions**: Open a discussion thread in the [GitHub Discussions](https://github.com/your-username/weather-app/discussions).  
+**Email Us!**: Email the repository owner Reena, rmobmina@gmail.com.  
 
 ---
 

@@ -71,8 +71,7 @@ public class FavoritesView extends JFrame {
             final Location selectedLocation = getLocationFromName(selectedLocationName);
             if (selectedLocation != null) {
                 openForecastDailyView(selectedLocation);
-            }
-            else {
+            } else {
                 showError("Selected location not found.");
             }
         }
