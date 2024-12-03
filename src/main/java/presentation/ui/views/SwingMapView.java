@@ -20,7 +20,7 @@ import application.usecases.GetForecastWeatherDataUseCase;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import infrastructure.adapters.OpenWeatherApiService;
-import presentation.visualization.mercator.MercatorAlgorithm;
+import domain.services.MercatorAlgorithm;
 import utils.Constants;
 
 /**

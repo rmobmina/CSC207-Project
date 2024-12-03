@@ -1,10 +1,11 @@
-package presentation.visualization.mercator;
+package domain.services;
 
 import utils.Constants;
 
 /**
  * A class used to convert a location's longitude and latitude into Mercator Projection coordinates.
- *  FINISH LATER
+ *  Has a method to translate longitude and latitude to x and y coordinates relative to an image
+ *      as well as a method to turn x and y coordinates into longitude and latitude.
  */
 public class MercatorAlgorithm {
     private final double latitude;
@@ -41,6 +42,10 @@ public class MercatorAlgorithm {
 
     /**
      * Converts Mercator projection (x, y) coordinates to longitude and latitude.
+     *  NOTE: It should be noted that the inverse Mercator Projection is inaccurate for
+     *      latitudes beyond a magnitude of 85 degrees. This is not a problem with the code;
+     *      this is a limitation of the selected projection.
+     *
      * @param x a double representing the x-coordinate in pixels (relative to image width).
      * @param y a double representing the y-coordinate in pixels (relative to image height).
      * @param width a double representing the width of the image in pixels.

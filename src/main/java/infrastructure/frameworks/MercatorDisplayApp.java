@@ -18,7 +18,7 @@ import domain.entities.Location;
 import infrastructure.adapters.OpenWeatherApiService;
 import presentation.ui.DropDownUI;
 import presentation.ui.views.SwingMapView;
-import presentation.visualization.mercator.MercatorAlgorithm;
+import domain.services.MercatorAlgorithm;
 import presentation.visualization.mercator.MercatorMapApp;
 import utils.Constants;
 
