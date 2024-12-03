@@ -4,12 +4,14 @@ import application.usecases.GetForecastWeatherDataUseCase;
 import application.usecases.GetLocationDataUseCase;
 import domain.entities.Location;
 import domain.interfaces.ApiService;
+import presentation.ui.dashboard.NewDashBoardUi;
 import presentation.ui.views.*;
 
 /**
  * A factory that generates a new LocationsWindow based on the chosen option and the number of locations the user wants.
  */
 public class LocationsWindowGenerator {
+
 
     /**
      * Generates a LocationsWindow based on the option selected and other dependencies.
@@ -24,7 +26,7 @@ public class LocationsWindowGenerator {
      */
     public static LocationsWindow generateLocationsWindow(String option, int[] dimensions, int numOfLocations,
                                                           GetLocationDataUseCase locationDataUseCase, String apiKey,
-                                                          ApiService apiService) {
+                                                      ApiService apiService, NewDashBoardUi dashboard) {
         final ErrorLocationsWindow errorWindow = new ErrorLocationsWindow(
                 "ERROR: Invalid number of locations!", dimensions, locationDataUseCase, apiKey, apiService);
 
@@ -47,8 +49,7 @@ public class LocationsWindowGenerator {
             case ForecastHourlyView.OPTION_NAME:
                 return new ForecastHourlyView("Forecast Hourly View", dimensions, locationDataUseCase, apiKey, apiService);
             case HistoricalWeatherComparisonView.OPTION_NAME:
-                return new HistoricalWeatherComparisonView("Weather Comparison View", dimensions,
-                        numOfLocations, locationDataUseCase, apiKey, apiService);
+            return new HistoricalWeatherComparisonView("Weather Comparison View", dimensions, numOfLocations, locationDataUseCase, apiKey, apiService, dashboard);
             case MercatorMapView.OPTION_NAME:
                 return new MercatorMapView("Mercator Map View", dimensions, numOfLocations,
                         locationDataUseCase, apiKey, apiService);

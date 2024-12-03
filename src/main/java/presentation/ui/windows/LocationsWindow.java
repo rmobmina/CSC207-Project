@@ -7,7 +7,6 @@ import domain.entities.Location;
 import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
 import presentation.ui.DropDownUI;
-import presentation.ui.FavoritesManager;
 import presentation.ui.views.FavoritesView;
 
 import javax.swing.*;
@@ -91,13 +90,6 @@ public abstract class LocationsWindow extends JFrame {
             weatherDataDTO = WeatherDataDTOGenerator.createWeatherDataDTO(weatherData, location, startDate, endDate);
         }
     }
-
-    // Currently a place holder
-    protected void openFavoritesView(FavoritesManager favoritesManager) {
-        FavoritesView favoritesView = new FavoritesView(favoritesManager, apiKey, this); // Pass `this` as the parent window
-        favoritesView.setVisible(true);
-    }
-
 
     private void getLocationFromUseCase() {
         Location selectedLocation = dropDown.getSelectedLocation();

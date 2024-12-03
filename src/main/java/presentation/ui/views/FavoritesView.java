@@ -12,68 +12,92 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 import domain.entities.Location;
-
-import presentation.ui.FavoritesManager;
+import presentation.ui.windows.FavoritesManager;
 import presentation.ui.windows.LocationsWindow;
 
+/**
+ * FavoritesView class is a JFrame that displays a list of favorite locations
+ * and gives us the feature to remove chosen locations.
+ */
 public class FavoritesView extends JFrame {
-    private JList<String> favoritesList;
-    private FavoritesManager favoritesManager;
-    private LocationsWindow parentWindow;
+    private static final int FRAME_WIDTH = 400;
+    private static final int FRAME_HEIGHT = 300;
+    private static final String ERROR_TITLE = "Error";
 
+    private final JList<String> favoritesList;
+    private final FavoritesManager favoritesManager;
+    private final LocationsWindow parentWindow;
+    private final JButton removeButton;
 
+    /**
+     * Constructs a FavoritesView instance.
+     *
+     * @param favoritesManager the FavoritesManager instance
+     * @param apiKey           the API key (currently unused)
+     * @param parentWindow     the parent LocationsWindow instance
+     */
     public FavoritesView(FavoritesManager favoritesManager, String apiKey, LocationsWindow parentWindow) {
         this.favoritesManager = favoritesManager;
-        this.parentWindow = parentWindow; // Store the parent window reference
+        this.parentWindow = parentWindow;
         setTitle("Favorites");
-        setSize(400, 300);
+        setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
-
-        // Create a list for displaying favorite locations
         favoritesList = new JList<>(getFavoritesAsStrings());
         add(new JScrollPane(favoritesList), BorderLayout.CENTER);
 
-        // Add a selection listener to handle location selection
         favoritesList.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                if (e.getClickCount() == 2) { // Double-click detected
-                    String selectedLocationName = favoritesList.getSelectedValue();
-                    if (selectedLocationName != null && !selectedLocationName.equals("No favorites added yet.")) {
-                        Location selectedLocation = getLocationFromName(selectedLocationName);
-                        if (selectedLocation != null) {
-                            openForecastDailyView(selectedLocation); // Open ForecastDailyView for the selected location
-                        } else {
-                            JOptionPane.showMessageDialog(FavoritesView.this,
-                                    "Error: Selected location not found.", "Error", JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
+                if (e.getClickCount() == 2) {
+                    handleFavoritesListDoubleClick();
                 }
             }
         });
 
-
-        // Button to remove a selected favorite
-        JButton removeButton = new JButton("Remove Favorite");
-        removeButton.addActionListener(e -> {
-            int selectedIndex = favoritesList.getSelectedIndex();
-            if (selectedIndex != -1) {
-                String selectedLocation = favoritesList.getSelectedValue();
-                removeFavoriteByName(selectedLocation);
-            }
-        });
+        removeButton = new JButton("Remove Favorite");
+        removeButton.addActionListener(event -> handleRemoveFavorite());
         add(removeButton, BorderLayout.SOUTH);
     }
 
-    private DefaultListModel<String> getFavoritesAsStrings() {
-        DefaultListModel<String> model = new DefaultListModel<>();
+    /**
+     * Handles a double-click event on the favorites list.
+     * Opens the forecast view for the selected location if valid.
+     */
+    private void handleFavoritesListDoubleClick() {
+        final String selectedLocationName = favoritesList.getSelectedValue();
+        if (selectedLocationName != null && !"No favorites added yet.".equals(selectedLocationName)) {
+            final Location selectedLocation = getLocationFromName(selectedLocationName);
+            if (selectedLocation != null) {
+                openForecastDailyView(selectedLocation);
+            }
+            else {
+                showError("Selected location not found.");
+            }
+        }
+    }
+
+    /**
+     * Handles the removal of the selected favorite from the list.
+     * Removes the selected favorite if a valid selection is made.
+     */
+
+    private void handleRemoveFavorite() {
+        final int selectedIndex = favoritesList.getSelectedIndex();
+        if (selectedIndex != -1) {
+            final String selectedLocation = favoritesList.getSelectedValue();
+            removeFavoriteByName(selectedLocation);
+        }
+    }
+
+    protected DefaultListModel<String> getFavoritesAsStrings() {
+        final DefaultListModel<String> model = new DefaultListModel<>();
         List<Location> favorites = favoritesManager.getFavorites();
 
-        // Error handling: Check if favorites is null
-        if (favorites == null) {
-            favorites = new ArrayList<>();
+        if (favorites == null || favorites.isEmpty()) { // Handle null or empty case here
+            model.addElement("No favorites added yet.");
+            return model;
         }
 
         for (Location location : favorites) {
@@ -82,7 +106,6 @@ public class FavoritesView extends JFrame {
             }
         }
 
-        // Empty list handling: Add a placeholder message if no favorites exist
         if (model.isEmpty()) {
             model.addElement("No favorites added yet.");
         }
@@ -90,31 +113,38 @@ public class FavoritesView extends JFrame {
         return model;
     }
 
-    private void removeFavoriteByName(String locationName) {
-        List<Location> favorites = favoritesManager.getFavorites();
 
-        // Error handling: Check if favorites is null
-        if (favorites == null) {
-            JOptionPane.showMessageDialog(this, "No favorites found to remove.", "Error", JOptionPane.ERROR_MESSAGE);
+    protected void removeFavoriteByName(String locationName) {
+        List<Location> favorites = favoritesManager.getFavorites();
+        if (favorites == null || favorites.isEmpty()) {
+            showError("No favorites found to remove.");
             return;
         }
 
+        boolean removed = false;
         for (Location loc : favorites) {
             if (loc.fullLocationName().equals(locationName)) {
                 favoritesManager.removeFavorite(loc);
-                favoritesList.setModel(getFavoritesAsStrings()); // Refresh the list
-                favoritesList.updateUI(); // Ensure UI reflects changes immediately
+                refreshFavoritesList();
                 JOptionPane.showMessageDialog(this, "Favorite removed!");
-                return;
+                removed = true;
+                break;
             }
         }
 
-        JOptionPane.showMessageDialog(this, "Location not found in favorites.", "Error", JOptionPane.ERROR_MESSAGE);
+        if (!removed) {
+            showError("Location not found in favorites.");
+        }
     }
 
-    // Helper method to retrieve a Location object from its name
-    private Location getLocationFromName(String locationName) {
-        for (Location loc : favoritesManager.getFavorites()) {
+
+    public Location getLocationFromName(String locationName) {
+        List<Location> favorites = favoritesManager.getFavorites();
+        if (favorites == null || favorites.isEmpty()) {
+            return null;
+        }
+
+        for (Location loc : favorites) {
             if (loc.fullLocationName().equals(locationName)) {
                 return loc;
             }
@@ -123,21 +153,35 @@ public class FavoritesView extends JFrame {
     }
 
 
-    // Opens the ForecastDailyView for the selected location
-    private void openForecastDailyView(Location location) {
+    void openForecastDailyView(Location location) {
         if (location != null) {
-            this.setVisible(false); // Hide the current favorites view
+            this.setVisible(false);
             if (parentWindow != null) {
-                parentWindow.setSearchBarText(location.fullLocationName()); // Update the search bar
-                parentWindow.setWeatherLocation(location); // Update and fetch weather
+                parentWindow.setSearchBarText(location.fullLocationName());
+                parentWindow.setWeatherLocation(location);
             } else {
-                JOptionPane.showMessageDialog(this, "Error: Parent window reference is null.", "Error", JOptionPane.ERROR_MESSAGE);
+                showError("Parent window reference is null.");
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Error: Location not found.", "Error", JOptionPane.ERROR_MESSAGE);
+            showError("Location not found.");
         }
     }
 
+    void showError(String errorMessage) {
+        JOptionPane.showMessageDialog(this, errorMessage, ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
+    }
 
+    public JList<String> getFavoritesList() {
+        return favoritesList;
+    }
+
+    public void refreshFavoritesList() {
+        favoritesList.setModel(getFavoritesAsStrings());
+        favoritesList.updateUI();
+    }
+
+    public JButton getRemoveButton() {
+        return removeButton;
+    }
 }
 
