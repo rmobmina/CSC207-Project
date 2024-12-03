@@ -1,4 +1,4 @@
-package usecases;
+package application.usecases;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -9,7 +9,6 @@ import java.util.List;
 
 import domain.entities.Location;
 import domain.interfaces.ApiService;
-import application.usecases.GetLocationDataUseCase;
 
 public class GetLocationDataUseCaseTest {
 

@@ -1,4 +1,4 @@
-package usecases;
+package application.usecases;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -6,8 +6,6 @@ import static org.mockito.Mockito.*;
 import org.junit.Test;
 import domain.entities.Location;
 import domain.interfaces.ApiService;
-import application.usecases.GetLocationDataUseCase;
-import application.usecases.GetLocationsWindowUseCase;
 import presentation.ui.windows.ErrorLocationsWindow;
 import presentation.ui.windows.LocationsWindow;
 

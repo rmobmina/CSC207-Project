@@ -1,9 +1,8 @@
-package usecases;
+package application.usecases;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import application.usecases.LoadMapImageUseCase;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

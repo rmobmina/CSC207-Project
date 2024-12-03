@@ -1,4 +1,4 @@
-package usecases;
+package application.usecases;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
-import application.usecases.GetHistoricalWeatherDataUseCase;
 
 import java.time.LocalDate;
 
