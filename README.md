@@ -166,16 +166,37 @@ For more troubleshooting, refer to the [FAQ.md](FAQ.md) in the project root dire
 
 ## **Visual Examples**
 
-![Example UI](images/example_ui.png)  
+Hourly
+![Example UI](Screenshot 2024-12-03 at 00.33.00)  
+![Example UI](Screenshot 2024-12-03 at 00.34.37)  
+![Example UI](Screenshot 2024-12-03 at 00.35.22)  
+
+Daily
+![Example UI](Screenshot 2024-12-03 at 00.24.29)  
+![Example UI](Screenshot 2024-12-03 at 00.25.08)  
+![Example UI](Screenshot 2024-12-03 at 00.26.08)  
+
+Favourites
+![Example UI](Screenshot 2024-12-03 at 00.41.12)
+![Example UI](Screenshot 2024-12-03 at 00.41.32)
+
+Comparison
+![Example UI](Screenshot 2024-12-03 at 00.50.10)
+![Example UI](Screenshot 2024-12-03 at 00.51.56)
+![Example UI](Screenshot 2024-12-03 at 00.54.19)
+
+Mercator
+![Example UI](Screenshot 2024-12-03 at 06.45.36)
+![Example UI](Screenshot 2024-12-03 at 06.45.55)
 
 ---
 
 ## **License**
 
-This project is licensed under the **MIT License**.  
-You are free to use, modify, and distribute the software as long as proper attribution is given.  
+This project does not have an official license.
+Unless explicitly stated, the code is intended for educational and non-commercial purposes only.
 
-Full license details can be found in the [LICENSE](LICENSE) file.
+If you wish to use this project for other purposes, please contact the authors for permission.
 
 ---
 
