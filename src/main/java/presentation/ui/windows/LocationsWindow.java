@@ -36,8 +36,6 @@ public abstract class LocationsWindow extends JFrame {
 
     protected DropDownUI dropDown;
 
-    protected JButton visualizeButton = new JButton("Visualize Data");
-
     public JPanel getMainPanel() {
         return mainPanel;
     }
@@ -67,7 +65,6 @@ public abstract class LocationsWindow extends JFrame {
         mainPanel.add(new JLabel(name));
         mainPanel.setVisible(true);
         enterLocationButton.addActionListener(e -> getLocationFromUseCase());
-        visualizeButton.addActionListener(e -> openVisualization());
         addComponents();
         mainPanel.add(inputPanel);
 
@@ -83,7 +80,6 @@ public abstract class LocationsWindow extends JFrame {
         inputPanel.add(enterLocationButton);
         inputPanel.add(favoritesButton); // Added the Favorites button to the panel
         inputPanel.add(addToFavoritesButton); // Added the ADDTOFAVORITES button
-        inputPanel.add(visualizeButton);
     }
 
     protected abstract void getWeatherData();
