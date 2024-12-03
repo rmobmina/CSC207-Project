@@ -4,11 +4,12 @@ import java.util.List;
 
 import domain.entities.Location;
 import presentation.ui.FavoritesManager;
+import utils.UseCaseInteractor;
 
 /**
  * Use case for managing favorites (add, remove, retrieve, and save).
  */
-public class ManageFavoritesUseCase {
+public class ManageFavoritesUseCase extends UseCaseInteractor {
 
     private final FavoritesManager favoritesManager;
 
@@ -43,6 +44,7 @@ public class ManageFavoritesUseCase {
             favoritesManager.removeFavorite(location);
             isRemoved = true;
         }
+        useCaseFailed = !isRemoved;
         return isRemoved;
     }
 

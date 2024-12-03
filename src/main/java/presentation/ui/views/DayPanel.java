@@ -79,17 +79,17 @@ public class DayPanel extends JPanel {
     public void setMeanTemperatureValue(String percipitation) { this.meanTemperatureValue.setText(percipitation); }
 
     public void updateWeatherDataValues(WeatherDataDTO weatherDataDTO, int index, String temperatureUnitType){
-            // Update temperature values
-            setMaxTemperatureValue(
-                    weatherDataDTO.temperatureToString("temperatureMaxDaily", index, temperatureUnitType));
-            setMinTemperatureValue(
-                    weatherDataDTO.temperatureToString("temperatureMinDaily", index, temperatureUnitType));
-            setMeanTemperatureValue(weatherDataDTO.temperatureToString("temperatureMeanDaily", index, temperatureUnitType));
-            // Update precipitation value
-            setPercipitationValue(
-                    weatherDataDTO.dataToString("percipitationDaily", index));
-            // Optionally, update additional fields like wind speed and direction
-            setWindValue(weatherDataDTO.dataToString("windSpeedDaily", index) + " " +
-                    weatherDataDTO.dataToString("windDirectionDaily", index));
+        // Update temperature values
+        setMaxTemperatureValue(
+                weatherDataDTO.temperatureToString("temperatureMaxDaily", index, temperatureUnitType));
+        setMinTemperatureValue(
+                weatherDataDTO.temperatureToString("temperatureMinDaily", index, temperatureUnitType));
+        setMeanTemperatureValue(weatherDataDTO.temperatureToString("temperatureMeanDaily", index, temperatureUnitType));
+        // Update precipitation value
+        setPercipitationValue(
+                weatherDataDTO.dataToString("percipitationDaily", index));
+        // Optionally, update additional fields like wind speed and direction
+        setWindValue(weatherDataDTO.dataToString("windSpeedDaily", index) + " " +
+                weatherDataDTO.dataToString("windDirectionDaily", index));
     }
 }

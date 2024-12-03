@@ -1,5 +1,7 @@
 package application.usecases;
 
+import utils.UseCaseInteractor;
+
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +11,7 @@ import javax.imageio.ImageIO;
 /**
  * Use case for loading map images.
  */
-public class LoadMapImageUseCase {
+public class LoadMapImageUseCase extends UseCaseInteractor {
 
     /**
      * Loads the map image from the specified file path.
@@ -19,6 +21,8 @@ public class LoadMapImageUseCase {
      * @throws IOException If an error occurs while reading the file.
      */
     public Image execute(String mapFilePath) throws IOException {
-        return ImageIO.read(new File(mapFilePath));
+        final Image image = ImageIO.read(new File(mapFilePath));
+        useCaseFailed = image == null;
+        return image;
     }
 }

@@ -41,8 +41,6 @@ class ForecastHourlyViewTest {
 
         forecastHourlyView.location = testLocation;
 
-        forecastHourlyView.getWeatherData();
-
         // Asserting that weather data was successfully fetched and is not null
         // NOTE: Akram added a new accessor method since weatherData was private
         assertNotNull(forecastHourlyView.getWeatherDataObject(), "Weather data should not be null");

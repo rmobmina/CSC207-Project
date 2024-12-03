@@ -1,51 +1,54 @@
-package presentation.visualization.mercator;
+package presentation.ui.views;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import application.dto.WeatherDataDTO;
 import application.dto.WeatherDataDTOGenerator;
-import application.usecases.GetForecastWeatherDataUseCase;  // New use case for fetching weather
+import application.usecases.GetForecastWeatherDataUseCase;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import infrastructure.adapters.OpenWeatherApiService;
-import presentation.ui.views.DayPanel;
+import domain.services.MercatorAlgorithm;
 import utils.Constants;
 
-import java.util.ArrayList;
-import java.util.List;
-import domain.entities.Coordinate;
-import presentation.ui.views.DayPanel;
-
-public class SwingMapRenderer extends JPanel {
+/**
+ * A view that extends JPanel.
+ * Used to draw a Mercator Projection Map.
+ *      Comes with methods to draw a point on the map and retrieve weather details in a seperate window,
+ *       either on user click or on user selection.
+ */
+public class SwingMapView extends JPanel {
 
     private final Image mapImage;
     private double originalX = -1;
     private double originalY = -1;
     private double currentX = -1;
     private double currentY = -1;
-    private final String comma = ", ";
-    private final String closeBracket = ")";
-    private final GetForecastWeatherDataUseCase getWeatherUseCase = new GetForecastWeatherDataUseCase(new OpenWeatherApiService());
-
-    private JFrame weatherFrame;  // JFrame to display weather information
-    private JLabel weatherLabel;  // Label to show weather details
+    private final GetForecastWeatherDataUseCase getWeatherUseCase;
+    private JFrame weatherFrame;
+    private JLabel weatherLabel;
 
     /**
      * Constructor to initialize the map renderer with a given image and weather API service.
      *
-     * @param mapImage           The image of the map to be displayed.
+     * @param mapImage The image of the map to be displayed.
      */
-    public SwingMapRenderer(Image mapImage) {
+    public SwingMapView(Image mapImage) {
         this.mapImage = mapImage;
+        this.getWeatherUseCase = new GetForecastWeatherDataUseCase(new OpenWeatherApiService());
 
-        // Add a listener to handle resizing
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -54,7 +57,6 @@ public class SwingMapRenderer extends JPanel {
             }
         });
 
-        // Add a listener to handle mouse clicks
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -66,19 +68,15 @@ public class SwingMapRenderer extends JPanel {
     /**
      * Renders the map and a marker at the specified coordinates.
      *
-     * @param x The original x-coordinate to place the marker on the map.
-     * @param y The original y-coordinate to place the marker on the map.
+     * @param xCoordinate The x-coordinate to place the marker on the map.
+     * @param yCoordinate The y-coordinate to place the marker on the map.
      */
-    public void renderMap(double x, double y) {
-        this.originalX = x;
-        this.originalY = y;
+    public void renderMap(double xCoordinate, double yCoordinate) {
+        this.originalX = xCoordinate;
+        this.originalY = yCoordinate;
         updateScaledCoordinates();
         repaint();
-
-        // Fetch weather data based on the new coordinates
         fetchWeatherData(originalX, originalY);
-
-
     }
 
     /**
@@ -92,7 +90,13 @@ public class SwingMapRenderer extends JPanel {
             this.currentX = originalX * widthRatio;
             this.currentY = originalY * heightRatio;
 
-            System.out.println("Updated Scaled Coordinates: (" + currentX + comma + currentY + closeBracket);
+            final double mapWidth = mapImage.getWidth(null);
+            final double mapHeight = mapImage.getHeight(null);
+
+            final double[] latLon = MercatorAlgorithm.reverseCoordinates(originalX, originalY, mapWidth, mapHeight);
+            if (latLon != null && latLon.length == 2) {
+                fetchWeatherData(latLon[1], latLon[0]);
+            }
         }
     }
 
@@ -103,33 +107,20 @@ public class SwingMapRenderer extends JPanel {
      * @param mouseY The y-coordinate of the mouse click.
      */
     private void handleMapClick(int mouseX, int mouseY) {
-        // Convert from screen coordinates to original Mercator coordinates
         final double widthRatio = (double) getWidth() / mapImage.getWidth(null);
         final double heightRatio = (double) getHeight() / mapImage.getHeight(null);
 
         this.originalX = mouseX / widthRatio;
         this.originalY = mouseY / heightRatio;
 
-        System.out.println("Screen Coordinates Clicked: (" + mouseX + comma + mouseY + closeBracket);
-        System.out.println("Scaled Mercator Coordinates: (" + originalX + comma + originalY + closeBracket);
-
-        // Convert Mercator coordinates to latitude/longitude
         final double mapWidth = mapImage.getWidth(null);
         final double mapHeight = mapImage.getHeight(null);
 
         final double[] latLon = MercatorAlgorithm.reverseCoordinates(originalX, originalY, mapWidth, mapHeight);
         if (latLon != null && latLon.length == 2) {
-            final double latitude = latLon[1];
-            final double longitude = latLon[0];
-            System.out.println("Latitude/Longitude: (" + latitude + comma + longitude + closeBracket);
-
-            // Fetch weather data based on the clicked coordinates
-            fetchWeatherData(latitude, longitude);
-
-
+            fetchWeatherData(latLon[1], latLon[0]);
         }
 
-        // Update and repaint
         updateScaledCoordinates();
         repaint();
     }
@@ -137,32 +128,46 @@ public class SwingMapRenderer extends JPanel {
     /**
      * Fetch weather data using the GetWeatherUseCase.
      *
-     * @param latitude The latitude of the location.
+     * @param latitude  The latitude of the location.
      * @param longitude The longitude of the location.
      */
     private void fetchWeatherData(double latitude, double longitude) {
-        // Call the use case to get the weather data for the given coordinates
-        Location currentLocation = new Location("", "", "", latitude, longitude);
-        WeatherData weatherData = getWeatherUseCase.execute(currentLocation, 1);
-        WeatherDataDTO weatherDataDto = WeatherDataDTOGenerator.createWeatherDataDTO(weatherData,
-                currentLocation, LocalDate.now(), LocalDate.now());
-        // If weather frame doesn't exist, create a new one
+        final Location currentLocation = new Location("", "", "", latitude, longitude);
+        final WeatherData weatherData = getWeatherUseCase.execute(currentLocation, 1);
+        final WeatherDataDTO weatherDataDto = WeatherDataDTOGenerator.createWeatherDataDTO(
+                weatherData, currentLocation, LocalDate.now(), LocalDate.now());
+
         if (weatherFrame == null) {
-            weatherFrame = new JFrame("Weather Information");
-            weatherFrame.setSize(300, 200);
-            weatherFrame.setLocation((int) (new Dimension(Toolkit.getDefaultToolkit().getScreenSize())).getWidth()  - 300, 0);
-            weatherFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            weatherLabel = new JLabel("Weather details will be shown here.");
-            // Create a new DayPanel to display all weather data from Today
-            DayPanel dayPanel = new DayPanel(LocalDate.now(), true);
+            createWeatherFrame();
+        }
+
+        if (weatherLabel != null) {
+            final DayPanel dayPanel = new DayPanel(LocalDate.now(), true);
             dayPanel.updateWeatherDataValues(weatherDataDto, 0, Constants.CELCIUS_UNIT_TYPE);
             weatherFrame.add(dayPanel);
             weatherFrame.setVisible(true);
         }
+    }
 
-        // Update the weather information in the label
-        if (weatherLabel != null) {
-            weatherLabel.setText("<html><body>" + weatherData.getWeatherDetails() + "</body></html>");
+    /**
+     * Creates the weather information frame.
+     */
+    private void createWeatherFrame() {
+        weatherFrame = new JFrame("Weather Information");
+        weatherFrame.setSize(Constants.weatherFrameWidth, Constants.weatherFrameHeight);
+        weatherFrame.setLocation((int) Toolkit.getDefaultToolkit().getScreenSize().getWidth()
+                - Constants.weatherFrameWidth, 0);
+        weatherFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        weatherLabel = new JLabel("Weather details will be shown here.");
+    }
+
+    /**
+     * Disposes of the weather information frame if it is open.
+     */
+    public void disposeWeatherFrame() {
+        if (weatherFrame != null) {
+            weatherFrame.dispose();
+            weatherFrame = null;
         }
     }
 
@@ -175,10 +180,8 @@ public class SwingMapRenderer extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // Draw the map
         g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);
 
-        // Draw the marker if coordinates are set
         if (currentX >= 0 && currentY >= 0) {
             g.setColor(Color.RED);
             g.fillOval(

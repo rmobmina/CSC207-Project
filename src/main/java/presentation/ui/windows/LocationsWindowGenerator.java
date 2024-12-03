@@ -21,8 +21,6 @@ public class LocationsWindowGenerator {
                 return new ForecastDailyView("Forecast Daily View", dimensions, locationDataUseCase, apiKey, apiService);
             case ForecastHourlyView.OPTION_NAME:
                 return new ForecastHourlyView("Forecast Hourly View", dimensions, locationDataUseCase, apiKey, apiService);
-            case HistoricalWeatherView.OPTION_NAME:
-                return new HistoricalWeatherView("Historical Weather View", dimensions, locationDataUseCase, apiKey, apiService);
             case HistoricalWeatherComparisonView.OPTION_NAME:
                 return new HistoricalWeatherComparisonView("Weather Comparison View", dimensions, numOfLocations, locationDataUseCase, apiKey, apiService);
             case MercatorMapView.OPTION_NAME:

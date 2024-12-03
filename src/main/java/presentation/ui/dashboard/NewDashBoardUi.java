@@ -1,4 +1,4 @@
-package presentation.ui;
+package presentation.ui.dashboard;
 
 import application.usecases.GetForecastWeatherDataUseCase;
 import application.usecases.GetHistoricalWeatherDataUseCase;
@@ -6,8 +6,8 @@ import application.usecases.GetLocationDataUseCase;
 import application.usecases.GetLocationsWindowUseCase;
 import domain.interfaces.ApiService;
 import infrastructure.adapters.OpenWeatherApiService;
+import presentation.ui.FavoritesManager;
 import presentation.ui.views.*;
-import presentation.ui.windows.ErrorLocationsWindow;
 import presentation.ui.windows.LocationsWindow;
 
 import javax.swing.*;
@@ -28,6 +28,8 @@ public class NewDashBoardUi extends JFrame {
     UserOptionsView userOptionsView;
     SelectNumberLocationsView numberLocationsView;
     FavoritesManager favoritesManager;
+    MainMenuView mainMenuView;
+    HelpInfoView helpInfoView;
 
     final String OPTIONS_NAME = "Options";
     final String LOCATIONS_WINDOW_NAME = "Locations";
@@ -42,17 +44,18 @@ public class NewDashBoardUi extends JFrame {
                           GetLocationDataUseCase locationDataUseCase,
                           GetForecastWeatherDataUseCase forecastWeatherDataUseCase,
                           GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase,
-                          UserOptionsView userOptionsView, SelectNumberLocationsView numberLocationsView) {
+                          FavoritesManager favouriteManager,
+                          UserOptionsView userOptionsView, SelectNumberLocationsView numberLocationsView,
+                          MainMenuView mainMenuView, HelpInfoView helpInfoView) {
 
         initVariables(locationsWindowUseCase, locationDataUseCase,
-                forecastWeatherDataUseCase, historicalWeatherDataUseCase,
-                userOptionsView, numberLocationsView);
+                forecastWeatherDataUseCase, historicalWeatherDataUseCase, favouriteManager,
+                userOptionsView, numberLocationsView, mainMenuView, helpInfoView);
 
         setTitle("Weather Dashboard");
         setSize(500, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        favoritesManager = new FavoritesManager(); // Initialized FavoritesManager
         add(userOptionsView.getPanel());
         add(numberLocationsView.getPanel());
 
@@ -66,14 +69,20 @@ public class NewDashBoardUi extends JFrame {
                                GetLocationDataUseCase locationDataUseCase,
                                GetForecastWeatherDataUseCase forecastWeatherDataUseCase,
                                GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase,
+                               FavoritesManager favoritesManager,
                                UserOptionsView userOptionsView,
-                               SelectNumberLocationsView numberLocationsView) {
+                               SelectNumberLocationsView numberLocationsView,
+                               MainMenuView mainMenuView,
+                               HelpInfoView helpInfoView) {
         this.locationsWindowUseCase = getLocationsWindowUseCase;
         this.locationDataUseCase = locationDataUseCase;
         this.forecastWeatherDataUseCase = forecastWeatherDataUseCase;
         this.historicalWeatherDataUseCase = historicalWeatherDataUseCase;
+        this.favoritesManager = favoritesManager;
         this.userOptionsView = userOptionsView;
         this.numberLocationsView = numberLocationsView;
+        this.mainMenuView = mainMenuView;
+        this.helpInfoView = helpInfoView;
     }
 
     private void setButtonListeners() {
@@ -140,7 +149,8 @@ public class NewDashBoardUi extends JFrame {
             case LOCATIONS_WINDOW_NAME:
                 locationsWindow.openWindow();
                 toggleShowDashBoard(false);
-                break; // closes the current window
+                // closes the current window
+                break;
             case NUMBER_LOCATIONS_WINDOW_NAME:
                 numberLocationsView.showPanel();
                 this.setContentPane(numberLocationsView.getPanel());

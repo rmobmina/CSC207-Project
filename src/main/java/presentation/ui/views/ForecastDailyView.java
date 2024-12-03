@@ -6,6 +6,8 @@ import domain.entities.Location;
 import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
 import presentation.ui.windows.LocationsWindow;
+import utils.Constants;
+
 import static utils.Constants.MAX_FORECAST_DAYS;
 import static utils.Constants.CELCIUS_UNIT_TYPE;
 import java.time.DayOfWeek;
@@ -32,6 +34,11 @@ public class ForecastDailyView extends LocationsWindow {
     private final JButton nextDayButton = new JButton("Next Day");
     private final JButton previousDayButton = new JButton("Previous Day");
 
+    private final JLabel temperatureUnits = new JLabel();
+//    private final JButton changeUnits = new JButton("Change Units");
+
+    private String currenUnits = Constants.CELCIUS_UNIT_TYPE;
+
     private int numberOfDays;
 
     private LocalDate currentDate = LocalDate.now();
@@ -42,6 +49,7 @@ public class ForecastDailyView extends LocationsWindow {
 
     private DayPanel dayPanel;
 
+    // This is here temporarily for my test (DO NOT REMOVE)
     public ForecastDailyView(String name, int[] dimensions, Location location,
                              GetForecastWeatherDataUseCase forecastWeatherDataUseCase,
                              GetLocationDataUseCase locationDataUseCase,
@@ -58,6 +66,7 @@ public class ForecastDailyView extends LocationsWindow {
 
         numberOfDays = MAX_FORECAST_DAYS;
         dayPanel = new DayPanel(currentDate, true);
+
         dayPanel.setVisible(true);
         mainPanel.add(dayPanel);
 
@@ -71,10 +80,13 @@ public class ForecastDailyView extends LocationsWindow {
         super(name, dimensions, locationDataUseCase, apiKey, apiService);
         this.forecastWeatherDataUseCase = new GetForecastWeatherDataUseCase(apiService);
         numberOfDaysLabel.setText("Number of Days to Forecast: ");
+        setNumberOfDaysField(String.valueOf(MAX_FORECAST_DAYS));
         inputPanel.add(numberOfDaysLabel);
         inputPanel.add(numberOfDaysField);
+        inputPanel.add(temperatureUnits);
         inputPanel.add(nextDayButton);
         inputPanel.add(previousDayButton);
+        // inputPanel.add(changeUnits);
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
         numberOfDays = MAX_FORECAST_DAYS;
@@ -84,6 +96,12 @@ public class ForecastDailyView extends LocationsWindow {
 
         nextDayButton.addActionListener(eListener -> showNextDay());
         previousDayButton.addActionListener(eListener -> showPrevDay());
+        // This button will allow the user to change the temperature units (not yet implemented)
+        //changeUnits.addActionListener(eListenr -> changeUnitsView.showPanel());
+    }
+
+    private void updateTemperatureUnits(String temperatureCategory) {
+        temperatureUnits.setText("Temperature Units: " + weatherDataDTO.getTemperatureUnit(temperatureCategory, currenUnits));
     }
 
     // Selects the next day from the current selected day
@@ -102,7 +120,7 @@ public class ForecastDailyView extends LocationsWindow {
     protected void getWeatherData() {
         try {
             // Fetch weather data for up to 16 days
-            final WeatherData weatherData = forecastWeatherDataUseCase.execute(location, 16);
+            final WeatherData weatherData = forecastWeatherDataUseCase.execute(location, MAX_FORECAST_DAYS);
 
             if (forecastWeatherDataUseCase.isUseCaseFailed()) {
                 JOptionPane.showMessageDialog(mainPanel,
@@ -149,6 +167,7 @@ public class ForecastDailyView extends LocationsWindow {
 
     public boolean getNumOfDaysUseCase() {
         boolean useCaseFailed = false;
+        selectedDayIndex = 0;
         // Parse the number of days entered by the user (from the text field)
         final String userInput = numberOfDaysField.getText().trim();
         if (userInput.isEmpty()) {
@@ -180,8 +199,7 @@ public class ForecastDailyView extends LocationsWindow {
 
     private void updateDayPanel(int index) {
         try {
-
-
+            dayPanel.updateWeatherDataValues(weatherDataDTO, index, CELCIUS_UNIT_TYPE);
         }
         catch (Exception exception) {
             JOptionPane.showMessageDialog(mainPanel,
@@ -208,6 +226,5 @@ public class ForecastDailyView extends LocationsWindow {
     public void setNumberOfDaysField(String numDays) {
         this.numberOfDaysField.setText(numDays);
     }
-
 
 }

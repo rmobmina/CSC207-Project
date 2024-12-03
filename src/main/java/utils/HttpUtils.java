@@ -39,10 +39,6 @@ public class HttpUtils {
             result = resultJson.toString();
         }
 
-        else {
-            System.err.println("Error: API returned response code " + conn.getResponseCode());
-        }
-
         return result;
     }
 
