@@ -10,6 +10,7 @@ import presentation.ui.dashboard.NewDashBoardUi;
 import presentation.ui.windows.ErrorLocationsWindow;
 import presentation.ui.windows.LocationsWindow;
 
+import java.awt.Window;
 import java.util.Arrays;
 
 public class GetLocationsWindowUseCaseTest {
@@ -28,14 +29,14 @@ public class GetLocationsWindowUseCaseTest {
         NewDashBoardUi mockDashboard = mock(NewDashBoardUi.class);
 
         // Define the expected type
-        String expectedWindowType = "NORMAL";
+        Window.Type expectedWindowType = Window.Type.NORMAL;
 
         // Create an instance of the use case
         GetLocationsWindowUseCase useCase = new GetLocationsWindowUseCase();
         int[] dimensions = {800, 600};
 
         // Test the execute method
-        LocationsWindow window = useCase.execute(expectedWindowType, dimensions, 5, locationDataUseCase, "dummyApiKey", mockApiService, mockDashboard);
+        LocationsWindow window = useCase.execute(expectedWindowType.toString(), dimensions, 5, locationDataUseCase, "dummyApiKey", mockApiService, mockDashboard);
 
         // Assert the result
         assertNotNull(window);
