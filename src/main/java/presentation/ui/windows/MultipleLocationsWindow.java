@@ -17,7 +17,7 @@ public class MultipleLocationsWindow extends LocationsWindow {
         this.setVisible(true);
     }
 
-
+    // add two dropdowns, one for city one and one for city two fields to replace later for historicalweathercomparison
 
     private List<String> getCities(){
         List<String> city = new ArrayList<>();
