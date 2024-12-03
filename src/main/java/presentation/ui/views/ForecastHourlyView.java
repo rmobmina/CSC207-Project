@@ -1,18 +1,5 @@
 package presentation.ui.views;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.text.DecimalFormat;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
-
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
-import org.json.JSONArray;
-
 import application.usecases.GetForecastWeatherDataUseCase;
 import application.usecases.GetLocationDataUseCase;
 import domain.entities.WeatherData;
@@ -23,34 +10,44 @@ import presentation.ui.windows.LocationsWindow;
 import presentation.visualization.BarGraphWeatherComparison;
 import presentation.visualization.LineGraphWeatherComparison;
 
-/**
- * This class displays the hourly forecast for the next 8 hours for a given location.
- * If the temperature is below a certain degree (Celcius),
- * it gives a pop-up reminder to wear multiple layers of clothing (can add more features later).
- */
+import javax.swing.*;
+import java.awt.*;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+
+import org.json.JSONArray;
+
 public class ForecastHourlyView extends LocationsWindow {
 
     public static final String OPTION_NAME = "Forecast Hourly";
+    private static final String MESSAGE_DIALOGUE_TITLE = "Error";
     private static final int GAP = 10;
     private static final int TEMP_THRESHOLD = 0;
     private static final int NUMBER_HOURS_OF_FORECAST = 8;
 
     private final OpenWeatherApiService apiService = new OpenWeatherApiService();
     private WeatherData weatherData;
+    private JPanel forecastPanel;
+
+    private final JButton visualizeButton = new JButton("Visualize!");
 
     public ForecastHourlyView(String name, int[] dimensions, GetLocationDataUseCase locationDataUseCase, String apiKey,
                               ApiService apiService) {
         super(name, dimensions, locationDataUseCase, apiKey, apiService);
+
+        inputPanel.add(visualizeButton);
+        visualizeButton.addActionListener(e -> openGraphSelectionWindow());
     }
 
     @Override
     protected void openVisualization() {
         openGraphSelectionWindow();
     }
+
     private void openGraphSelectionWindow() {
         if (weatherData == null) {
             JOptionPane.showMessageDialog(this, "No weather data available for visualization!",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+                    MESSAGE_DIALOGUE_TITLE, JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -125,97 +122,60 @@ public class ForecastHourlyView extends LocationsWindow {
     @Override
     public void getWeatherData() {
         if (location == null) {
-            throw new RuntimeException("No location selected!!");
+            JOptionPane.showMessageDialog(this, "No location selected!",
+                    MESSAGE_DIALOGUE_TITLE, JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
-        // Fetch hourly forecast data for the selected location
-        final GetForecastWeatherDataUseCase forecastUseCase = new GetForecastWeatherDataUseCase(apiService);
+        GetForecastWeatherDataUseCase forecastUseCase = new GetForecastWeatherDataUseCase(apiService);
         this.weatherData = forecastUseCase.execute(location, NUMBER_HOURS_OF_FORECAST);
-    }
-
-    public WeatherData getWeather() {
-        getWeatherData();
-        return weatherData;
-    }
-
-    public WeatherData makeWeatherDataNull() {
-        this.weatherData = null;
-        return this.weatherData;
-    }
-
-    // made this getter method so that the tests can access this value to tests
-    public static int getTempThreshold() {
-
-        return TEMP_THRESHOLD;
-    }
-
-    // Track the weather details panel so that we can remove the pprevious weather details
-    // when entered a new location in the dropdown
-    private JPanel forecastpanel;
-
-    public JPanel getForecastPanel() {
-        return forecastpanel;
     }
 
     @Override
     protected void displayWeatherData() {
         if (weatherData == null) {
-            throw new RuntimeException("No weather data available to display!");
+            JOptionPane.showMessageDialog(this, "No weather data available to display!",
+                    MESSAGE_DIALOGUE_TITLE, JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
-        // Removing existing weather details if they exist
-        if (forecastpanel != null) {
-            mainPanel.remove(forecastpanel);
+        if (forecastPanel != null) {
+            mainPanel.remove(forecastPanel);
         }
 
-        forecastpanel = new JPanel(new GridLayout(0, 2, GAP, GAP));
+        forecastPanel = new JPanel(new GridLayout(0, 2, GAP, GAP));
+        forecastPanel.add(new JLabel("Local Time", SwingConstants.CENTER));
+        forecastPanel.add(new JLabel("Temperature (Celsius)", SwingConstants.CENTER));
 
-        forecastpanel.add(new JLabel("Local Time", SwingConstants.CENTER));
-        forecastpanel.add(new JLabel("Temperature (Celsius)", SwingConstants.CENTER));
-
-        // Extracting hourly temperature data
-        final JSONArray hourlyTemperatures = weatherData.getWeatherDetails().getJSONObject("hourly")
+        JSONArray hourlyTemperatures = weatherData.getWeatherDetails()
+                .getJSONObject("hourly")
                 .getJSONArray("temperature_2m");
 
-        // Extracting UTC offset from weather data
-        final int utcOffsetSeconds = weatherData.getWeatherDetails().getInt("utc_offset_seconds");
-        final int utcOffsetHours = utcOffsetSeconds / 3600;
-
-        // Getting current UTC time
-        final LocalTime currentUtcTime = LocalTime.now(ZoneOffset.UTC);
+        int utcOffsetSeconds = weatherData.getWeatherDetails().getInt("utc_offset_seconds");
+        int utcOffsetHours = utcOffsetSeconds / 3600;
+        LocalTime currentUtcTime = LocalTime.now(ZoneOffset.UTC);
 
         double totalTemp = 0.0;
 
-        // Displaying hourly data
         for (int i = 0; i < NUMBER_HOURS_OF_FORECAST; i++) {
-            // Adjust current UTC time to local time
-            final LocalTime forecastLocalTime = currentUtcTime.plusHours(utcOffsetHours + i + 1);
+            LocalTime forecastLocalTime = currentUtcTime.plusHours(utcOffsetHours + i + 1);
+            double temperature = hourlyTemperatures.getDouble(i);
 
-            // this will store the temperature for this hour
-            final double temperature = hourlyTemperatures.getDouble(i);
+            forecastPanel.add(new JLabel(forecastLocalTime.getHour() + ":00", SwingConstants.CENTER));
+            forecastPanel.add(new JLabel(String.valueOf(temperature), SwingConstants.CENTER));
 
-            forecastpanel.add(new JLabel(forecastLocalTime.getHour() + ":00", SwingConstants.CENTER));
-            forecastpanel.add(new JLabel(String.valueOf(temperature), SwingConstants.CENTER));
-
-            // Calculating the total temp for avg
             totalTemp += temperature;
         }
 
-        // Add the new weather details panel to the main panel
-        mainPanel.add(forecastpanel, BorderLayout.CENTER);
+        mainPanel.add(forecastPanel, BorderLayout.CENTER);
         mainPanel.revalidate();
         mainPanel.repaint();
 
-        // Calculate and display the average temperature
-        final double avgTemp = totalTemp / NUMBER_HOURS_OF_FORECAST;
+        double avgTemp = totalTemp / NUMBER_HOURS_OF_FORECAST;
 
-        // Show a warning pop-up if the average temperature for the next 8 hours is below/equal to the threshold
         if (avgTemp <= TEMP_THRESHOLD) {
-            // Cutting the average temperature after one decimal place
-            final DecimalFormat onedecimal = new DecimalFormat("#.#");
-            final String roundedAvgTemp = onedecimal.format(avgTemp);
             JOptionPane.showMessageDialog(this,
-                    "The average temperature for the next 8 hours: " + roundedAvgTemp
+                    "The average temperature for the next 8 hours: " + avgTemp
                             + "C!\n Don't forget to wear warm clothing.", "Temperature Warning",
                     JOptionPane.INFORMATION_MESSAGE);
         }
