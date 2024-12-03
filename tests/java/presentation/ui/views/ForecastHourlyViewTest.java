@@ -7,6 +7,7 @@ import domain.entities.WeatherData;
 import infrastructure.adapters.OpenWeatherApiService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import presentation.ui.windows.VisualizationUI;
 
 import javax.swing.*;
 

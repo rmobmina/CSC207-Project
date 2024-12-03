@@ -11,12 +11,12 @@ public class LocationsWindowGenerator {
     public static LocationsWindow generateLocationsWindow(String option, int[] dimensions, int numOfLocations,
                                                           GetLocationDataUseCase locationDataUseCase, String apiKey,
                                                           ApiService apiService) {
-        ErrorLocationsWindow errorWindow = new ErrorLocationsWindow("ERROR: Invalid number of locations!", dimensions, locationDataUseCase, apiKey, apiService);
+        final ErrorLocationsWindow errorWindow = new ErrorLocationsWindow("ERROR: Invalid number of locations!", dimensions, locationDataUseCase, apiKey, apiService);
         if (numOfLocations < 1) {
             return errorWindow;
         }
         // Generates a new window that display an error if no option is chosen
-        switch(option){
+        switch (option) {
             case ForecastDailyView.OPTION_NAME:
                 return new ForecastDailyView("Forecast Daily View", dimensions, locationDataUseCase, apiKey, apiService);
             case ForecastHourlyView.OPTION_NAME:

@@ -4,6 +4,7 @@ import domain.interfaces.ApiService;
 import presentation.ui.windows.ErrorLocationsWindow;
 import presentation.ui.windows.LocationsWindow;
 import presentation.ui.windows.LocationsWindowGenerator;
+import presentation.ui.windows.VisualizationUI;
 import utils.UseCaseInteractor;
 
 public class GetLocationsWindowUseCase extends UseCaseInteractor {
@@ -20,7 +21,7 @@ public class GetLocationsWindowUseCase extends UseCaseInteractor {
     public LocationsWindow execute(String type, int[] dimensions, int numOfLocations,
                                    GetLocationDataUseCase locationDataUseCase, String apiKey,
                                    ApiService apiService) {
-        LocationsWindow window = LocationsWindowGenerator.generateLocationsWindow(type, dimensions, numOfLocations,
+        final LocationsWindow window = LocationsWindowGenerator.generateLocationsWindow(type, dimensions, numOfLocations,
                 locationDataUseCase, apiKey, apiService);
         window.getType();
         useCaseFailed = window instanceof ErrorLocationsWindow;

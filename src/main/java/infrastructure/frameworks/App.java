@@ -47,13 +47,14 @@ public class App {
             if (apiService.isApiKeyValid(apiKey)) {
                 dashBoard.setAPIkey(apiKey);
                 validKeyEntered = true;
-            } else {
+            }
+            else {
                 System.out.println("Your last key was invalid. Please try again.\n");
             }
         }
 
         // Set action listeners for Mercator map
-        setupMercatorMapIntegration(dashBoard, apiKey, locationDataUseCase, apiService);
+//        setupMercatorMapIntegration(dashBoard, apiKey, locationDataUseCase, apiService);
 
         // Launch the main dashboard
         dashBoard.runJFrame(apiService);
@@ -69,17 +70,16 @@ public class App {
                 historicalWeatherDataUseCase,
                 new FavoritesManager(),
                 new UserOptionsView(),
-                new SelectNumberLocationsView(),
                 new MainMenuView(),
                 new HelpInfoView()
         );
     }
 
-    private static void setupMercatorMapIntegration(NewDashBoardUi dashBoard, String apiKey,
-                                                    GetLocationDataUseCase locationDataUseCase,
-                                                    OpenWeatherApiService apiService) {
-        dashBoard.getOptionsView().setMercatorMapActionListener(e -> {
-            new MercatorDisplayApp().startMercatorMap(apiKey, locationDataUseCase, apiService);
-        });
-    }
+//    private static void setupMercatorMapIntegration(NewDashBoardUi dashBoard, String apiKey,
+//                                                    GetLocationDataUseCase locationDataUseCase,
+//                                                    OpenWeatherApiService apiService) {
+//        dashBoard.getOptionsView().setMercatorMapActionListener(e -> {
+//            new MercatorDisplayApp().startMercatorMap(apiKey, locationDataUseCase, apiService);
+//        });
+//    }
 }

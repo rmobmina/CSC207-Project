@@ -6,6 +6,7 @@ import domain.entities.Location;
 import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
 import presentation.ui.windows.LocationsWindow;
+import presentation.ui.windows.VisualizationUI;
 import utils.Constants;
 
 import static utils.Constants.MAX_FORECAST_DAYS;
@@ -35,9 +36,8 @@ public class ForecastDailyView extends LocationsWindow {
     private final JButton previousDayButton = new JButton("Previous Day");
 
     private final JLabel temperatureUnits = new JLabel();
-//    private final JButton changeUnits = new JButton("Change Units");
 
-    private String currenUnits = Constants.CELCIUS_UNIT_TYPE;
+    private String currentUnits = Constants.CELCIUS_UNIT_TYPE;
 
     private int numberOfDays;
 
@@ -86,7 +86,6 @@ public class ForecastDailyView extends LocationsWindow {
         inputPanel.add(temperatureUnits);
         inputPanel.add(nextDayButton);
         inputPanel.add(previousDayButton);
-        // inputPanel.add(changeUnits);
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
         numberOfDays = MAX_FORECAST_DAYS;
@@ -96,12 +95,11 @@ public class ForecastDailyView extends LocationsWindow {
 
         nextDayButton.addActionListener(eListener -> showNextDay());
         previousDayButton.addActionListener(eListener -> showPrevDay());
-        // This button will allow the user to change the temperature units (not yet implemented)
-        //changeUnits.addActionListener(eListenr -> changeUnitsView.showPanel());
     }
 
-    private void updateTemperatureUnits(String temperatureCategory) {
-        temperatureUnits.setText("Temperature Units: " + weatherDataDTO.getTemperatureUnit(temperatureCategory, currenUnits));
+    @Override
+    protected void openVisualization() {
+        visualizationUI.openVisualization("temperatureMeanDaily");
     }
 
     // Selects the next day from the current selected day

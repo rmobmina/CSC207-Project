@@ -36,7 +36,7 @@ public class MercatorDisplayApp {
      * @param apiService           Service to fetch weather data.
      */
     public void startMercatorMap(String apiKey, GetLocationDataUseCase locationDataUseCase,
-                                 OpenWeatherApiService apiService) {
+                                 OpenWeatherApiService apiService, int windowWidth, int windowHeight) {
         try {
             final LoadMapImageUseCase loadMapImageUseCase = new LoadMapImageUseCase();
 
@@ -55,7 +55,7 @@ public class MercatorDisplayApp {
             final SwingMapView renderer = new SwingMapView(initialMapImage);
             final MercatorMapApp app = new MercatorMapApp(renderer);
 
-            setupApplicationWindow(app, initialMapImage, renderer, locationDataUseCase, apiKey);
+            setupApplicationWindow(app, windowWidth, windowHeight, initialMapImage, renderer, locationDataUseCase, apiKey);
 
         }
 
@@ -65,9 +65,10 @@ public class MercatorDisplayApp {
         }
     }
 
-    private void setupApplicationWindow(MercatorMapApp app, Image initialMapImage, SwingMapView renderer,
+    private void setupApplicationWindow(MercatorMapApp app, int windowWidth, int windowHeight, Image initialMapImage, SwingMapView renderer,
                                         GetLocationDataUseCase locationDataUseCase, String apiKey) {
-        app.setSize(initialMapImage.getWidth(null), initialMapImage.getHeight(null));
+        // app.setSize(initialMapImage.getWidth(null), initialMapImage.getHeight(null));
+        app.setSize(windowWidth, windowHeight);
         app.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         app.setLayout(new BorderLayout());
 

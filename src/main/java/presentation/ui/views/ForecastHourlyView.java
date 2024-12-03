@@ -19,6 +19,7 @@ import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
 import infrastructure.adapters.OpenWeatherApiService;
 import presentation.ui.windows.LocationsWindow;
+import presentation.ui.windows.VisualizationUI;
 
 /**
  * This class displays the hourly forecast for the next 8 hours for a given location.
@@ -34,11 +35,18 @@ public class ForecastHourlyView extends LocationsWindow {
     private static final int NUMBER_HOURS_OF_FORECAST = 8;
 
     private final OpenWeatherApiService apiService = new OpenWeatherApiService();
+    private VisualizationUI visualizationUI;
     private WeatherData weatherData;
 
     public ForecastHourlyView(String name, int[] dimensions, GetLocationDataUseCase locationDataUseCase, String apiKey,
                               ApiService apiService) {
         super(name, dimensions, locationDataUseCase, apiKey, apiService);
+        this.visualizationUI = visualizationUI;
+    }
+
+    @Override
+    protected void openVisualization() {
+        visualizationUI.openVisualization("temperatureHourly");
     }
 
     public WeatherData getWeatherDataObject(){

@@ -11,6 +11,7 @@ import infrastructure.adapters.OpenWeatherApiService;
 import presentation.ui.DropDownUI;
 import presentation.ui.windows.MultipleLocationsWindow;
 import presentation.ui.windows.GraphSelectionWindow;
+import presentation.ui.windows.VisualizationUI;
 import presentation.visualization.BarGraphWeatherComparison;
 import presentation.visualization.LineGraphWeatherComparison;
 
@@ -32,7 +33,6 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
     private final JButton refreshButton = new JButton("Refresh");
     private final JButton visualizeButton = new JButton("Visualize!");
     private final JButton timeRangeButton = new JButton("Set Time Range");
-    private final JButton backButton = new JButton("Back");
 
     private final JLabel firstCityTemperature = new JLabel("City 1 Temperature: N/A", SwingConstants.LEFT);
     private final JLabel secondCityTemperature = new JLabel("City 2 Temperature: N/A", SwingConstants.LEFT);
@@ -51,6 +51,7 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
 
     private final OpenWeatherApiService apiService;
     private final String apiKey;
+    private VisualizationUI visualizationUI;
 
     private LocalDate startDate = LocalDate.now().minusDays(7);
     private LocalDate endDate = LocalDate.now();
@@ -64,6 +65,7 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
         super(name, dimensions, numOfLocations, locationDataUseCase, apiKey, apiService);
         this.apiService = (OpenWeatherApiService) apiService;
         this.apiKey = apiKey;
+        this.visualizationUI = visualizationUI;
 
         this.firstCityDropDown = new DropDownUI(apiKey, locationDataUseCase);
         this.secondCityDropDown = new DropDownUI(apiKey, locationDataUseCase);
@@ -76,6 +78,7 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        mainPanel.add(backButton);
 
         // City Selection Panel
         JPanel citySelectionPanel = new JPanel();
@@ -222,50 +225,8 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
         });
     }
 
-    private void openVisualization() {
-        if (firstCityWeatherData == null || secondCityWeatherData == null) {
-            showError("Fetch weather data for both cities first.");
-            return;
-        }
-
-        GraphSelectionWindow graphSelectionWindow = new GraphSelectionWindow(selectedGraph -> {
-            SwingUtilities.invokeLater(() -> {
-                switch (selectedGraph) {
-                    case "line":
-                        LineGraphWeatherComparison lineGraph = new LineGraphWeatherComparison("Two Cities Weather Comparison");
-                        firstCityWeatherData.getTemperatureHistory().forEach((date, value) ->
-                                lineGraph.addData("City 1 Temperature", date, value)
-                        );
-                        secondCityWeatherData.getTemperatureHistory().forEach((date, value) ->
-                                lineGraph.addData("City 2 Temperature", date, value)
-                        );
-                        lineGraph.display();
-                        break;
-
-                    case "bar":
-                        BarGraphWeatherComparison barGraph = new BarGraphWeatherComparison("Two Cities Weather Comparison");
-                        barGraph.addData("City 1", "Temperature", firstCityWeatherData.getAverageWeatherData("temperatureMeanDaily"));
-                        barGraph.addData("City 2", "Temperature", secondCityWeatherData.getAverageWeatherData("temperatureMeanDaily"));
-
-                        barGraph.addData("City 1", "Precipitation", firstCityWeatherData.getAverageWeatherData("percipitationDaily"));
-                        barGraph.addData("City 2", "Precipitation", secondCityWeatherData.getAverageWeatherData("percipitationDaily"));
-
-                        barGraph.addData("City 1", "Humidity", firstCityWeatherData.getAverageWeatherData("humidityHourly"));
-                        barGraph.addData("City 2", "Humidity", secondCityWeatherData.getAverageWeatherData("humidityHourly"));
-
-                        barGraph.addData("City 1", "Wind Speed", firstCityWeatherData.getAverageWeatherData("windSpeedDaily"));
-                        barGraph.addData("City 2", "Wind Speed", secondCityWeatherData.getAverageWeatherData("windSpeedDaily"));
-
-                        barGraph.display();
-                        break;
-
-                    default:
-                        showError("Invalid graph type selected.");
-                }
-            });
-        });
-
-        graphSelectionWindow.setVisible(true);
+    protected void openVisualization() {
+        visualizationUI.openVisualization("temperatureMeanDaily");
     }
 
     private void refreshFields() {

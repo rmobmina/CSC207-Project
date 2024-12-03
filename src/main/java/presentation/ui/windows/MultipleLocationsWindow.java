@@ -16,6 +16,7 @@ public class MultipleLocationsWindow extends LocationsWindow {
     public MultipleLocationsWindow(String name, int[] dimensions, int numOfLocations, GetLocationDataUseCase locationDataUseCase, String apiKey,
                                    ApiService apiService) {
         super(name, dimensions, locationDataUseCase, apiKey, apiService);
+        this.visualizationUI = new VisualizationUI(2, getMainPanel());
         this.setVisible(true);
     }
 
@@ -27,6 +28,11 @@ public class MultipleLocationsWindow extends LocationsWindow {
             city.add(location.getCity());
         }
         return city;
+    }
+
+    @Override
+    protected void openVisualization() {
+
     }
 
     @Override
