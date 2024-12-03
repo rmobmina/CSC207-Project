@@ -34,7 +34,7 @@ public class ForecastHourlyView extends LocationsWindow {
     private static final int NUMBER_HOURS_OF_FORECAST = 8;
 
     private final OpenWeatherApiService apiService = new OpenWeatherApiService();
-    private WeatherData weatherData;
+    public WeatherData weatherData;
 
     public ForecastHourlyView(String name, int[] dimensions, GetLocationDataUseCase locationDataUseCase, String apiKey,
                               ApiService apiService) {
