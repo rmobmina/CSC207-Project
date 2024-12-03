@@ -4,8 +4,8 @@ import domain.entities.Location;
 import org.json.JSONException;
 import org.json.JSONObject;
 import domain.entities.WeatherData;
-import static utils.Constants.DAILY;
-import static utils.Constants.HOURLY;
+import static utils.Constants.DAILY_KEY;
+import static utils.Constants.HOURLY_KEY;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,20 +23,20 @@ public class WeatherDataDTOGenerator {
             JSONObject dailyUnits = data.getJSONObject("daily_units");
             JSONObject hourlyUnits = data.getJSONObject("hourly_units");
             JSONObject unitsData = new JSONObject();
-            unitsData.put(DAILY, dailyUnits.toMap());
-            unitsData.put(HOURLY, hourlyUnits.toMap());
+            unitsData.put(DAILY_KEY, dailyUnits.toMap());
+            unitsData.put(HOURLY_KEY, hourlyUnits.toMap());
 
             System.out.println(data.toString(4));
 
             WeatherDataDTO weatherDataDTO = new WeatherDataDTO(location, dates, data, unitsData);
-            weatherDataDTO.addWeatherDetail(HOURLY, "temperature_2m", "temperatureHourly");
-            weatherDataDTO.addWeatherDetail(HOURLY, "relative_humidity_2m", "humidityHourly");
-            weatherDataDTO.addWeatherDetail(DAILY, "temperature_2m_max", "temperatureMaxDaily");
-            weatherDataDTO.addWeatherDetail(DAILY, "temperature_2m_mean", "temperatureMeanDaily");
-            weatherDataDTO.addWeatherDetail(DAILY, "temperature_2m_min", "temperatureMinDaily");
-            weatherDataDTO.addWeatherDetail(DAILY, "precipitation_sum", "percipitationDaily");
-            weatherDataDTO.addWeatherDetail(DAILY, "wind_speed_10m_max", "windSpeedDaily");
-            weatherDataDTO.addWeatherDetail(DAILY, "wind_direction_10m_dominant", "windDirectionDaily");
+            weatherDataDTO.addWeatherDetail(HOURLY_KEY, "temperature_2m", "temperatureHourly");
+            weatherDataDTO.addWeatherDetail(HOURLY_KEY, "relative_humidity_2m", "humidityHourly");
+            weatherDataDTO.addWeatherDetail(DAILY_KEY, "temperature_2m_max", "temperatureMaxDaily");
+            weatherDataDTO.addWeatherDetail(DAILY_KEY, "temperature_2m_mean", "temperatureMeanDaily");
+            weatherDataDTO.addWeatherDetail(DAILY_KEY, "temperature_2m_min", "temperatureMinDaily");
+            weatherDataDTO.addWeatherDetail(DAILY_KEY, "precipitation_sum", "percipitationDaily");
+            weatherDataDTO.addWeatherDetail(DAILY_KEY, "wind_speed_10m_max", "windSpeedDaily");
+            weatherDataDTO.addWeatherDetail(DAILY_KEY, "wind_direction_10m_dominant", "windDirectionDaily");
 
             return weatherDataDTO;
         }

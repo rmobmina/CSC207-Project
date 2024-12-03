@@ -126,9 +126,28 @@ public class WeatherDataDTO {
         }
     }
 
+    /**
+     * Returns a string representation of the temperature given a specific category (from weatherDetails) and unit.
+     * @param temperatureCategory the specific category of temperature (i.e. min, max, mean, hourly, etc.)
+     * @param index the index that repesents the data value at a specific point in time
+     * @param unitType the type of temperature unit
+     * @return a string representation of the temperature given a specific category (from weatherDetails) and unit
+     */
     public String temperatureToString(String temperatureCategory, int index, String unitType) {
-        double temperature = getTemperature(temperatureCategory, index, unitType);
-        return !Double.isNaN(temperature) ? temperature + " " + weatherUnits.get(temperatureCategory) : "N/A";
+        final double temperature = getTemperature(temperatureCategory, index, unitType);
+        return !Double.isNaN(temperature) ? temperature + " " + getTemperatureUnit(temperatureCategory, unitType): "N/A";
+    }
+
+    // Returns the string representing the temperature unit given unitType
+    public String getTemperatureUnit(String temperatureCategory, String unitType) {
+        switch (unitType) {
+            case Constants.FAHRENHEIT_UNIT_TYPE:
+                return Constants.FAHRENHEIT_UNIT;
+            case Constants.KELVIN_UNIT_TYPE:
+                return Constants.KELVIN_UNIT;
+            default:
+                return weatherUnits.get(temperatureCategory);
+        }
     }
 
     private double getTemperatureInKelvin(double temperature) {

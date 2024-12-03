@@ -2,7 +2,6 @@ package presentation.ui.views;
 
 import application.usecases.GetForecastWeatherDataUseCase;
 import application.usecases.GetLocationDataUseCase;
-//import com.sun.tools.javac.code.Attribute;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
@@ -35,6 +34,11 @@ public class ForecastDailyView extends LocationsWindow {
     private final JButton nextDayButton = new JButton("Next Day");
     private final JButton previousDayButton = new JButton("Previous Day");
 
+    private final JLabel temperatureUnits = new JLabel();
+//    private final JButton changeUnits = new JButton("Change Units");
+
+    private String currenUnits = Constants.CELCIUS_UNIT_TYPE;
+
     private int numberOfDays;
 
     private LocalDate currentDate = LocalDate.now();
@@ -45,6 +49,7 @@ public class ForecastDailyView extends LocationsWindow {
 
     private DayPanel dayPanel;
 
+    // This is here temporarily for my test (DO NOT REMOVE)
     public ForecastDailyView(String name, int[] dimensions, Location location,
                              GetForecastWeatherDataUseCase forecastWeatherDataUseCase,
                              GetLocationDataUseCase locationDataUseCase,
@@ -61,6 +66,7 @@ public class ForecastDailyView extends LocationsWindow {
 
         numberOfDays = MAX_FORECAST_DAYS;
         dayPanel = new DayPanel(currentDate, true);
+
         dayPanel.setVisible(true);
         mainPanel.add(dayPanel);
 
@@ -74,10 +80,13 @@ public class ForecastDailyView extends LocationsWindow {
         super(name, dimensions, locationDataUseCase, apiKey, apiService);
         this.forecastWeatherDataUseCase = new GetForecastWeatherDataUseCase(apiService);
         numberOfDaysLabel.setText("Number of Days to Forecast: ");
+        setNumberOfDaysField(String.valueOf(MAX_FORECAST_DAYS));
         inputPanel.add(numberOfDaysLabel);
         inputPanel.add(numberOfDaysField);
+        inputPanel.add(temperatureUnits);
         inputPanel.add(nextDayButton);
         inputPanel.add(previousDayButton);
+        // inputPanel.add(changeUnits);
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
         numberOfDays = MAX_FORECAST_DAYS;
@@ -87,6 +96,12 @@ public class ForecastDailyView extends LocationsWindow {
 
         nextDayButton.addActionListener(eListener -> showNextDay());
         previousDayButton.addActionListener(eListener -> showPrevDay());
+        // This button will allow the user to change the temperature units (not yet implemented)
+        //changeUnits.addActionListener(eListenr -> changeUnitsView.showPanel());
+    }
+
+    private void updateTemperatureUnits(String temperatureCategory) {
+        temperatureUnits.setText("Temperature Units: " + weatherDataDTO.getTemperatureUnit(temperatureCategory, currenUnits));
     }
 
     // Selects the next day from the current selected day
@@ -211,6 +226,5 @@ public class ForecastDailyView extends LocationsWindow {
     public void setNumberOfDaysField(String numDays) {
         this.numberOfDaysField.setText(numDays);
     }
-
 
 }
