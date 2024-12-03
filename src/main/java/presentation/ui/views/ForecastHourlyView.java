@@ -12,6 +12,7 @@ import presentation.visualization.LineGraphWeatherComparison;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.DecimalFormat;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 
@@ -27,7 +28,7 @@ public class ForecastHourlyView extends LocationsWindow {
 
     private final OpenWeatherApiService apiService = new OpenWeatherApiService();
     private WeatherData weatherData;
-    private JPanel forecastPanel;
+//    private JPanel forecastPanel;
 
     private final JButton visualizeButton = new JButton("Visualize!");
 
@@ -122,30 +123,49 @@ public class ForecastHourlyView extends LocationsWindow {
     @Override
     public void getWeatherData() {
         if (location == null) {
-            JOptionPane.showMessageDialog(this, "No location selected!",
-                    MESSAGE_DIALOGUE_TITLE, JOptionPane.ERROR_MESSAGE);
-            return;
+            throw new RuntimeException("No location selected!!");
         }
 
         GetForecastWeatherDataUseCase forecastUseCase = new GetForecastWeatherDataUseCase(apiService);
         this.weatherData = forecastUseCase.execute(location, NUMBER_HOURS_OF_FORECAST);
+    }    public WeatherData getWeather() {
+        getWeatherData();
+        return weatherData;
+    }
+
+    public WeatherData makeWeatherDataNull() {
+        this.weatherData = null;
+        return this.weatherData;
+    }
+
+    // made this getter method so that the tests can access this value to tests
+    public static int getTempThreshold() {
+
+        return TEMP_THRESHOLD;
+    }
+
+    // Track the weather details panel so that we can remove the pprevious weather details
+    // when entered a new location in the dropdown
+    private JPanel forecastpanel;
+
+    public JPanel getForecastPanel() {
+        return forecastpanel;
     }
 
     @Override
     protected void displayWeatherData() {
+
         if (weatherData == null) {
-            JOptionPane.showMessageDialog(this, "No weather data available to display!",
-                    MESSAGE_DIALOGUE_TITLE, JOptionPane.ERROR_MESSAGE);
-            return;
+            throw new RuntimeException("No weather data available to display!");
         }
 
-        if (forecastPanel != null) {
-            mainPanel.remove(forecastPanel);
+        if (forecastpanel != null) {
+            mainPanel.remove(forecastpanel);
         }
 
-        forecastPanel = new JPanel(new GridLayout(0, 2, GAP, GAP));
-        forecastPanel.add(new JLabel("Local Time", SwingConstants.CENTER));
-        forecastPanel.add(new JLabel("Temperature (Celsius)", SwingConstants.CENTER));
+        forecastpanel = new JPanel(new GridLayout(0, 2, GAP, GAP));
+        forecastpanel.add(new JLabel("Local Time", SwingConstants.CENTER));
+        forecastpanel.add(new JLabel("Temperature (Celsius)", SwingConstants.CENTER));
 
         JSONArray hourlyTemperatures = weatherData.getWeatherDetails()
                 .getJSONObject("hourly")
@@ -161,23 +181,29 @@ public class ForecastHourlyView extends LocationsWindow {
             LocalTime forecastLocalTime = currentUtcTime.plusHours(utcOffsetHours + i + 1);
             double temperature = hourlyTemperatures.getDouble(i);
 
-            forecastPanel.add(new JLabel(forecastLocalTime.getHour() + ":00", SwingConstants.CENTER));
-            forecastPanel.add(new JLabel(String.valueOf(temperature), SwingConstants.CENTER));
+            forecastpanel.add(new JLabel(forecastLocalTime.getHour() + ":00", SwingConstants.CENTER));
+            forecastpanel.add(new JLabel(String.valueOf(temperature), SwingConstants.CENTER));
 
             totalTemp += temperature;
         }
 
-        mainPanel.add(forecastPanel, BorderLayout.CENTER);
+        mainPanel.add(forecastpanel, BorderLayout.CENTER);
         mainPanel.revalidate();
         mainPanel.repaint();
 
-        double avgTemp = totalTemp / NUMBER_HOURS_OF_FORECAST;
+        // Calculate and display the average temperature
+        final double avgTemp = totalTemp / NUMBER_HOURS_OF_FORECAST;
 
+        // Show a warning pop-up if the average temperature for the next 8 hours is below/equal to the threshold
         if (avgTemp <= TEMP_THRESHOLD) {
+            // Cutting the average temperature after one decimal place
+            final DecimalFormat onedecimal = new DecimalFormat("#.#");
+            final String roundedAvgTemp = onedecimal.format(avgTemp);
             JOptionPane.showMessageDialog(this,
-                    "The average temperature for the next 8 hours: " + avgTemp
-                            + "C!\n Don't forget to wear warm clothing.", "Temperature Warning",
+                    "The average temperature for the next 8 hours: " + roundedAvgTemp
+                            + "C\n Don't forget to wear warm clothing.", "Temperature Warning",
                     JOptionPane.INFORMATION_MESSAGE);
         }
     }
 }
+
