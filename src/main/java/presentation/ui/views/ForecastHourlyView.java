@@ -57,6 +57,7 @@ public class ForecastHourlyView extends LocationsWindow {
     // when entered a new location in the dropdown
 
     private JPanel forecastpanel;
+
     @Override
     protected void displayWeatherData() {
         if (weatherData == null) {

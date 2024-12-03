@@ -21,6 +21,7 @@ class ForecastHourlyViewTest {
     private GetLocationDataUseCase locationDataUseCase;
     private GetForecastWeatherDataUseCase forecastWeatherDataUseCase;
     private OpenWeatherApiService apiService;
+    private WeatherData weatherData;
 
     @BeforeEach
     void setUp() {
@@ -42,7 +43,7 @@ class ForecastHourlyViewTest {
         forecastHourlyView.location = testLocation;
 
         // Asserting that weather data was successfully fetched and is not null
-        assertNotNull(forecastHourlyView.weatherData, "Weather data should not be null");
+        assertNotNull(forecastHourlyView.weatherData(), "Weather data should not be null");
     }
 
     @Test

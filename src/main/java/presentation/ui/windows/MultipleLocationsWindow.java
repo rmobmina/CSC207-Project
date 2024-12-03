@@ -2,6 +2,7 @@ package presentation.ui.windows;
 
 import application.usecases.GetLocationDataUseCase;
 import domain.entities.Location;
+import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
 import infrastructure.adapters.OpenWeatherApiService;
 import presentation.ui.DropDownUI;
@@ -30,8 +31,9 @@ public class MultipleLocationsWindow extends LocationsWindow {
     }
 
     @Override
-    protected void getWeatherData() {
+    protected WeatherData getWeatherData() {
 
+        return null;
     }
 
     @Override

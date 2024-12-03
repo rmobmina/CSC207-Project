@@ -79,7 +79,7 @@ public abstract class LocationsWindow extends JFrame {
 
     }
 
-    protected abstract void getWeatherData();
+    protected abstract WeatherData getWeatherData();
 
     protected abstract void displayWeatherData();
 
