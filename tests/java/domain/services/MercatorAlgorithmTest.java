@@ -1,10 +1,9 @@
-package presentation.visualization;
+package domain.services;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import presentation.visualization.mercator.MercatorAlgorithm;
 import utils.Constants;
 
 public class MercatorAlgorithmTest {

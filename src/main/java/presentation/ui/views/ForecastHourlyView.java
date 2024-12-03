@@ -39,6 +39,11 @@ public class ForecastHourlyView extends LocationsWindow {
                               ApiService apiService) {
         super(name, dimensions, locationDataUseCase, apiKey, apiService);
     }
+    @Override
+    protected void openVisualization() {
+
+    }
+
 
     @Override
     public void getWeatherData() {

@@ -221,8 +221,8 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
             secondCityWindSpeed.setText("City 2 Wind Speed: " + df.format(secondCityDTO.getAverageWeatherData("windSpeedDaily")));
         });
     }
-
-    private void openVisualization() {
+    @Override
+    protected void openVisualization() {
         if (firstCityWeatherData == null || secondCityWeatherData == null) {
             showError("Fetch weather data for both cities first.");
             return;
@@ -267,6 +267,7 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
 
         graphSelectionWindow.setVisible(true);
     }
+
 
     private void refreshFields() {
         SwingUtilities.invokeLater(() -> {

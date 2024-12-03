@@ -9,6 +9,7 @@ import infrastructure.adapters.OpenWeatherApiService;
 import presentation.ui.FavoritesManager;
 import presentation.ui.views.*;
 import presentation.ui.windows.LocationsWindow;
+import presentation.ui.windows.VisualizationUI;
 
 import javax.swing.*;
 
@@ -26,12 +27,14 @@ public class NewDashBoardUi extends JFrame {
 
     LocationsWindow locationsWindow;
     UserOptionsView userOptionsView;
-    SelectNumberLocationsView numberLocationsView;
     FavoritesManager favoritesManager;
+    MainMenuView mainMenuView;
+    HelpInfoView helpInfoView;
 
     final String OPTIONS_NAME = "Options";
     final String LOCATIONS_WINDOW_NAME = "Locations";
-    final String NUMBER_LOCATIONS_WINDOW_NAME = "Number Locations";
+    final String MAIN_MENU_NAME = "Main Menu";
+    final String HELP_INFO_NAME = "Help Info";
 
     final int locationsWindowWidth = 910;
     final int locationsWindowHeight = 350;
@@ -42,21 +45,21 @@ public class NewDashBoardUi extends JFrame {
                           GetLocationDataUseCase locationDataUseCase,
                           GetForecastWeatherDataUseCase forecastWeatherDataUseCase,
                           GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase,
-                          UserOptionsView userOptionsView, SelectNumberLocationsView numberLocationsView) {
+                          FavoritesManager favouriteManager,
+                          UserOptionsView userOptionsView,
+                          MainMenuView mainMenuView, HelpInfoView helpInfoView) {
 
         initVariables(locationsWindowUseCase, locationDataUseCase,
-                forecastWeatherDataUseCase, historicalWeatherDataUseCase,
-                userOptionsView, numberLocationsView);
+                forecastWeatherDataUseCase, historicalWeatherDataUseCase, favouriteManager,
+                userOptionsView, mainMenuView);
 
         setTitle("Weather Dashboard");
         setSize(500, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        favoritesManager = new FavoritesManager(); // Initialized FavoritesManager
         add(userOptionsView.getPanel());
-        add(numberLocationsView.getPanel());
 
-        switchToWindow(OPTIONS_NAME);
+        switchToWindow(MAIN_MENU_NAME);
 
         setButtonListeners();
 
@@ -66,14 +69,17 @@ public class NewDashBoardUi extends JFrame {
                                GetLocationDataUseCase locationDataUseCase,
                                GetForecastWeatherDataUseCase forecastWeatherDataUseCase,
                                GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase,
+                               FavoritesManager favoritesManager,
                                UserOptionsView userOptionsView,
-                               SelectNumberLocationsView numberLocationsView) {
+                               MainMenuView mainMenuView) {
         this.locationsWindowUseCase = getLocationsWindowUseCase;
         this.locationDataUseCase = locationDataUseCase;
         this.forecastWeatherDataUseCase = forecastWeatherDataUseCase;
         this.historicalWeatherDataUseCase = historicalWeatherDataUseCase;
+        this.favoritesManager = favoritesManager;
         this.userOptionsView = userOptionsView;
-        this.numberLocationsView = numberLocationsView;
+        this.mainMenuView = mainMenuView;
+        this.helpInfoView = new HelpInfoView(); // Initialize HelpInfoView here
     }
 
     private void setButtonListeners() {
@@ -88,19 +94,22 @@ public class NewDashBoardUi extends JFrame {
         });
 
         userOptionsView.setComparisonActionListener(e -> {
-            // Ask user to enter how many locations they want
-            showNumberOfLocationsWindow();
             userOption = HistoricalWeatherComparisonView.OPTION_NAME;
+            getLocationsWindowMultiple(
+                    userOption, locationsWindowWidth, locationsWindowHeight, 2);
         });
 
         // Add Mercator Map action
         userOptionsView.setMercatorMapActionListener(e -> {
             // Open Mercator Map directly
-            new infrastructure.frameworks.MercatorDisplayApp().startMercatorMap(apiKey, locationDataUseCase, (OpenWeatherApiService) apiService);
+//            userOption = MercatorMapView.OPTION_NAME;
+//            getLocationsWindowMultiple(
+//                    userOption, locationsWindowWidth, locationsWindowHeight, 2);
+            new infrastructure.frameworks.MercatorDisplayApp().startMercatorMap(apiKey, locationDataUseCase,
+                    (OpenWeatherApiService) apiService, locationsWindowWidth, locationsWindowHeight);
         });
 
-        numberLocationsView.setActionListener(e -> getLocationsWindowMultiple(
-                userOption, locationsWindowWidth, locationsWindowHeight, numberLocationsView.getNumOfLocations()));
+        mainMenuView.setStartActionListener(eListener -> backToDashBoard());
     }
 
     private void getLocationsWindow(String userOption, int width, int height) {
@@ -125,11 +134,6 @@ public class NewDashBoardUi extends JFrame {
         favoritesView.setVisible(true);
     }
 
-    // Opens up a window to get the desired number of locations before applying it to the chosen use case
-    private void showNumberOfLocationsWindow() {
-        switchToWindow(NUMBER_LOCATIONS_WINDOW_NAME);
-    }
-
     private void switchToWindow(String windowName) {
         hideAllWindows();
         switch (windowName) {
@@ -137,14 +141,14 @@ public class NewDashBoardUi extends JFrame {
                 userOptionsView.showPanel();
                 this.setContentPane(userOptionsView.getPanel());
                 break;
+            case MAIN_MENU_NAME:
+                mainMenuView.showPanel();
+                this.setContentPane(mainMenuView.getPanel());
+                break;
             case LOCATIONS_WINDOW_NAME:
                 locationsWindow.openWindow();
                 toggleShowDashBoard(false);
                 // closes the current window
-                break;
-            case NUMBER_LOCATIONS_WINDOW_NAME:
-                numberLocationsView.showPanel();
-                this.setContentPane(numberLocationsView.getPanel());
                 break;
             default:
         }
@@ -162,7 +166,7 @@ public class NewDashBoardUi extends JFrame {
 
     private void hideAllWindows() {
         userOptionsView.hidePanel();
-        numberLocationsView.hidePanel();
+        mainMenuView.hidePanel();
         if (locationsWindow != null) locationsWindow.hideWindow();
     }
 

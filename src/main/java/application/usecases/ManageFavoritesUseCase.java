@@ -44,6 +44,7 @@ public class ManageFavoritesUseCase extends UseCaseInteractor {
             favoritesManager.removeFavorite(location);
             isRemoved = true;
         }
+        useCaseFailed = !isRemoved;
         return isRemoved;
     }
 

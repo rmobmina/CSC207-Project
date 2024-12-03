@@ -26,6 +26,8 @@ public abstract class LocationsWindow extends JFrame {
     protected JButton enterLocationButton = new JButton("Enter Location");
 
     private GetLocationDataUseCase locationDataUseCase;
+
+    protected VisualizationUI visualizationUI;
     private String apiKey;
 
     public Location location;
@@ -56,6 +58,7 @@ public abstract class LocationsWindow extends JFrame {
         this.setSize(dimensions[0], dimensions[1]);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.locationDataUseCase = locationDataUseCase;
+        this.visualizationUI = new VisualizationUI(1, mainPanel);
         this.apiKey = apiKey;
         this.dropDown = new DropDownUI(apiKey, locationDataUseCase);
 
@@ -69,13 +72,14 @@ public abstract class LocationsWindow extends JFrame {
         this.setVisible(false);
     }
 
+    protected abstract void openVisualization();
+
     protected void addComponents() {
         inputPanel.add(backButton);
         inputPanel.add(dropDown);
         inputPanel.add(enterLocationButton);
         inputPanel.add(favoritesButton); // Added the Favorites button to the panel
         inputPanel.add(addToFavoritesButton); // Added the ADDTOFAVORITES button
-
     }
 
     protected abstract void getWeatherData();

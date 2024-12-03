@@ -7,7 +7,10 @@ import application.usecases.GetHistoricalWeatherDataUseCase;
 import application.usecases.GetLocationDataUseCase;
 import application.usecases.GetLocationsWindowUseCase;
 import infrastructure.adapters.OpenWeatherApiService;
+import presentation.ui.FavoritesManager;
 import presentation.ui.dashboard.NewDashBoardUi;
+import presentation.ui.views.HelpInfoView;
+import presentation.ui.views.MainMenuView;
 import presentation.ui.views.SelectNumberLocationsView;
 import presentation.ui.views.UserOptionsView;
 
@@ -27,9 +30,9 @@ public class App {
         // Initialize apiKey with a default value
         String apiKey = "";
         final OpenWeatherApiService apiService = new OpenWeatherApiService();
-        GetLocationDataUseCase locationDataUseCase = new GetLocationDataUseCase(apiService);
-        GetForecastWeatherDataUseCase forecastWeatherDataUseCase = new GetForecastWeatherDataUseCase(apiService);
-        GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase = new GetHistoricalWeatherDataUseCase(apiService);
+        final GetLocationDataUseCase locationDataUseCase = new GetLocationDataUseCase(apiService);
+        final GetForecastWeatherDataUseCase forecastWeatherDataUseCase = new GetForecastWeatherDataUseCase(apiService);
+        final GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase = new GetHistoricalWeatherDataUseCase(apiService);
         final NewDashBoardUi dashBoard = generateDashBoardUI(locationDataUseCase, forecastWeatherDataUseCase, historicalWeatherDataUseCase);
 
         // Loop to validate API key input
@@ -44,13 +47,14 @@ public class App {
             if (apiService.isApiKeyValid(apiKey)) {
                 dashBoard.setAPIkey(apiKey);
                 validKeyEntered = true;
-            } else {
+            }
+            else {
                 System.out.println("Your last key was invalid. Please try again.\n");
             }
         }
 
         // Set action listeners for Mercator map
-        setupMercatorMapIntegration(dashBoard, apiKey, locationDataUseCase, apiService);
+//        setupMercatorMapIntegration(dashBoard, apiKey, locationDataUseCase, apiService);
 
         // Launch the main dashboard
         dashBoard.runJFrame(apiService);
@@ -64,16 +68,18 @@ public class App {
                 locationDataUseCase,
                 forecastWeatherDataUseCase,
                 historicalWeatherDataUseCase,
+                new FavoritesManager(),
                 new UserOptionsView(),
-                new SelectNumberLocationsView()
+                new MainMenuView(),
+                new HelpInfoView()
         );
     }
 
-    private static void setupMercatorMapIntegration(NewDashBoardUi dashBoard, String apiKey,
-                                                    GetLocationDataUseCase locationDataUseCase,
-                                                    OpenWeatherApiService apiService) {
-        dashBoard.getOptionsView().setMercatorMapActionListener(e -> {
-            new MercatorDisplayApp().startMercatorMap(apiKey, locationDataUseCase, apiService);
-        });
-    }
+//    private static void setupMercatorMapIntegration(NewDashBoardUi dashBoard, String apiKey,
+//                                                    GetLocationDataUseCase locationDataUseCase,
+//                                                    OpenWeatherApiService apiService) {
+//        dashBoard.getOptionsView().setMercatorMapActionListener(e -> {
+//            new MercatorDisplayApp().startMercatorMap(apiKey, locationDataUseCase, apiService);
+//        });
+//    }
 }
