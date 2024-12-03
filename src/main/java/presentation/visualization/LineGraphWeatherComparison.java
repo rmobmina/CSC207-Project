@@ -8,6 +8,9 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * A class for creating a line graph to compare weather data.
+ */
 public class LineGraphWeatherComparison extends JFrame {
     private final DefaultCategoryDataset dataset;
 
@@ -26,17 +29,30 @@ public class LineGraphWeatherComparison extends JFrame {
         setContentPane(chartPanel);
     }
 
+    /**
+     * Adds a data point to the dataset.
+     *
+     * @param series   the series name
+     * @param category the category name (e.g., date)
+     * @param value    the value to add
+     */
     public void addData(String series, String category, double value) {
         dataset.addValue(value, series, category);
     }
 
-    public void display() {
-        pack();
-        setLocationRelativeTo(null);
-        setVisible(true);
-    }
-
+    /**
+     * Resets (clears) the dataset.
+     */
     public void reset() {
         dataset.clear();
+    }
+
+    /**
+     * Returns the dataset for testing purposes.
+     *
+     * @return the dataset
+     */
+    public DefaultCategoryDataset getDataset() {
+        return dataset;
     }
 }

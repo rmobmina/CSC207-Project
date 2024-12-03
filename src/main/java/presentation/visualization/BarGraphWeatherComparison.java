@@ -39,4 +39,13 @@ public class BarGraphWeatherComparison extends JFrame {
     public void reset() {
         dataset.clear();
     }
+
+    /**
+     * Returns the dataset for testing purposes.
+     *
+     * @return the dataset
+     */
+    public DefaultCategoryDataset getDataset() {
+        return dataset;
+    }
 }
