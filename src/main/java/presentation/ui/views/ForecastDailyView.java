@@ -2,10 +2,13 @@ package presentation.ui.views;
 
 import application.usecases.GetForecastWeatherDataUseCase;
 import application.usecases.GetLocationDataUseCase;
+//import com.sun.tools.javac.code.Attribute;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
 import presentation.ui.windows.LocationsWindow;
+import utils.Constants;
+
 import static utils.Constants.MAX_FORECAST_DAYS;
 import static utils.Constants.CELCIUS_UNIT_TYPE;
 import java.time.DayOfWeek;
@@ -102,7 +105,7 @@ public class ForecastDailyView extends LocationsWindow {
     protected void getWeatherData() {
         try {
             // Fetch weather data for up to 16 days
-            final WeatherData weatherData = forecastWeatherDataUseCase.execute(location, 16);
+            final WeatherData weatherData = forecastWeatherDataUseCase.execute(location, MAX_FORECAST_DAYS);
 
             if (forecastWeatherDataUseCase.isUseCaseFailed()) {
                 JOptionPane.showMessageDialog(mainPanel,
@@ -149,6 +152,7 @@ public class ForecastDailyView extends LocationsWindow {
 
     public boolean getNumOfDaysUseCase() {
         boolean useCaseFailed = false;
+        selectedDayIndex = 0;
         // Parse the number of days entered by the user (from the text field)
         final String userInput = numberOfDaysField.getText().trim();
         if (userInput.isEmpty()) {
@@ -180,8 +184,7 @@ public class ForecastDailyView extends LocationsWindow {
 
     private void updateDayPanel(int index) {
         try {
-
-
+            dayPanel.updateWeatherDataValues(weatherDataDTO, index, CELCIUS_UNIT_TYPE);
         }
         catch (Exception exception) {
             JOptionPane.showMessageDialog(mainPanel,

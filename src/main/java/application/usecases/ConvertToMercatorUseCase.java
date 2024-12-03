@@ -1,12 +1,13 @@
 package application.usecases;
 
 import domain.entities.Coordinate;
+import utils.UseCaseInteractor;
 
 /**
  * A use case that converts a geographical coordinate (latitude and longitude)
  * to Mercator projection coordinates (x, y) for mapping.
  */
-public class ConvertToMercatorUseCase {
+public class ConvertToMercatorUseCase extends UseCaseInteractor {
 
     // Constants for Mercator projection calculations
     private static final double OFFSET_LONGITUDE = 180;

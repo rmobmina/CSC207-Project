@@ -4,12 +4,13 @@ import java.util.List;
 
 import domain.entities.Location;
 import domain.interfaces.ApiService;
+import utils.UseCaseInteractor;
 
 /**
  * Use case for the weather application.
  * This class retrieves location data and returns it as a Location object.
  */
-public class GetLocationDataUseCase {
+public class GetLocationDataUseCase extends UseCaseInteractor {
     private final ApiService apiService;
 
     public GetLocationDataUseCase(ApiService apiService) {
@@ -25,15 +26,4 @@ public class GetLocationDataUseCase {
     public List<Location> execute(String city, String apiKey) {
         return apiService.fetchLocations(city, apiKey);
     }
-
-//    public Location execute(String city, String state, String country, String apiKey) {
-//        List<Location> possibleLocations = apiService.fetchLocations(city, apiKey);
-//        for (Location location : possibleLocations) {
-//            if (location.getState().equals(state) && location.getCountry().equals(country)) {
-//                return location;
-//            }
-//        }
-//        // If no location matches the desired location
-//        return null;
-//    }
 }

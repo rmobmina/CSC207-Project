@@ -6,12 +6,13 @@ import java.time.LocalDate;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
+import utils.UseCaseInteractor;
 
 /**
  * Use case for the weather application.
  * This class retrieves historical weather data and returns it as a WeatherData object.
  */
-public class GetHistoricalWeatherDataUseCase {
+public class GetHistoricalWeatherDataUseCase extends UseCaseInteractor {
     private final ApiService apiService;
 
     public GetHistoricalWeatherDataUseCase(ApiService apiService) {

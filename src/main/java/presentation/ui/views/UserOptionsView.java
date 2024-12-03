@@ -14,8 +14,6 @@ public class UserOptionsView extends View{
     private static JButton forecastOption = new JButton("Forecast");
     private static JButton forecastHourlyOption = new JButton("Hourly");
     private static JButton forecastDailyOption = new JButton("Daily");
-    private static JButton historicalOption = new JButton("Historical");
-    private static JButton alertOption = new JButton("Weather Alerts");
     private static JButton comparisonOption = new JButton("Historical Comparison");
     private static JButton mercatorMapOption = new JButton("Mercator Map");
 
@@ -27,8 +25,6 @@ public class UserOptionsView extends View{
         panel.add(new JLabel());
 
         panel.add(forecastOption);
-        panel.add(historicalOption);
-        panel.add(alertOption);
         panel.add(comparisonOption);
         panel.add(mercatorMapOption);
 
@@ -60,14 +56,6 @@ public class UserOptionsView extends View{
 
     public void hideForecastOptionsWindow() {
         forecastOptionsWindow.setVisible(false);
-    }
-
-    public void setHistoricalActionListener(ActionListener listener) {
-        historicalOption.addActionListener(listener);
-    }
-
-    public void setAlertActionListener(ActionListener listener) {
-        alertOption.addActionListener(listener);
     }
 
     public void setComparisonActionListener(ActionListener listener) {

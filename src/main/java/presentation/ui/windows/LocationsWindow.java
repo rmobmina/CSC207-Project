@@ -8,7 +8,6 @@ import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
 import presentation.ui.DropDownUI;
 import presentation.ui.FavoritesManager;
-import presentation.ui.NewDashBoardUi;
 import presentation.ui.views.FavoritesView;
 
 import javax.swing.*;

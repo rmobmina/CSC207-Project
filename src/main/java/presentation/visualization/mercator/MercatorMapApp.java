@@ -4,19 +4,20 @@ import javax.swing.JFrame;
 
 import application.usecases.ConvertToMercatorUseCase;
 import domain.entities.Coordinate;
+import presentation.ui.views.SwingMapView;
 
 /**
  * A class to display a coordinate on a Mercator projection map.
  */
 public class MercatorMapApp extends JFrame {
-    private final SwingMapRenderer renderer;
+    private final SwingMapView renderer;
 
     /**
-     * Constructor to initialize the MercatorMapApp with a SwingMapRenderer.
+     * Constructor to initialize the MercatorMapApp with a SwingMapView.
      *
      * @param renderer The renderer responsible for drawing the map and coordinates.
      */
-    public MercatorMapApp(SwingMapRenderer renderer) {
+    public MercatorMapApp(SwingMapView renderer) {
         this.renderer = renderer;
     }
 

@@ -1,4 +1,4 @@
-package presentation.ui;
+package presentation.ui.dashboard;
 
 import application.usecases.GetForecastWeatherDataUseCase;
 import application.usecases.GetHistoricalWeatherDataUseCase;
@@ -6,8 +6,8 @@ import application.usecases.GetLocationDataUseCase;
 import application.usecases.GetLocationsWindowUseCase;
 import domain.interfaces.ApiService;
 import infrastructure.adapters.OpenWeatherApiService;
+import presentation.ui.FavoritesManager;
 import presentation.ui.views.*;
-import presentation.ui.windows.ErrorLocationsWindow;
 import presentation.ui.windows.LocationsWindow;
 
 import javax.swing.*;
@@ -140,7 +140,8 @@ public class NewDashBoardUi extends JFrame {
             case LOCATIONS_WINDOW_NAME:
                 locationsWindow.openWindow();
                 toggleShowDashBoard(false);
-                break; // closes the current window
+                // closes the current window
+                break;
             case NUMBER_LOCATIONS_WINDOW_NAME:
                 numberLocationsView.showPanel();
                 this.setContentPane(numberLocationsView.getPanel());
