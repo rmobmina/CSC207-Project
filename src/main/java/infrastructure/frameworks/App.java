@@ -2,12 +2,9 @@ package infrastructure.frameworks;
 
 import java.util.Scanner;
 
-import application.usecases.GetForecastWeatherDataUseCase;
-import application.usecases.GetHistoricalWeatherDataUseCase;
 import application.usecases.GetLocationDataUseCase;
 import application.usecases.GetLocationsWindowUseCase;
 import infrastructure.adapters.OpenWeatherApiService;
-import presentation.ui.views.SelectNumberLocationsView;
 import presentation.ui.windows.FavoritesManager;
 import presentation.ui.dashboard.NewDashBoardUi;
 import presentation.ui.views.HelpInfoView;
@@ -31,11 +28,8 @@ public class App {
         String apiKey = "";
         final OpenWeatherApiService apiService = new OpenWeatherApiService();
         final GetLocationDataUseCase locationDataUseCase = new GetLocationDataUseCase(apiService);
-        final GetForecastWeatherDataUseCase forecastWeatherDataUseCase = new GetForecastWeatherDataUseCase(apiService);
-        final GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase =
-                new GetHistoricalWeatherDataUseCase(apiService);
         final NewDashBoardUi dashBoard =
-                generateDashBoardUI(locationDataUseCase, forecastWeatherDataUseCase, historicalWeatherDataUseCase);
+                generateDashBoardUi(locationDataUseCase);
 
         // Loop to validate API key input
         boolean validKeyEntered = false;
@@ -47,24 +41,20 @@ public class App {
 
             // Validate API key
             if (apiService.isApiKeyValid(apiKey)) {
-                dashBoard.setAPIkey(apiKey);
+                dashBoard.setApikey(apiKey);
                 validKeyEntered = true;
             }
             else {
                 System.out.println("Your last key was invalid. Please try again.\n");
             }
         }
-        dashBoard.runJFrame(apiService);
+        dashBoard.runJframe(apiService);
     }
 
-    private static NewDashBoardUi generateDashBoardUI(GetLocationDataUseCase locationDataUseCase,
-                                                      GetForecastWeatherDataUseCase forecastWeatherDataUseCase,
-                                                      GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase) {
+    private static NewDashBoardUi generateDashBoardUi(GetLocationDataUseCase locationDataUseCase) {
         return new NewDashBoardUi(
                 new GetLocationsWindowUseCase(),
                 locationDataUseCase,
-                forecastWeatherDataUseCase,
-                historicalWeatherDataUseCase,
                 new FavoritesManager(),
                 new UserOptionsView(),
                 new MainMenuView(),

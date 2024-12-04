@@ -1,22 +1,27 @@
 package presentation.ui.views;
 
+import java.time.LocalDate;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+
+import org.json.JSONException;
+
 import application.usecases.GetForecastWeatherDataUseCase;
 import application.usecases.GetLocationDataUseCase;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
-import org.json.JSONArray;
-import org.json.JSONException;
 import presentation.ui.windows.GraphSelectionWindow;
 import presentation.ui.windows.LocationsWindow;
 import presentation.visualization.BarGraphWeatherComparison;
 import presentation.visualization.LineGraphWeatherComparison;
 import utils.Constants;
 
-import javax.swing.*;
-import java.time.LocalDate;
-
-import static utils.Constants.MAX_FORECAST_DAYS;
+import utils.Constants;
 
 /**
  * Class that handles UI to display the daily forecast (up to 16 days) showing max and min
@@ -26,14 +31,7 @@ public class ForecastDailyView extends LocationsWindow {
 
     public static final String OPTION_NAME = "Forecast Daily";
 
-    private final JLabel numberOfDaysLabel = new JLabel();
     private final JTextField numberOfDaysField = new JTextField(5);
-
-    private final JButton nextDayButton = new JButton("Next Day");
-    private final JButton previousDayButton = new JButton("Previous Day");
-    private final JButton visualizeButton = new JButton("Visualize!");
-
-    private final String currentUnits = Constants.CELCIUS_UNIT_TYPE;
 
     private int numberOfDays;
     private final LocalDate currentDate = LocalDate.now();
@@ -52,16 +50,20 @@ public class ForecastDailyView extends LocationsWindow {
         this.location = location;
         this.forecastWeatherDataUseCase = forecastWeatherDataUseCase;
 
+        final JLabel numberOfDaysLabel = new JLabel();
         numberOfDaysLabel.setText("Number of Days to Forecast: ");
         inputPanel.add(numberOfDaysLabel);
         inputPanel.add(numberOfDaysField);
+        final JButton nextDayButton = new JButton("Next Day");
         inputPanel.add(nextDayButton);
+        final JButton previousDayButton = new JButton("Previous Day");
         inputPanel.add(previousDayButton);
+        final JButton visualizeButton = new JButton("Visualize!");
         inputPanel.add(visualizeButton);
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-        numberOfDays = MAX_FORECAST_DAYS;
+        numberOfDays = Constants.MAX_FORECAST_DAYS;
         dayPanel = new DayPanel(currentDate, true);
         dayPanel.setVisible(true);
         mainPanel.add(dayPanel);
@@ -152,7 +154,7 @@ public class ForecastDailyView extends LocationsWindow {
         try {
             final boolean isNumberOfDaysValid = getNumberOfDays();
             if (isNumberOfDaysValid) {
-                final WeatherData weatherData = forecastWeatherDataUseCase.execute(location, MAX_FORECAST_DAYS);
+                final WeatherData weatherData = forecastWeatherDataUseCase.execute(location, Constants.MAX_FORECAST_DAYS);
 
                 if (forecastWeatherDataUseCase.isUseCaseFailed()) {
                     showErrorMessage("Error: Could not fetch weather data for the selected location.");
@@ -160,7 +162,7 @@ public class ForecastDailyView extends LocationsWindow {
                 else {
 
                     final LocalDate startDate = currentDate;
-                    final LocalDate endDate = startDate.plusDays(MAX_FORECAST_DAYS);
+                    final LocalDate endDate = startDate.plusDays(Constants.MAX_FORECAST_DAYS);
                     generateWeatherDataDTO(weatherData, startDate, endDate);
                 }
             }
@@ -217,6 +219,10 @@ public class ForecastDailyView extends LocationsWindow {
         this.numberOfDaysField.setText(numDays);
     }
 
+    /**
+     * Gets the number of days from user input and stores in a variable.
+     * @return whether an error occured while parsing the user input
+     */
     public boolean getNumberOfDays() {
         selectedDayIndex = 0;
         boolean numDaysFailed = false;
@@ -230,7 +236,7 @@ public class ForecastDailyView extends LocationsWindow {
         // Parse the number of days entered by the user
         try {
             final int numDays = Integer.parseInt(userInput);
-            if (numDays > 0 && numDays <= MAX_FORECAST_DAYS) {
+            if (numDays > 0 && numDays <= Constants.MAX_FORECAST_DAYS) {
                 // Validate the range
                 this.numberOfDays = numDays;
             }
@@ -256,6 +262,7 @@ public class ForecastDailyView extends LocationsWindow {
 
     private void updateDayPanel(int index) {
         try {
+            final String currentUnits = Constants.CELCIUS_UNIT_TYPE;
             dayPanel.updateWeatherDataValues(weatherDataDTO, index, currentUnits);
         }
         catch (JSONException exception) {
