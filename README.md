@@ -45,23 +45,21 @@ Understanding climate data can be overwhelming due to its complexity. This proje
 
 1. **Interactive Graphs for Climate Trends**  
    - Users can visualize temperature, precipitation, and other climate data over time using line, bar, or Mercator graphs.
-   - This feature enables users to track long-term weather patterns.
 
 2. **Weekly Weather Forecasts**  
    - Provides a summarized 7-day forecast (or customizable forecast up to 16 days) including:  
      - Maximum and minimum temperatures.  
-     - Precipitation likelihood.  
+     - Precipitation levels.  
      - Wind speeds.  
 
-3. **City Comparisons**  
+3. **City Comparisons Over Range of Time**  
    - Allows users to compare average temperature, precipitation, humidity, and wind speeds between two cities.
    - Helps analyze differences in climates and identify trends.
+   - Specify a range of time of your liking.
 
-4. **Interactive Map with Historical Data**  
-   - Click on a map to view the current temperature of any location.  
-   - Compare weather conditions (e.g., temperature, precipitation) between two locations.  
-   - Access historical weather data to visualize trends over time.  
-
+4. **Interactive Map**  
+   - Click on a Mercator map to view the current temperature of any location.  
+ 
 5. **Favorite Locations**  
    - Save favorite locations for quick access to their weather data.
    - Add or remove entries as needed to personalize your experience.
@@ -72,10 +70,7 @@ Understanding climate data can be overwhelming due to its complexity. This proje
 
 ---
 
-
----
-
-### **Setup Guide**
+### **Installation Instructions**
 
 Follow these steps to install and run the Weather Application:
 
@@ -98,7 +93,7 @@ Follow these steps to install and run the Weather Application:
    ```
 
 4. **Launch the Application**  
-   Start the application using your preferred IDE or via command line. Head to App.java and run the file.
+   Start the application using your preferred IDE or via command line. Head to App.java and run the file. This should work for both Windows and MacOS.
 
    Enter a valid API key: 2d6d6124e844c3e976842b19833dfa3b
 
@@ -109,46 +104,47 @@ Follow these steps to install and run the Weather Application:
 | Issue                                         | Solution                                                                                          |
 |-----------------------------------------------|--------------------------------------------------------------------------------------------------|
 | **Maven is not recognized as a command**      | Ensure Maven is added to your system PATH. Follow [Maven Installation Guide](https://maven.apache.org/install.html). |
-| **Java version compatibility issues**         | Check if the installed JDK is version 17 or above. Use `java -version` to verify.                |
-| **Dependencies not downloading**              | Delete the `.m2` directory and re-run `mvn clean install` to force dependency re-download.        |
+| **Java version compatibility issues**         | Check if the installed JDK is version 1 or above. Use `java -version` to verify.                |
 | **Graph rendering errors**                    | Ensure JFreeChart version matches the required 1.5.3 version.                                    |
-
-For more troubleshooting, refer to the [FAQ.md](FAQ.md) in the project root directory.
 
 ---
 
 ## **Usage Guide**
 
 ### **1. Launch the Application**
-   Run the application using the provided setup instructions.  
+   Run the application using the provided setup instructions. Enter given API on console.  
+
+   API Key: 2d6d6124e844c3e976842b19833dfa3b
 
 ### **2. Navigate the User Interface (UI)**
-   - Access the main menu to select a weather dataset or feature.  
+   - Access the main menu to select a feature.  
    - Choose from the following options:
      - **Weather Forecast**: View daily or hourly weather forecasts.
-     - **Weather Comparison**: Compare weather data between two locations.
-     - **Mercator Map**: Explore an interactive map with real-time weather data.  
-   - Customize the time range or data parameters based on your needs.  
+     - **Historical Comparison**: Compare weather data between two locations over a range of time.
+     - **Mercator Map**: Explore an interactive map with real-time weather data. 
 
 ### **3. View Visualizations**
    - **For Weather Forecasts**:
      - Select **daily** or **hourly** forecasts.  
-     - Generate a visualization using a **Bar Graph** or **Line Graph**.  
+     - Generate a visualization using a **Bar Graph** or **Line Graph**.
+     - Make sure to fetch data first.  
    - **For Weather Comparisons**:
      - Enter the names of two locations.  
-     - Generate either a **Bar Graph** or **Line Graph** for comparison.  
+     - Generate either a **Bar Graph** or **Line Graph** for comparison.
+     - Alter the range of time based on your liking.
    - **For Mercator Map**:
-     - Interact with the map to explore and visualize weather data.  
+     - Interact with the map to explore and visualize weather data.
+     - Remember to double click.  
 
 ### **4. Interact and Explore**
-   - Experiment with the application's features to discover insights.  
+   - Experiment with the application's features to discover insights.
+   - Have fun!
 
 ---
 
 ## **Visual Examples**
 
 Here is how our Hourly Forecast works...
-
 
 ![Example UI](report/images/Screenshot%202024-12-03%20at%2000.33.00.png)
 ![Example UI](report/images/Screenshot%202024-12-03%20at%2000.34.37.png)  
@@ -191,7 +187,7 @@ If you wish to use this project for other purposes, please contact the authors f
 
 We welcome your feedback to improve this project. Here's how you can provide feedback:
 
-**Email Us**: Email the repository owner Reena, rmobmina@gmail.com.  
+**Email Us**: Email the repository owner Reena, rmobmina@gmail.com. Expect to see a reply within 5 business days.  
 
 ---
 
