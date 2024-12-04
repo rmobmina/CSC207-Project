@@ -27,8 +27,7 @@ public class ForecastHourlyView extends LocationsWindow {
     private static final int NUMBER_HOURS_OF_FORECAST = 8;
 
     private final OpenWeatherApiService apiService = new OpenWeatherApiService();
-    private WeatherData weatherData;
-//    private JPanel forecastPanel;
+    WeatherData weatherData;
 
     private final JButton visualizeButton = new JButton("Visualize!");
 
@@ -45,7 +44,7 @@ public class ForecastHourlyView extends LocationsWindow {
         openGraphSelectionWindow();
     }
 
-    private void openGraphSelectionWindow() {
+    void openGraphSelectionWindow() {
         if (weatherData == null) {
             JOptionPane.showMessageDialog(this, "No weather data available for visualization!",
                     MESSAGE_DIALOGUE_TITLE, JOptionPane.ERROR_MESSAGE);
@@ -55,14 +54,18 @@ public class ForecastHourlyView extends LocationsWindow {
         GraphSelectionWindow graphSelectionWindow = new GraphSelectionWindow(graphType -> {
             if ("bar".equals(graphType)) {
                 showBarGraph();
-            } else if ("line".equals(graphType)) {
+            }
+            else if ("line".equals(graphType)) {
                 showLineGraph();
             }
         });
         graphSelectionWindow.display();
     }
 
-    private void showBarGraph() {
+    void showBarGraph() {
+        if (weatherData == null) {
+            throw new RuntimeException("Error displaying bar graph: Weather data is null");
+        }
         BarGraphWeatherComparison barGraph = new BarGraphWeatherComparison("Hourly Forecast Bar Graph");
 
         try {
@@ -91,7 +94,11 @@ public class ForecastHourlyView extends LocationsWindow {
         }
     }
 
-    private void showLineGraph() {
+    void showLineGraph() {
+        if (weatherData == null) {
+            throw new RuntimeException("Error displaying line graph: Weather data is null");
+        }
+
         LineGraphWeatherComparison lineGraph = new LineGraphWeatherComparison("Hourly Forecast Line Graph");
 
         try {
@@ -204,6 +211,8 @@ public class ForecastHourlyView extends LocationsWindow {
                             + "C\n Don't forget to wear warm clothing.", "Temperature Warning",
                     JOptionPane.INFORMATION_MESSAGE);
         }
+
     }
+
 }
 
