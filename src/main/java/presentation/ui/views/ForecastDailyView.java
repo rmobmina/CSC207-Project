@@ -26,7 +26,7 @@ public class ForecastDailyView extends LocationsWindow {
     public static final String OPTION_NAME = "Forecast Daily";
 
     private final JLabel numberOfDaysLabel = new JLabel();
-    private final JTextField numberOfDaysField = new JTextField(5);
+    final JTextField numberOfDaysField = new JTextField(5);
 
     private final JButton nextDayButton = new JButton("Next Day");
     private final JButton previousDayButton = new JButton("Previous Day");
