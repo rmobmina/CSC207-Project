@@ -98,7 +98,9 @@ Follow these steps to install and run the Weather Application:
    ```
 
 4. **Launch the Application**  
-   Start the application using your preferred IDE or via command line:
+   Start the application using your preferred IDE or via command line. Head to App.java and run the file.
+
+   Enter a valid API key: 2d6d6124e844c3e976842b19833dfa3b
 
 ---
 
@@ -140,7 +142,6 @@ For more troubleshooting, refer to the [FAQ.md](FAQ.md) in the project root dire
 
 ### **4. Interact and Explore**
    - Experiment with the application's features to discover insights.  
-   - Save visualizations (if applicable) as images for later use.  
 
 ---
 
