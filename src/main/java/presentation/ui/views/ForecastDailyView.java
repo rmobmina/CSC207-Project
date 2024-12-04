@@ -5,6 +5,8 @@ import application.usecases.GetLocationDataUseCase;
 import domain.entities.Location;
 import domain.entities.WeatherData;
 import domain.interfaces.ApiService;
+import org.json.JSONArray;
+import org.json.JSONException;
 import presentation.ui.windows.GraphSelectionWindow;
 import presentation.ui.windows.LocationsWindow;
 import presentation.visualization.BarGraphWeatherComparison;
@@ -12,7 +14,6 @@ import presentation.visualization.LineGraphWeatherComparison;
 import utils.Constants;
 
 import javax.swing.*;
-import java.awt.*;
 import java.time.LocalDate;
 
 import static utils.Constants.MAX_FORECAST_DAYS;
@@ -32,14 +33,16 @@ public class ForecastDailyView extends LocationsWindow {
     private final JButton previousDayButton = new JButton("Previous Day");
     private final JButton visualizeButton = new JButton("Visualize!");
 
-    private final JLabel temperatureUnits = new JLabel();
-    private String currentUnits = Constants.CELCIUS_UNIT_TYPE;
+    private final String currentUnits = Constants.CELCIUS_UNIT_TYPE;
 
     private int numberOfDays;
-    private LocalDate currentDate = LocalDate.now();
-    private GetForecastWeatherDataUseCase forecastWeatherDataUseCase;
-    private int selectedDayIndex = 0;
+    private final LocalDate currentDate = LocalDate.now();
+    private final GetForecastWeatherDataUseCase forecastWeatherDataUseCase;
+    private int selectedDayIndex;
     private DayPanel dayPanel;
+
+    // This variable is used to detect certain tests that show error message pop up
+    private boolean errorOccured;
 
     public ForecastDailyView(String name, int[] dimensions, Location location,
                              GetForecastWeatherDataUseCase forecastWeatherDataUseCase,
@@ -63,9 +66,9 @@ public class ForecastDailyView extends LocationsWindow {
         dayPanel.setVisible(true);
         mainPanel.add(dayPanel);
 
-        nextDayButton.addActionListener(e -> showNextDay());
-        previousDayButton.addActionListener(e -> showPrevDay());
-        visualizeButton.addActionListener(e -> openGraphSelectionWindow());
+        nextDayButton.addActionListener(actionEvent -> showNextDay());
+        previousDayButton.addActionListener(actionEvent -> showPrevDay());
+        visualizeButton.addActionListener(actionEvent -> openGraphSelectionWindow());
     }
 
     @Override
@@ -75,60 +78,62 @@ public class ForecastDailyView extends LocationsWindow {
 
     private void openGraphSelectionWindow() {
         if (weatherDataDTO == null) {
-            JOptionPane.showMessageDialog(mainPanel, "No weather data available for visualization!",
-                    "Visualization Error", JOptionPane.ERROR_MESSAGE);
-            return;
+            showErrorMessage("No weather data available for visualization!");
         }
-
-        GraphSelectionWindow graphSelectionWindow = new GraphSelectionWindow(graphType -> {
-            if ("bar".equals(graphType)) {
-                showBarGraph();
-            } else if ("line".equals(graphType)) {
-                showLineGraph();
-            }
-        });
-        graphSelectionWindow.display();
+        else {
+            final GraphSelectionWindow graphSelectionWindow = new GraphSelectionWindow(graphType -> {
+                if ("bar".equals(graphType)) {
+                    showBarGraph();
+                }
+                else if ("line".equals(graphType)) {
+                    showLineGraph();
+                }
+            });
+            graphSelectionWindow.display();
+        }
     }
 
     private void showBarGraph() {
-        BarGraphWeatherComparison barGraph = new BarGraphWeatherComparison("Daily Forecast Bar Graph");
+        final BarGraphWeatherComparison barGraph = new BarGraphWeatherComparison("Daily Forecast Bar Graph");
 
         try {
             for (int dayIndex = 0; dayIndex < numberOfDays; dayIndex++) {
-                LocalDate date = currentDate.plusDays(dayIndex);
-                Double temperature = weatherDataDTO.getWeatherDataValue("temperatureMeanDaily", dayIndex);
+                final LocalDate date = currentDate.plusDays(dayIndex);
+                final Double temperature = weatherDataDTO.getWeatherDataValue("temperatureMeanDaily", dayIndex);
 
                 if (temperature != null) {
                     barGraph.addData("Temperature", date.toString(), temperature);
                 }
             }
             barGraph.display();
-        } catch (Exception e) {
+        }
+        catch (JSONException exception) {
             JOptionPane.showMessageDialog(mainPanel,
-                    "Error displaying bar graph: " + e.getMessage(),
+                    "Error displaying bar graph: " + exception.getMessage(),
                     "Visualization Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
+            exception.printStackTrace();
         }
     }
 
     private void showLineGraph() {
-        LineGraphWeatherComparison lineGraph = new LineGraphWeatherComparison("Daily Forecast Line Graph");
+        final LineGraphWeatherComparison lineGraph = new LineGraphWeatherComparison("Daily Forecast Line Graph");
 
         try {
             for (int dayIndex = 0; dayIndex < numberOfDays; dayIndex++) {
-                LocalDate date = currentDate.plusDays(dayIndex);
-                Double temperature = weatherDataDTO.getWeatherDataValue("temperatureMeanDaily", dayIndex);
+                final LocalDate date = currentDate.plusDays(dayIndex);
+                final Double temperature = weatherDataDTO.getWeatherDataValue("temperatureMeanDaily", dayIndex);
 
                 if (temperature != null) {
                     lineGraph.addData("Temperature", date.toString(), temperature);
                 }
             }
             lineGraph.display();
-        } catch (Exception e) {
+        }
+        catch (JSONException exception) {
             JOptionPane.showMessageDialog(mainPanel,
-                    "Error displaying line graph: " + e.getMessage(),
+                    "Error displaying line graph: " + exception.getMessage(),
                     "Visualization Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
+            exception.printStackTrace();
         }
     }
 
@@ -145,33 +150,102 @@ public class ForecastDailyView extends LocationsWindow {
     @Override
     protected void getWeatherData() {
         try {
-            final WeatherData weatherData = forecastWeatherDataUseCase.execute(location, MAX_FORECAST_DAYS);
+            final boolean isNumberOfDaysValid = getNumberOfDays();
+            if (isNumberOfDaysValid) {
+                final WeatherData weatherData = forecastWeatherDataUseCase.execute(location, MAX_FORECAST_DAYS);
 
-            if (forecastWeatherDataUseCase.isUseCaseFailed()) {
-                JOptionPane.showMessageDialog(mainPanel,
-                        "Error: Could not fetch weather data for the selected location.",
-                        "Weather Data Error",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
+                if (forecastWeatherDataUseCase.isUseCaseFailed()) {
+                    showErrorMessage("Error: Could not fetch weather data for the selected location.");
+                }
+                else {
+
+                    final LocalDate startDate = currentDate;
+                    final LocalDate endDate = startDate.plusDays(MAX_FORECAST_DAYS);
+                    generateWeatherDataDTO(weatherData, startDate, endDate);
+                }
             }
 
-            final LocalDate startDate = currentDate;
-            final LocalDate endDate = startDate.plusDays(MAX_FORECAST_DAYS);
-            generateWeatherDataDTO(weatherData, startDate, endDate);
-
-        } catch (Exception exception) {
-            JOptionPane.showMessageDialog(mainPanel,
-                    "An unexpected error occurred while fetching weather data: " + exception.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+        }
+        catch (JSONException exception) {
+            showErrorMessage("An unexpected error occurred while fetching weather data: " + exception.getMessage());
             exception.printStackTrace();
         }
+    }
+
+    public boolean isWeatherDataUseCaseFailed() {
+        return forecastWeatherDataUseCase.isUseCaseFailed();
+    }
+
+    private void showErrorMessage(String errorMessage) {
+        JOptionPane.showMessageDialog(mainPanel,
+                errorMessage,
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        errorOccured = true;
+    }
+
+    /**
+     * Returns whether an error occured (which led to an error pop up window to show).
+     * @return whether an error occured or not
+     */
+    public boolean didErrorOccur() {
+        return errorOccured;
     }
 
     protected void displayWeatherData() {
         if (dayPanel != null) {
             showSelectedDayPanel();
         }
+        else {
+            showErrorMessage("Error: Day Panel is Null");
+        }
+    }
+
+    public void setDayPanel(DayPanel newDayPanel) {
+        this.dayPanel = newDayPanel;
+    }
+
+    public String getNumDaysText() {
+        return numberOfDaysField.getText();
+    }
+
+    /**
+     * Sets the text field for number of days.
+     * @param numDays the number of days to forecast
+     */
+    public void setNumberOfDaysText(String numDays) {
+        this.numberOfDaysField.setText(numDays);
+    }
+
+    public boolean getNumberOfDays() {
+        selectedDayIndex = 0;
+        boolean numDaysFailed = false;
+        // Parse the number of days entered by the user (from the text field)
+        final String userInput = numberOfDaysField.getText().trim();
+        if (userInput.isEmpty()) {
+            // Show an error and stop processing
+            showErrorMessage("Error: no input for forecast days!");
+            numDaysFailed = true;
+        }
+        // Parse the number of days entered by the user
+        try {
+            final int numDays = Integer.parseInt(userInput);
+            if (numDays > 0 && numDays <= MAX_FORECAST_DAYS) {
+                // Validate the range
+                this.numberOfDays = numDays;
+            }
+            else {
+                // Invalid range, show error
+                showErrorMessage("Error: number of days is out of range (up to 16)!");
+                numDaysFailed = true;
+            }
+        }
+        catch (NumberFormatException exception) {
+            // Invalid input, show error
+            showErrorMessage("Error: invalid input for forecast days!");
+            numDaysFailed = true;
+        }
+        return numDaysFailed;
     }
 
     private void showSelectedDayPanel() {
@@ -183,15 +257,10 @@ public class ForecastDailyView extends LocationsWindow {
     private void updateDayPanel(int index) {
         try {
             dayPanel.updateWeatherDataValues(weatherDataDTO, index, currentUnits);
-        } catch (Exception exception) {
-            JOptionPane.showMessageDialog(mainPanel,
-                    "Error displaying weather data: " + exception.getMessage(),
-                    "Data Error", JOptionPane.ERROR_MESSAGE);
+        }
+        catch (JSONException exception) {
+            showErrorMessage("Error displaying weather data: " + exception.getMessage());
             exception.printStackTrace();
         }
-    }
-
-    public void setNumberOfDaysField(String numDays) {
-        this.numberOfDaysField.setText(numDays);
     }
 }

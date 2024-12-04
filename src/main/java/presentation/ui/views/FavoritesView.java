@@ -67,12 +67,11 @@ public class FavoritesView extends JFrame {
      */
     private void handleFavoritesListDoubleClick() {
         final String selectedLocationName = favoritesList.getSelectedValue();
-        if (selectedLocationName != null && !"No favorites added yet.".equals(selectedLocationName)) {
+        if (selectedLocationName != null && ! "No favorites added yet.".equals(selectedLocationName)) {
             final Location selectedLocation = getLocationFromName(selectedLocationName);
             if (selectedLocation != null) {
                 openForecastDailyView(selectedLocation);
-            }
-            else {
+            } else {
                 showError("Selected location not found.");
             }
         }

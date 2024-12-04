@@ -26,7 +26,6 @@ public class NewDashBoardUi extends JFrame {
 
     LocationsWindow locationsWindow;
     UserOptionsView userOptionsView;
-    SelectNumberLocationsView numberLocationsView;
     FavoritesManager favoritesManager;
     MainMenuView mainMenuView;
     HelpInfoView helpInfoView;
@@ -45,12 +44,12 @@ public class NewDashBoardUi extends JFrame {
                           GetForecastWeatherDataUseCase forecastWeatherDataUseCase,
                           GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase,
                           FavoritesManager favouriteManager,
-                          UserOptionsView userOptionsView, SelectNumberLocationsView numberLocationsView,
+                          UserOptionsView userOptionsView,
                           MainMenuView mainMenuView, HelpInfoView helpInfoView) {
 
         initVariables(locationsWindowUseCase, locationDataUseCase,
                 forecastWeatherDataUseCase, historicalWeatherDataUseCase, favouriteManager,
-                userOptionsView, numberLocationsView, mainMenuView, helpInfoView);
+                userOptionsView, mainMenuView, helpInfoView);
 
         setTitle("Weather Dashboard");
         setSize(500, 700);
@@ -69,7 +68,6 @@ public class NewDashBoardUi extends JFrame {
                                GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase,
                                FavoritesManager favoritesManager,
                                UserOptionsView userOptionsView,
-                               SelectNumberLocationsView numberLocationsView,
                                MainMenuView mainMenuView,
                                HelpInfoView helpInfoView) {
         this.locationsWindowUseCase = getLocationsWindowUseCase;
@@ -78,7 +76,6 @@ public class NewDashBoardUi extends JFrame {
         this.historicalWeatherDataUseCase = historicalWeatherDataUseCase;
         this.favoritesManager = favoritesManager;
         this.userOptionsView = userOptionsView;
-        this.numberLocationsView = numberLocationsView;
         this.mainMenuView = mainMenuView;
         this.helpInfoView = helpInfoView;
     }
@@ -108,6 +105,8 @@ public class NewDashBoardUi extends JFrame {
             // Ask user to enter how many locations they want
             showNumberOfLocationsWindow();
             userOption = HistoricalWeatherComparisonView.OPTION_NAME;
+            getLocationsWindowMultiple(
+                    userOption, locationsWindowWidth, locationsWindowHeight, 2);
         });
 
         // Add Mercator Map action
@@ -115,9 +114,6 @@ public class NewDashBoardUi extends JFrame {
             // Open Mercator Map directly
             new infrastructure.frameworks.MercatorDisplayApp().startMercatorMap(apiKey, locationDataUseCase, (OpenWeatherApiService) apiService, 500, 500);
         });
-
-        numberLocationsView.setActionListener(e -> getLocationsWindowMultiple(
-                userOption, locationsWindowWidth, locationsWindowHeight, numberLocationsView.getNumOfLocations()));
     }
 
     private void getLocationsWindow(String userOption, int width, int height) {
@@ -168,10 +164,6 @@ public class NewDashBoardUi extends JFrame {
                 locationsWindow.openWindow();
                 toggleShowDashBoard(false);
                 break;
-            case NUMBER_LOCATIONS_WINDOW_NAME:
-                numberLocationsView.showPanel();
-                this.setContentPane(numberLocationsView.getPanel());
-                break;
             default:
                 throw new IllegalArgumentException("Unknown window: " + windowName);
         }
@@ -190,7 +182,6 @@ public class NewDashBoardUi extends JFrame {
     private void hideAllWindows() {
         mainMenuView.hidePanel();
         userOptionsView.hidePanel();
-        numberLocationsView.hidePanel();
         if (locationsWindow != null) locationsWindow.hideWindow();
     }
 

@@ -25,7 +25,7 @@ public class GetLocationDataUseCase extends UseCaseInteractor {
      */
     public List<Location> execute(String city, String apiKey) {
         final List<Location> locations = apiService.fetchLocations(city, apiKey);
-        useCaseFailed = locations.isEmpty() || locations.get(0) == null;
+        useCaseFailed = locations == null || locations.isEmpty() || locations.contains(null);
         return locations;
     }
 }

@@ -1,0 +1,468 @@
+[33mcommit 72e2ba4f8a630e3b97ec44c51f53c50a15c433dc[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32myaoediso_stories[m[33m)[m
+Merge: ba916ee ef537cf
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Tue Dec 3 15:21:36 2024 -0500
+
+    resolving conflicts to merge
+
+[33mcommit ba916eeeba5384f97c6bf4f6295adeef60ddebf6[m
+Merge: e1b5f22 20df220
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Tue Dec 3 15:19:07 2024 -0500
+
+    resolving conflicts to merge
+
+[33mcommit 20df220d8f00cecd658a93487cea6ee4d85e700a[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Reena <154547656+rmobmina@users.noreply.github.com>
+Date:   Tue Dec 3 10:11:52 2024 -0500
+
+    Update accessibility-report.md
+
+[33mcommit e1b5f223efb39508bc8f38a2134f87ca50136b78[m[33m ([m[1;31morigin/yaoediso_stories[m[33m)[m
+Merge: 6ec5081 4441d1c
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Tue Dec 3 08:44:10 2024 -0500
+
+    committing changes so i can pull and then push my code
+
+[33mcommit 6ec5081a617a5b76c6b97689b9b6cb79b177deda[m
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Tue Dec 3 08:40:19 2024 -0500
+
+    Fixed all the new errors introduced in the code and user story test files
+
+[33mcommit 4441d1c49b25a517cb18822ecb24356d87a8fb8b[m
+Author: bader11678 <b.alsayari2004@gmail.com>
+Date:   Tue Dec 3 08:26:51 2024 -0500
+
+    emptied favorites.txt for testing and presenting
+
+[33mcommit ea89128ee9a45e1b716593e356cd490b206cf817[m
+Merge: 1ed425a 50bdb81
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Tue Dec 3 08:01:10 2024 -0500
+
+    committing so i can pull the latest code
+
+[33mcommit 1ed425a7844d7efb5b43bffb6a2ef890e94ea735[m
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Tue Dec 3 07:59:17 2024 -0500
+
+    committing so i can pull the latest code
+
+[33mcommit 50bdb812f8a56cc5088b2509441e0c70f5a332af[m
+Author: bader11678 <b.alsayari2004@gmail.com>
+Date:   Tue Dec 3 07:58:02 2024 -0500
+
+    Bader: Implemented Visualization made by Arham into ForecastHourlyView.java
+
+[33mcommit 05792f84c517b64a916108a3f7f220f99f8160b8[m
+Author: bader11678 <b.alsayari2004@gmail.com>
+Date:   Tue Dec 3 07:33:44 2024 -0500
+
+    Bader: Implemented Back button in HistoricalWeatherComparisonView.java, MINIMAL refactoring in some files including NewDashBoardUi.java, MercatorDisplayApp.java, FavoritesView.java, FavoritesManager.java, LocationsWindow.java, and some use case files. Main functionality remains the same
+    
+    IMPORTANT: Made all the test files commented
+    
+    Arham: Fixed my testcases, added Akram's code changes in my files manually because it had issues with the UI I had.
+
+[33mcommit 3b0ce1df91f55841ecfdb37e4ce906248a898a1b[m
+Author: Reena <154547656+rmobmina@users.noreply.github.com>
+Date:   Tue Dec 3 06:53:39 2024 -0500
+
+    Update README.md
+
+[33mcommit 0773683f7d5741e8643fdc4ca4fdd056d4101583[m
+Author: Reena <154547656+rmobmina@users.noreply.github.com>
+Date:   Tue Dec 3 06:48:58 2024 -0500
+
+    more images
+
+[33mcommit 1a01168cc9e4063f87ad37ece50f7402e3fc17a4[m
+Author: Reena <154547656+rmobmina@users.noreply.github.com>
+Date:   Tue Dec 3 06:48:08 2024 -0500
+
+    Update README.md
+
+[33mcommit 563be5a233022478e27f0d9a554955a87854b032[m
+Author: Reena <154547656+rmobmina@users.noreply.github.com>
+Date:   Tue Dec 3 06:47:00 2024 -0500
+
+    Update README.md
+    
+    added images
+
+[33mcommit acc9c3d9ff49029e75f289b8e0691d6bab8878ec[m
+Author: Reena <154547656+rmobmina@users.noreply.github.com>
+Date:   Tue Dec 3 06:33:06 2024 -0500
+
+    Added image files for the README.md
+
+[33mcommit a2003959a3541e9484e02eaa4bc41025e89a7827[m
+Author: Reena <154547656+rmobmina@users.noreply.github.com>
+Date:   Tue Dec 3 06:28:35 2024 -0500
+
+    Update README.md
+
+[33mcommit 54555ba795769ffb55dd44c5bd732f9a51ffc1f2[m
+Merge: 1672542 a544845
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Tue Dec 3 06:15:04 2024 -0500
+
+    Merge remote-tracking branch 'origin/yaoediso_stories' into yaoediso_stories
+
+[33mcommit 16725429e7862b60f9b9165c8a70a93d1b378623[m
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Tue Dec 3 06:12:22 2024 -0500
+
+    committing to push
+
+[33mcommit fcfe5374ecf239320e75cca7de6ea7b2be5b538f[m
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Tue Dec 3 06:11:19 2024 -0500
+
+    Fixed my testcases, added Akram's code changes in my files manually because it had issues with the UI I had.
+
+[33mcommit a54484597bca44674fafe7b9eb84fc04c19f1000[m
+Author: Reena <rmobmina@gmail.com>
+Date:   Tue Dec 3 05:47:11 2024 -0500
+
+    add the back button
+
+[33mcommit fff86b05a33b6eceb4eb8ed7f3a4b72bce8cc06e[m
+Author: Reena <rmobmina@gmail.com>
+Date:   Tue Dec 3 05:34:03 2024 -0500
+
+    lots of checkstyle fixes!
+
+[33mcommit 9ccf17a836e6ffd969f291ce8c6e5c5d38f7945e[m
+Merge: 060efb9 9fb1d12
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Tue Dec 3 05:18:18 2024 -0500
+
+    committing stuff to pull
+
+[33mcommit 060efb9d56888881eb7289c7b7357a9fb83e5db7[m
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Tue Dec 3 04:59:32 2024 -0500
+
+    Worked on adding more test cases to my user cases and getting more code coverage
+
+[33mcommit 9fb1d1269f3915a521e5000d7ccd31a4a152b79a[m
+Author: Reena <rmobmina@gmail.com>
+Date:   Tue Dec 3 04:08:21 2024 -0500
+
+    set arham up with correct file structure for tests
+
+[33mcommit 02cca03a0ce1569f44542577d084f6dd69d7eb66[m
+Author: Reena <rmobmina@gmail.com>
+Date:   Tue Dec 3 04:04:32 2024 -0500
+
+    refactoring the tests
+
+[33mcommit 2d4a9faeb2f22170d805ac92d725f949cac3f0f2[m
+Author: Reena <rmobmina@gmail.com>
+Date:   Tue Dec 3 04:01:56 2024 -0500
+
+    created all the use case tests including my own
+
+[33mcommit c96c05dbaee44ce802c226e7bf29e9b212360b82[m
+Author: Reena <rmobmina@gmail.com>
+Date:   Tue Dec 3 03:36:18 2024 -0500
+
+    was able to get rid of teh two visualize buttons
+
+[33mcommit 1e4fd937878e0927ea893fa40182724978f4dd87[m
+Author: Reena <rmobmina@gmail.com>
+Date:   Tue Dec 3 03:21:39 2024 -0500
+
+    finally done.
+
+[33mcommit 41e2b7e10506dbf419188eba1752cfec65c16784[m
+Author: Akram Klai <akram.klai@mail.utoronto.ca>
+Date:   Tue Dec 3 01:37:14 2024 -0500
+
+    Made lots of changes, fixing UI and adding visualizations to other user stories (Still WIP).
+
+[33mcommit 3a674a4e13f83bb0e9519b5559d18a35f419efe8[m
+Author: Akram Klai <akram.klai@mail.utoronto.ca>
+Date:   Mon Dec 2 23:49:05 2024 -0500
+
+    Removing unecessary classes from presentation.ui.dashboard
+
+[33mcommit 203be9cafa547c4747f230821e904cd845917bcc[m
+Author: Akram Klai <akram.klai@mail.utoronto.ca>
+Date:   Mon Dec 2 23:37:21 2024 -0500
+
+    Uncommenting test files (they were commented temporarily)
+
+[33mcommit f0f7f601a07a8d307d9b9339778d1fbf1b256796[m
+Merge: e919871 2077804
+Author: AkramK <156954969+AkramKlai@users.noreply.github.com>
+Date:   Mon Dec 2 23:34:45 2024 -0500
+
+    Merge pull request #8 from rmobmina/yaoediso_stories
+    
+    Merging changes regarding my user story (ForecastDailyView.java)
+
+[33mcommit 20778042c6e1d8f7b6f1e018d1b00399d0484eea[m
+Merge: b5f821f 8c57570
+Author: Akram Klai <akram.klai@mail.utoronto.ca>
+Date:   Mon Dec 2 23:33:53 2024 -0500
+
+    Merge remote-tracking branch 'origin/yaoediso_stories' into yaoediso_stories
+
+[33mcommit b5f821fa76079d2f6b13fb66197ec18822dcf567[m
+Merge: 180429d e919871
+Author: Akram Klai <akram.klai@mail.utoronto.ca>
+Date:   Mon Dec 2 23:32:05 2024 -0500
+
+    Trying to fix merge conflicts with main (now by commiting changes stories branch)
+
+[33mcommit 8c57570833ab861690beae7bb18ca26594129d1c[m
+Author: Edison Yao <edisonj.yao@mail.utoronto.ca>
+Date:   Mon Dec 2 23:24:02 2024 -0500
+
+    Updated test files and pom.xml
+
+[33mcommit 0f4c8fdec72173cf362a8d48b261c024af8757c0[m
+Author: Edison Yao <edisonj.yao@mail.utoronto.ca>
+Date:   Mon Dec 2 23:08:31 2024 -0500
+
+    Moved some files for CA
+
+[33mcommit e91987102dbf69dc41d70b8e42e6e942996456f9[m
+Author: Akram Klai <akram.klai@mail.utoronto.ca>
+Date:   Mon Dec 2 22:55:22 2024 -0500
+
+    Trying to fix merge conflicts with main (now by making changes to BarGraphWeatherComparison.java and LineGraphWeatherComparison.java)
+
+[33mcommit 090ab0550936c87f66c552ff09318a87e7030ea3[m
+Author: Akram Klai <akram.klai@mail.utoronto.ca>
+Date:   Mon Dec 2 22:47:33 2024 -0500
+
+    Trying to fix merge conflicts with main (first by making changes to ForecastHourlyViewTest.java and ForecastHourlyView.java)
+
+[33mcommit 784469000427f67ed259d093c944f19a48229b7d[m
+Author: Akram Klai <akram.klai@mail.utoronto.ca>
+Date:   Mon Dec 2 22:42:43 2024 -0500
+
+    Trying to fix merge conflicts with main
+
+[33mcommit 180429d24399ad97e9b963cd00c8e86399ca846c[m
+Merge: 119fac6 3daf6d4
+Author: Akram Klai <akram.klai@mail.utoronto.ca>
+Date:   Mon Dec 2 22:11:15 2024 -0500
+
+    Had to fixed merge conflict in ForecastHourlyViewTest.java
+
+[33mcommit 119fac66dab5bfcdda626c9ae0d7f65bada89174[m
+Author: Akram Klai <akram.klai@mail.utoronto.ca>
+Date:   Mon Dec 2 22:06:49 2024 -0500
+
+    Added usecase interactors and made some small changes to UI.
+
+[33mcommit 2b7bbc3238fbf3cd036785d03937332f3f635eec[m
+Author: Reena <rmobmina@gmail.com>
+Date:   Mon Dec 2 22:05:03 2024 -0500
+
+    Was able to complete the tests for my user story.
+
+[33mcommit 3daf6d46cbe69109c3078d2d17e9ff7dc531e442[m
+Merge: 765f63d dd5a576
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Mon Dec 2 21:18:00 2024 -0500
+
+    Merge remote-tracking branch 'origin/yaoediso_stories' into yaoediso_stories
+
+[33mcommit 765f63d062a507d7759264426720a8bba519b01e[m
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Mon Dec 2 21:17:19 2024 -0500
+
+    Add untracked files to prevent merge conflict
+
+[33mcommit 06c9f3b3e61476506010872756d84c5587183295[m
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Mon Dec 2 21:11:22 2024 -0500
+
+    Fixed the error in my user story test case file.
+
+[33mcommit 2aa143daefe87eff21d39e8d156f7e49ae6aee86[m
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Mon Dec 2 21:03:00 2024 -0500
+
+    Fixed the error in my user story test case file.
+
+[33mcommit dd5a57633a648e004d0f88d6c19cdb2937cf3c61[m
+Author: Akram Klai <akram.klai@mail.utoronto.ca>
+Date:   Mon Dec 2 20:11:36 2024 -0500
+
+    Updated changes for my user story (the ForecastDailyView.java). Also made small changes and checkstyle fixes on WeatherDataDTO.java and WeatherDataDTOGenerator.java
+
+[33mcommit 5a481fe85935a6cf4e6b9e9609021eaf9794c58a[m
+Merge: 2a367d8 4786ff1
+Author: Reena <rmobmina@gmail.com>
+Date:   Mon Dec 2 19:29:36 2024 -0500
+
+    Merge remote-tracking branch 'origin/yaoediso_stories' into yaoediso_stories
+
+[33mcommit 2a367d8993ae6439d4ac79d5b16541721922f649[m
+Author: Reena <rmobmina@gmail.com>
+Date:   Mon Dec 2 19:29:25 2024 -0500
+
+    Did so many changes, the user story is fixed, my user story is fixed. Everything is fixed. This is fixed.
+
+[33mcommit 4786ff10122c52d2c7701d75a4aeb6bbc7170665[m
+Author: bader <b.alsayari2004@gmail.com>
+Date:   Mon Dec 2 19:14:23 2024 -0500
+
+    Bader: Added a feature where Weather information window closes when Mercator Window closes.
+    
+    Note: Issues that remains is that the mercator window opens twice when pressing the option in the main menu
+
+[33mcommit 61be4683d1c8321354ae561546f9823588cdafd7[m
+Merge: 589e70f 67fd9c7
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Mon Dec 2 19:07:41 2024 -0500
+
+    committing so i can pull
+
+[33mcommit 589e70f6605774eee17ce01536cf90656d82d85e[m
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Mon Dec 2 19:05:58 2024 -0500
+
+    committing so i can pull
+
+[33mcommit e8124ded61f37682c4a72c21418042b43c949a33[m
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Mon Dec 2 19:04:21 2024 -0500
+
+    Fixed the bug: When you enter the location for the second time, the hourly forecast panel does not refresh, therefore you end up with the weather details of all the locations entered.
+
+[33mcommit 67fd9c716f2dda9ab83b99fb4363e1dc3bb87cc8[m
+Merge: fcde38b 5912a7b
+Author: Edison Yao <edisonj.yao@mail.utoronto.ca>
+Date:   Mon Dec 2 18:52:35 2024 -0500
+
+    Merge remote-tracking branch 'origin/yaoediso_stories' into yaoediso_stories
+
+[33mcommit fcde38b1aafa0463fd8520f11443b96630a311f8[m
+Author: Edison Yao <edisonj.yao@mail.utoronto.ca>
+Date:   Mon Dec 2 18:52:24 2024 -0500
+
+    Fixed temperature display of Mercator Map, fixed checkstyles
+
+[33mcommit 5912a7bba25db5260dfdb6a9ee73a24a8b4dcf80[m
+Merge: 693a413 b86926f
+Author: Akram Klai <akram.klai@mail.utoronto.ca>
+Date:   Mon Dec 2 18:36:27 2024 -0500
+
+    Merge branch 'yaoediso_stories' of https://github.com/rmobmina/CSC207-Project into yaoediso_stories
+
+[33mcommit 693a413b53655af6e9fd7611bc3d06508c93923b[m
+Author: Akram Klai <akram.klai@mail.utoronto.ca>
+Date:   Mon Dec 2 18:36:01 2024 -0500
+
+    Updated changes for my user story (the ForecastDailyView.java)
+
+[33mcommit b86926ffb50862afdfbb3537b1561fd6f094c8c3[m
+Merge: c0678f7 d5fbe66
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Mon Dec 2 18:17:29 2024 -0500
+
+    committing so i can pull
+
+[33mcommit 75870a57b03398179596b299bf60441e7a5b2303[m
+Merge: cba6d9d d5fbe66
+Author: Akram Klai <akram.klai@mail.utoronto.ca>
+Date:   Mon Dec 2 18:16:25 2024 -0500
+
+    Merge branch 'yaoediso_stories' of https://github.com/rmobmina/CSC207-Project into yaoediso_stories
+
+[33mcommit c0678f7e57e68f7abe4158b163750b37254cacdd[m
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Mon Dec 2 18:13:49 2024 -0500
+
+    Fixed the bug. The hourly weather forecast does not update the whole panel when entered a second location and you end up with the weather details of all the locations entered.
+
+[33mcommit 1c87f13929d3b7a166e24fc04d6122bd9a64fe86[m
+Merge: 410b149 d5fbe66
+Author: Bader AlSeiari <51030365+bader11678@users.noreply.github.com>
+Date:   Mon Dec 2 17:52:41 2024 -0500
+
+    Merge pull request #7 from rmobmina/yaoediso_stories
+    
+    Bader AlSeiari's Pull Request
+
+[33mcommit 84e9db6990cf4e73fc53c66b9de32f602637ca5b[m
+Author: Arham <arhamwajid2005@gmail.com>
+Date:   Mon Dec 2 17:41:18 2024 -0500
+
+    Fixed the bug. The hourly weather forecast does not update the whole panel when entered a second location and you end up with the weather details of all the locations entered.
+
+[33mcommit 410b14946b990c2a7c076345d020bfc719045d1d[m
+Author: Reena <154547656+rmobmina@users.noreply.github.com>
+Date:   Mon Dec 2 17:30:10 2024 -0500
+
+    Create LICENSE
+
+[33mcommit d5fbe668331950c2b80d6af8d13e4d3ee0bbb886[m
+Author: Reena <154547656+rmobmina@users.noreply.github.com>
+Date:   Mon Dec 2 17:22:44 2024 -0500
+
+    Made more changes to the readme
+
+[33mcommit 848ac421d73ee74fb9b1ff407ce1d412a5bbbaa3[m
+Author: Reena <154547656+rmobmina@users.noreply.github.com>
+Date:   Mon Dec 2 17:14:31 2024 -0500
+
+    got a good start on the readme file
+
+[33mcommit fe121bdab62dcd3366373b2a8407b2502d9f9427[m
+Merge: fc99a54 fb1ce83
+Author: Edison Yao <edisonj.yao@mail.utoronto.ca>
+Date:   Mon Dec 2 17:10:51 2024 -0500
+
+    Merge remote-tracking branch 'origin/yaoediso_stories' into yaoediso_stories
+    
+    # Conflicts:
+    #       target/test-classes/presentation/visualization/MercatorAlgorithmTest.class
+
+[33mcommit fc99a54f63d99ad127b78cf2d22a51e7692dbe0a[m
+Author: Edison Yao <edisonj.yao@mail.utoronto.ca>
+Date:   Mon Dec 2 17:10:13 2024 -0500
+
+    Akram: I made the MercatorDisplayApp display all weather data for the selected location using DayPanel.java.
+    
+    Edison: Improved Mercator map and implemented temperature display functionality
+
+[33mcommit fb1ce838d6603b0087ef0ad9c6e3ec81f260a012[m
+Merge: be302f4 4abe71e
+Author: bader <b.alsayari2004@gmail.com>
+Date:   Mon Dec 2 16:33:08 2024 -0500
+
+    Merge remote-tracking branch 'origin/yaoediso_stories' into yaoediso_stories
+
+[33mcommit be302f48368ccb3229199e5868786659705d89ef[m
+Author: bader <b.alsayari2004@gmail.com>
+Date:   Mon Dec 2 16:32:56 2024 -0500
+
+    Bader: User Story is complete, will attempt to refine it more if possible.
+
+[33mcommit e4c5c5558fd7009094cb8591cf5eb20d2c525eef[m
+Merge: 1eaefaa 4abe71e
+Author: arham-w17 <arham.mohammed@mail.utoronto.ca>
+Date:   Mon Dec 2 16:25:31 2024 -0500
+
+    Merge pull request #6 from rmobmina/yaoediso_stories
+    
+    Yaoediso stories
+
+[33mcommit cba6d9dc36d8efe610aa21ec028c5fdb4b1c294f[m
+Merge: 6c7b21e 4abe71e
+Author: Akram Klai <akram.klai@mail.utoronto.ca>
+Date:   Mon Dec 2 15:45:47 2024 -0500
+
+    Merge branch 'yaoediso_stories' of https://github.com/rmobmina/CSC207-Project into yaoediso_stories
+
+[33mcommit 4abe71edf4
