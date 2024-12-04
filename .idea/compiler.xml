@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Habibis and Habibti (No relation)" />
         <module name="mockito" />
+        <module name="CSC207-Project" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
