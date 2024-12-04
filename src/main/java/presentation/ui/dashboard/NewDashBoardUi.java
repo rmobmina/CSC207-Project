@@ -1,130 +1,128 @@
 package presentation.ui.dashboard;
 
-import application.usecases.GetForecastWeatherDataUseCase;
-import application.usecases.GetHistoricalWeatherDataUseCase;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
 import application.usecases.GetLocationDataUseCase;
 import application.usecases.GetLocationsWindowUseCase;
 import domain.interfaces.ApiService;
 import infrastructure.adapters.OpenWeatherApiService;
+import presentation.ui.views.FavoritesView;
+import presentation.ui.views.ForecastDailyView;
+import presentation.ui.views.ForecastHourlyView;
+import presentation.ui.views.HelpInfoView;
+import presentation.ui.views.HistoricalWeatherComparisonView;
+import presentation.ui.views.MainMenuView;
+import presentation.ui.views.UserOptionsView;
 import presentation.ui.windows.FavoritesManager;
-import presentation.ui.views.*;
 import presentation.ui.windows.LocationsWindow;
-
-import javax.swing.*;
 
 /**
  * Class that handles UI to display a specific view panel (one for each use case) based on the user option
  * and an options view panel to receive the user's input.
  */
 public class NewDashBoardUi extends JFrame {
-    String apiKey = "";
-    ApiService apiService;
-    GetLocationsWindowUseCase locationsWindowUseCase;
-    GetLocationDataUseCase locationDataUseCase;
-    GetForecastWeatherDataUseCase forecastWeatherDataUseCase;
-    GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase;
+    private static final String OPTIONS_NAME = "Options";
+    private static final String LOCATIONS_WINDOW_NAME = "Locations";
+    private static final String MAIN_MENU_NAME = "Main Menu";
+    private static final int LOCATIONS_WINDOW_WIDTH = 900;
+    private static final int LOCATIONS_WINDOW_HEIGHT = 700;
 
-    LocationsWindow locationsWindow;
-    UserOptionsView userOptionsView;
-    FavoritesManager favoritesManager;
-    MainMenuView mainMenuView;
-    HelpInfoView helpInfoView;
+    private String apiKey = "";
+    private ApiService apiService;
+    private GetLocationsWindowUseCase locationsWindowUseCase;
+    private GetLocationDataUseCase locationDataUseCase;
 
-    final String OPTIONS_NAME = "Options";
-    final String LOCATIONS_WINDOW_NAME = "Locations";
-    final String NUMBER_LOCATIONS_WINDOW_NAME = "Number Locations";
-
-    final int locationsWindowWidth = 710;
-    final int locationsWindowHeight = 350;
+    private LocationsWindow locationsWindow;
+    private UserOptionsView userOptionsView;
+    private FavoritesManager favoritesManager;
+    private MainMenuView mainMenuView;
+    private HelpInfoView helpInfoView;
 
     private String userOption;
 
     public NewDashBoardUi(GetLocationsWindowUseCase locationsWindowUseCase,
                           GetLocationDataUseCase locationDataUseCase,
-                          GetForecastWeatherDataUseCase forecastWeatherDataUseCase,
-                          GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase,
                           FavoritesManager favouriteManager,
                           UserOptionsView userOptionsView,
                           MainMenuView mainMenuView, HelpInfoView helpInfoView) {
 
-        initVariables(locationsWindowUseCase, locationDataUseCase,
-                forecastWeatherDataUseCase, historicalWeatherDataUseCase, favouriteManager,
+        initVariables(locationsWindowUseCase, locationDataUseCase, favouriteManager,
                 userOptionsView, mainMenuView, helpInfoView);
 
         setTitle("Weather Dashboard");
-        setSize(500, 700);
+        final int dashboardWindowWidth = 500;
+        final int dashboardWindowHeight = 700;
+        setSize(dashboardWindowWidth, dashboardWindowHeight);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         add(mainMenuView.getPanel());
-        switchToWindow("MainMenu");
+        switchToWindow(MAIN_MENU_NAME);
 
         setButtonListeners();
     }
 
-
-    private void initVariables(GetLocationsWindowUseCase getLocationsWindowUseCase,
-                               GetLocationDataUseCase locationDataUseCase,
-                               GetForecastWeatherDataUseCase forecastWeatherDataUseCase,
-                               GetHistoricalWeatherDataUseCase historicalWeatherDataUseCase,
-                               FavoritesManager favoritesManager,
-                               UserOptionsView userOptionsView,
-                               MainMenuView mainMenuView,
-                               HelpInfoView helpInfoView) {
-        this.locationsWindowUseCase = getLocationsWindowUseCase;
-        this.locationDataUseCase = locationDataUseCase;
-        this.forecastWeatherDataUseCase = forecastWeatherDataUseCase;
-        this.historicalWeatherDataUseCase = historicalWeatherDataUseCase;
-        this.favoritesManager = favoritesManager;
-        this.userOptionsView = userOptionsView;
-        this.mainMenuView = mainMenuView;
-        this.helpInfoView = helpInfoView;
+    private void initVariables(GetLocationsWindowUseCase getLocationsWindowInit,
+                               GetLocationDataUseCase locationDataInit,
+                               FavoritesManager favoritesManagerInit,
+                               UserOptionsView userOptionsViewInit,
+                               MainMenuView mainMenuViewInit,
+                               HelpInfoView helpInfoInit) {
+        this.locationsWindowUseCase = getLocationsWindowInit;
+        this.locationDataUseCase = locationDataInit;
+        this.favoritesManager = favoritesManagerInit;
+        this.userOptionsView = userOptionsViewInit;
+        this.mainMenuView = mainMenuViewInit;
+        this.helpInfoView = helpInfoInit;
     }
 
     private void setButtonListeners() {
-        mainMenuView.setStartActionListener(e -> {
-            switchToWindow(OPTIONS_NAME); // Switch to the dashboard
+        mainMenuView.setStartActionListener(actionEvent -> {
+            // Switch to the dashboard
+            switchToWindow(OPTIONS_NAME);
         });
 
-        mainMenuView.setHelpActionListener(e -> {
+        mainMenuView.setHelpActionListener(actionEvent -> {
             if (helpInfoView != null) {
-                helpInfoView.display(); // Open the help view
+                // Open the help view
+                helpInfoView.display();
             }
         });
 
-        userOptionsView.setForecastHourlyActionListener(e -> {
-            getLocationsWindow(ForecastHourlyView.OPTION_NAME, locationsWindowWidth, locationsWindowHeight);
+        userOptionsView.setForecastHourlyActionListener(actionEvent -> {
+            userOption = ForecastHourlyView.OPTION_NAME;
+            getLocationsWindow();
             userOptionsView.hideForecastOptionsWindow();
         });
 
-        userOptionsView.setForecastDailyActionListener(e -> {
-            getLocationsWindow(ForecastDailyView.OPTION_NAME, locationsWindowWidth, locationsWindowHeight);
+        userOptionsView.setForecastDailyActionListener(actionEvent -> {
+            userOption = ForecastDailyView.OPTION_NAME;
+            getLocationsWindow();
             userOptionsView.hideForecastOptionsWindow();
         });
 
-        userOptionsView.setComparisonActionListener(e -> {
-            // Ask user to enter how many locations they want
-            showNumberOfLocationsWindow();
+        userOptionsView.setComparisonActionListener(actionEvent -> {
             userOption = HistoricalWeatherComparisonView.OPTION_NAME;
-            getLocationsWindowMultiple(
-                    userOption, locationsWindowWidth, locationsWindowHeight, 2);
+            getLocationsWindowMultiple(2);
         });
 
         // Add Mercator Map action
-        userOptionsView.setMercatorMapActionListener(e -> {
+        userOptionsView.setMercatorMapActionListener(actionEvent -> {
             // Open Mercator Map directly
-            new infrastructure.frameworks.MercatorDisplayApp().startMercatorMap(apiKey, locationDataUseCase, (OpenWeatherApiService) apiService, 500, 500);
+            new infrastructure.frameworks.MercatorDisplayApp().startMercatorMap(apiKey, locationDataUseCase,
+                    (OpenWeatherApiService) apiService, LOCATIONS_WINDOW_WIDTH, LOCATIONS_WINDOW_HEIGHT);
         });
     }
 
-    private void getLocationsWindow(String userOption, int width, int height) {
-        getLocationsWindowMultiple(userOption, width, height, 1);
+    private void getLocationsWindow() {
+        getLocationsWindowMultiple(1);
     }
 
-    private void getLocationsWindowMultiple(String userOption, int width, int height, int numOfLocations) {
+    private void getLocationsWindowMultiple(int numOfLocations) {
         locationsWindow = locationsWindowUseCase.execute(
                 userOption,
-                new int[]{900, 600},
-                2,
+                new int[]{LOCATIONS_WINDOW_WIDTH, LOCATIONS_WINDOW_HEIGHT},
+                numOfLocations,
                 locationDataUseCase,
                 apiKey,
                 apiService,
@@ -132,27 +130,22 @@ public class NewDashBoardUi extends JFrame {
         );
 
         // Corrected button listeners
-        locationsWindow.setFavoritesButtonListener(e -> openFavoritesView());
+        locationsWindow.setFavoritesButtonListener(actionEvent -> openFavoritesView());
         locationsWindow.setAddToFavoritesButtonListener(favoritesManager);
-        locationsWindow.setBackButtonListener(e -> backToDashBoard());
+        locationsWindow.setBackButtonListener(actionEvent -> backToDashBoard());
         switchToWindow(LOCATIONS_WINDOW_NAME);
     }
 
     private void openFavoritesView() {
         // Pass `this` as the parent window (LocationsWindow is a subclass of JFrame)
-        FavoritesView favoritesView = new FavoritesView(favoritesManager, apiKey, locationsWindow);
+        final FavoritesView favoritesView = new FavoritesView(favoritesManager, apiKey, locationsWindow);
         favoritesView.setVisible(true);
-    }
-
-    // Opens up a window to get the desired number of locations before applying it to the chosen use case
-    private void showNumberOfLocationsWindow() {
-        switchToWindow(NUMBER_LOCATIONS_WINDOW_NAME);
     }
 
     private void switchToWindow(String windowName) {
         hideAllWindows();
         switch (windowName) {
-            case "MainMenu":
+            case MAIN_MENU_NAME:
                 mainMenuView.showPanel();
                 this.setContentPane(mainMenuView.getPanel());
                 break;
@@ -169,7 +162,9 @@ public class NewDashBoardUi extends JFrame {
         }
     }
 
-    // Closes the current locations window and opens up the dashboard window
+    /**
+     * Closes the current locations window and opens up the dashboard window.
+     */
     public void backToDashBoard() {
         toggleShowDashBoard(true);
         switchToWindow(OPTIONS_NAME);
@@ -182,10 +177,17 @@ public class NewDashBoardUi extends JFrame {
     private void hideAllWindows() {
         mainMenuView.hidePanel();
         userOptionsView.hidePanel();
-        if (locationsWindow != null) locationsWindow.hideWindow();
+        mainMenuView.hidePanel();
+        if (locationsWindow != null) {
+            locationsWindow.hideWindow();
+        }
     }
 
-    public void runJFrame(OpenWeatherApiService weatherApiService) {
+    /**
+     * Runs the JFrame of the DashboardUI and displays the current panel (view).
+     * @param weatherApiService the weather api service being used by use cases in the views
+     */
+    public void runJframe(OpenWeatherApiService weatherApiService) {
         apiService = weatherApiService;
         this.setVisible(true);
         SwingUtilities.invokeLater(() -> {
@@ -197,12 +199,12 @@ public class NewDashBoardUi extends JFrame {
         return userOptionsView;
     }
 
-    public void setAPIkey(String apiKey) {
-        this.apiKey = apiKey;
+    public void setApikey(String newApiKey) {
+        this.apiKey = newApiKey;
     }
 
     // added a getter to retrieve API key for favorites
-    public String getAPIkey() {
+    public String getApikey() {
         return this.apiKey;
     }
 }
