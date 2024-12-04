@@ -167,7 +167,7 @@ For more troubleshooting, refer to the [FAQ.md](FAQ.md) in the project root dire
 ## **Visual Examples**
 
 Here is how our Hourly Forecast works...
-![Example UI](Screenshot%202024-12-03%20at%2000.33.00.png)  
+![Example UI](Screenshot_2024-12-03_00-33-00.png)
 ![Example UI](Screenshot%202024-12-03%20at%2000.34.37.png)  
 ![Example UI](Screenshot%202024-12-03%20at%2000.35.22.png)  
 
