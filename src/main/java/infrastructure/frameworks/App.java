@@ -67,7 +67,6 @@ public class App {
                 historicalWeatherDataUseCase,
                 new FavoritesManager(),
                 new UserOptionsView(),
-                new SelectNumberLocationsView(),
                 new MainMenuView(),
                 new HelpInfoView()
         );

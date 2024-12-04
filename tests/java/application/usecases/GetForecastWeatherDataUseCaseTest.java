@@ -41,4 +41,18 @@ public class GetForecastWeatherDataUseCaseTest {
         assertNull(result);
         assertTrue(useCase.isUseCaseFailed());
     }
+
+    @Test
+    public void testFetchWeatherDataNullLocation() {
+        ApiService mockApiService = mock(ApiService.class);
+        GetForecastWeatherDataUseCase useCase = new GetForecastWeatherDataUseCase(mockApiService);
+
+        Location location = null;
+        when(mockApiService.fetchForecastWeather(location, 5)).thenReturn(null);
+
+        WeatherData result = useCase.execute(location, 5);
+
+        assertNull(result);
+        assertTrue(useCase.isUseCaseFailed());
+    }
 }

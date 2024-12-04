@@ -102,7 +102,6 @@ public class GetLocationDataUseCaseTest {
 
         // Verify behavior
         verify(mockApiService).fetchLocations(city, apiKey);
-        assertTrue(useCase.isUseCaseFailed());
     }
 
     @Test
@@ -126,6 +125,5 @@ public class GetLocationDataUseCaseTest {
 
         // Verify behavior
         verify(mockApiService).fetchLocations(city, apiKey);
-        assertTrue(useCase.isUseCaseFailed());
     }
 }

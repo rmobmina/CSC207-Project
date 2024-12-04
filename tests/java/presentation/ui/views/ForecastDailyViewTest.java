@@ -6,15 +6,10 @@ import domain.entities.Location;
 import infrastructure.adapters.OpenWeatherApiService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import presentation.ui.views.ForecastDailyView;
-import utils.Constants;
-
-import javax.swing.*;
-import java.awt.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ForecastDailyViewTest {
+class ForecastDailyViewTest {
 
     private ForecastDailyView forecastDailyView;
 
@@ -31,45 +26,66 @@ public class ForecastDailyViewTest {
     }
 
     @Test
-    public void testNumberOfDaysInvalidNegative() {
-        forecastDailyView.setNumberOfDaysField("-1");
-        String numberOfDaysText = forecastDailyView.numberOfDaysField.getText();
-        int numberOfDays = parseNumberOfDays(numberOfDaysText);
-        assertTrue(numberOfDays < 0, "Number of days should not be negative.");
-    }
+    void testNumberOfDaysInvalid() {
+        // Tests for empty input
+        forecastDailyView.setNumberOfDaysText("");
+        boolean isNumDaysInvalid = forecastDailyView.getNumberOfDays();
+        assertTrue(isNumDaysInvalid, "Empty input entered for number of days.");
 
-    @Test
-    public void testNumberOfDaysExceedsMax() {
-        forecastDailyView.setNumberOfDaysField("20");
-        String numberOfDaysText = forecastDailyView.numberOfDaysField.getText();
-        int numberOfDays = parseNumberOfDays(numberOfDaysText);
-        assertTrue(numberOfDays > Constants.MAX_FORECAST_DAYS,
+        // Tests for below the minimum (0)
+        forecastDailyView.setNumberOfDaysText("-1");
+        isNumDaysInvalid = forecastDailyView.getNumberOfDays();
+        assertTrue(isNumDaysInvalid, "Number of days should not be negative.");
+
+        // Tests for above the maximum (16)
+        forecastDailyView.setNumberOfDaysText("20");
+        isNumDaysInvalid = forecastDailyView.getNumberOfDays();
+        assertTrue(isNumDaysInvalid,
                 "Number of days should not exceed the maximum allowed forecast days.");
     }
 
     @Test
-    public void testNumberOfDaysNonNumeric() {
-        forecastDailyView.setNumberOfDaysField("notANumber");
-        String numberOfDaysText = forecastDailyView.numberOfDaysField.getText();
+    void testNumberOfDaysNonNumeric() {
+        forecastDailyView.setNumberOfDaysText("notANumber");
+        String numberOfDaysText = forecastDailyView.getNumDaysText();
         assertThrows(NumberFormatException.class, () -> {
             Integer.parseInt(numberOfDaysText);
-        }, "Non-numeric input should throw a NumberFormatException.");
+        });
+        boolean isNumDaysInvalid = forecastDailyView.getNumberOfDays();
+        assertTrue(isNumDaysInvalid, "Non-numeric input should throw a NumberFormatException.");
     }
 
     @Test
-    public void testNumberOfDaysValid() {
-        forecastDailyView.setNumberOfDaysField("10");
-        String numberOfDaysText = forecastDailyView.numberOfDaysField.getText();
-        int numberOfDays = parseNumberOfDays(numberOfDaysText);
-        assertTrue(numberOfDays > 0 && numberOfDays <= Constants.MAX_FORECAST_DAYS,
+    void testNumberOfDaysValid() {
+        forecastDailyView.setNumberOfDaysText("10");
+        boolean isNumDaysInvalid = forecastDailyView.getNumberOfDays();
+        assertFalse(isNumDaysInvalid,
                 "Valid number of days should be within the allowed range.");
     }
 
-    private int parseNumberOfDays(String input) {
-        try {
-            return Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            return -1; // Return invalid value if parsing fails
-        }
+    @Test
+    void testGetWeatherDataNull() {
+        forecastDailyView.location = null;
+        forecastDailyView.getWeatherData();
+        assertTrue(forecastDailyView.isWeatherDataUseCaseFailed());
+    }
+
+    @Test
+    void testGetWeatherDataValid() {
+        forecastDailyView.setNumberOfDaysText("3");
+        forecastDailyView.location = new Location("TestCity", 43.4, -79.2);
+        forecastDailyView.getWeatherData();
+        boolean isNumDaysInvalid = forecastDailyView.getNumberOfDays();
+        assertFalse(isNumDaysInvalid);
+        assertFalse(forecastDailyView.isWeatherDataUseCaseFailed());
+    }
+
+    @Test
+    void testShowDayPanelNull() {
+        forecastDailyView.setDayPanel(null);
+        forecastDailyView.getWeatherData();
+        assertFalse(forecastDailyView.isWeatherDataUseCaseFailed());
+        forecastDailyView.displayWeatherData();
+        assertTrue(forecastDailyView.didErrorOccur());
     }
 }

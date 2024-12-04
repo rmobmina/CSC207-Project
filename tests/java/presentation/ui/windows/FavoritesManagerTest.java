@@ -42,6 +42,7 @@ public class FavoritesManagerTest {
     @Test
     public void testLoadFavoritesFileDoesNotExist() {
         // Ensure the file does not exist
+        // Bader please FIX NOW
         if (favoritesFile.exists() && !favoritesFile.delete()) {
             fail("Could not delete the favorites file before the test.");
         }
