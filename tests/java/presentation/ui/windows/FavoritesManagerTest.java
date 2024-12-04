@@ -209,5 +209,45 @@ public class FavoritesManagerTest {
         assertTrue(favoritesManager.getFavorites().isEmpty(), "Favorites list should be empty when loading corrupted data.");
     }
 
+    @Test
+    public void testGetFavoritesWhenNull() {
+        try {
+            // Set the `favorites` field to null using reflection
+            Field favoritesField = FavoritesManager.class.getDeclaredField("favorites");
+            favoritesField.setAccessible(true);
+            favoritesField.set(favoritesManager, null);
+
+            // Call getFavorites and verify it returns a new list
+            List<Location> favorites = favoritesManager.getFavorites();
+            assertNotNull(favorites, "Favorites list should be initialized if it is null.");
+            assertTrue(favorites.isEmpty(), "Favorites list should be empty when initialized.");
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            fail("Failed to set up test for null favorites list: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void testClearFavoritesWhenNull() {
+        try {
+            // Set the `favorites` field to null using reflection
+            Field favoritesField = FavoritesManager.class.getDeclaredField("favorites");
+            favoritesField.setAccessible(true);
+            favoritesField.set(favoritesManager, null);
+
+            // Call clearFavorites and ensure it initializes the list
+            favoritesManager.clearFavorites();
+
+            // Verify the list is initialized and empty
+            assertNotNull(favoritesManager.getFavorites(), "Favorites list should be initialized when clearing.");
+            assertTrue(favoritesManager.getFavorites().isEmpty(), "Favorites list should be empty after clearing.");
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            fail("Failed to set up test for clearing null favorites list: " + e.getMessage());
+        }
+    }
+
+
+
+
+
 }
 
