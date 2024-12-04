@@ -44,7 +44,7 @@ Understanding climate data can be overwhelming due to its complexity. This proje
 ## **Features of the Software**
 
 1. **Interactive Graphs for Climate Trends**  
-   - Users can visualize temperature, precipitation, and other climate data over time using line, bar, or heatmap graphs.
+   - Users can visualize temperature, precipitation, and other climate data over time using line, bar, or Mercator graphs.
    - This feature enables users to track long-term weather patterns.
 
 2. **Weekly Weather Forecasts**  
@@ -72,31 +72,7 @@ Understanding climate data can be overwhelming due to its complexity. This proje
 
 ---
 
-## **Installation Instructions**
 
-### **Prerequisites**
-
-Before installing the project, ensure your system meets the following requirements:
-
-1. **Java Development Kit (JDK)**  
-   - Required version: JDK 17 or above  
-   - Download link: [https://www.oracle.com/java/technologies/javase-downloads.html](https://www.oracle.com/java/technologies/javase-downloads.html)
-
-2. **Apache Maven** (for dependency management and building the project)  
-   - Required version: 3.8 or above  
-   - Download link: [https://maven.apache.org/download.cgi](https://maven.apache.org/download.cgi)
-
-3. **JFreeChart Library**  
-   - Required version: 1.5.3  
-   - This library is automatically downloaded via Maven. Documentation: [JFreeChart Documentation](http://www.jfree.org/jfreechart/)
-
-4. **Operating System**  
-   - Supported platforms: Windows, macOS, Linux  
-   - Recommended: Any OS that supports Java  
-
-5. **IDE** (Optional, but recommended for development)  
-   - IntelliJ IDEA: [https://www.jetbrains.com/idea/download/](https://www.jetbrains.com/idea/download/)
-     
 ---
 
 ### **Setup Guide**
@@ -109,16 +85,20 @@ Follow these steps to install and run the Weather Application:
    git clone https://github.com/rmobmina/CSC207-Project.git
    ```
 
-2. **Navigate to the Project Directory**  
-
-3. **Build the Project**  
-   Use Maven to download dependencies and compile the project:  
+2. **Build the Project**  
+   Use Maven to build the project and download dependencies:
    ```bash
    mvn clean install
    ```
 
-4. **Run the Application**  
-   After successful compilation, you can run the application by heading to the App.java file in infrastructure.frameworks.
+3. **Run Tests (with Mockito)**  
+   Ensure all tests pass, including those using Mockito. Run the following:
+   ```bash
+   mvn test
+   ```
+
+4. **Launch the Application**  
+   Start the application using your preferred IDE or via command line:
 
 ---
 
@@ -167,28 +147,33 @@ For more troubleshooting, refer to the [FAQ.md](FAQ.md) in the project root dire
 ## **Visual Examples**
 
 Here is how our Hourly Forecast works...
-![Example UI](Screenshot_2024-12-03_00-33-00.png)
-![Example UI](Screenshot%202024-12-03%20at%2000.34.37.png)  
-![Example UI](Screenshot%202024-12-03%20at%2000.35.22.png)  
+
+
+![Example UI](report/images/Screenshot%202024-12-03%20at%2000.33.00.png)
+![Example UI](report/images/Screenshot%202024-12-03%20at%2000.34.37.png)  
+![Example UI](report/images/Screenshot%202024-12-03%20at%2000.35.22.png)  
 
 This is the Daily Forecast in action.
-![Example UI](Screenshot%202024-12-03%20at%2000.24.29.png)  
-![Example UI](Screenshot%202024-12-03%20at%2000.25.08.png)  
-![Example UI](Screenshot%202024-12-03%20at%2000.26.08.png)  
+
+![Example UI](report/images/Screenshot%202024-12-03%20at%2000.24.29.png)  
+![Example UI](report/images/Screenshot%202024-12-03%20at%2000.25.08.png)  
+![Example UI](report/images/Screenshot%202024-12-03%20at%2000.26.08.png)  
 
 And, of course, the favourites feature.
-Favourites
-![Example UI](Screenshot%202024-12-03%20at%2000.41.12.png)
-![Example UI](Screenshot%202024-12-03%20at%2000.41.32.png)
+
+![Example UI](report/images/Screenshot%202024-12-03%20at%2000.41.12.png)
+![Example UI](report/images/Screenshot%202024-12-03%20at%2000.41.32.png)
 
 Users aren't restricted to a single city, we can do two!
-![Example UI](Screenshot%202024-12-03%20at%2000.50.10.png)
-![Example UI](Screenshot%202024-12-03%20at%2000.51.56.png)
-![Example UI](Screenshot%202024-12-03%20at%2000.54.19.png)
+
+![Example UI](report/images/Screenshot%202024-12-03%20at%2000.50.10.png)
+![Example UI](report/images/Screenshot%202024-12-03%20at%2000.51.56.png)
+![Example UI](report/images/Screenshot%202024-12-03%20at%2000.54.19.png)
 
 The best for last.
-![Example UI](Screenshot%202024-12-03%20at%2006.45.36.png)
-![Example UI](Screenshot%202024-12-03%20at%2006.45.55.png)
+
+![Example UI](report/images/Screenshot%202024-12-03%20at%2006.45.36.png)
+![Example UI](report/images/Screenshot%202024-12-03%20at%2006.45.55.png)
 
 ---
 
@@ -205,7 +190,7 @@ If you wish to use this project for other purposes, please contact the authors f
 
 We welcome your feedback to improve this project. Here's how you can provide feedback:
 
-**Email Us!**: Email the repository owner Reena, rmobmina@gmail.com.  
+**Email Us**: Email the repository owner Reena, rmobmina@gmail.com.  
 
 ---
 
