@@ -1,14 +1,23 @@
 package presentation.ui.views;
 
-import javax.swing.*;
 import java.awt.*;
 
+import javax.swing.*;
+
+/**
+ * The HelpInfoView class provides a help window for the Weather App.
+ * It displays an informational page with an overview of the application's features and functionality.
+ */
 public class HelpInfoView {
 
-    private JFrame frame;
-    private JPanel panel;
-    private JEditorPane helpEditorPane;
+    private final JFrame frame;
+    private final JPanel panel;
+    private final JEditorPane helpEditorPane;
 
+    /**
+     * Constructs a HelpInfoView instance.
+     * Initializes the UI components and styles the help information window.
+     */
     public HelpInfoView() {
         frame = new JFrame("Help");
         panel = new JPanel();
@@ -29,17 +38,28 @@ public class HelpInfoView {
         helpEditorPane.setMargin(new Insets(10, 10, 10, 10));
 
         // Add the editor pane to a scroll pane
-        JScrollPane scrollPane = new JScrollPane(helpEditorPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        final JScrollPane scrollPane =
+                new JScrollPane(helpEditorPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                        JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         panel.add(scrollPane, BorderLayout.CENTER);
 
         // Add the panel to the frame
         frame.add(panel);
     }
 
+    /**
+     * Displays the Help window.
+     * Makes the frame visible to the user.
+     */
     public void display() {
         frame.setVisible(true);
     }
 
+    /**
+     * Retrieves the HTML-formatted help information to display in the editor pane.
+     *
+     * @return A string containing the help information in HTML format.
+     */
     private String getHelpInfo() {
         return "<html>"
                 + "<h1>Welcome to the Weather App!</h1>"

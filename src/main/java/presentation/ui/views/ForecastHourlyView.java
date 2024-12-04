@@ -1,5 +1,14 @@
 package presentation.ui.views;
 
+import java.awt.*;
+import java.text.DecimalFormat;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+
+import javax.swing.*;
+
+import org.json.JSONArray;
+
 import application.usecases.GetForecastWeatherDataUseCase;
 import application.usecases.GetLocationDataUseCase;
 import domain.entities.WeatherData;
@@ -10,14 +19,11 @@ import presentation.ui.windows.LocationsWindow;
 import presentation.visualization.BarGraphWeatherComparison;
 import presentation.visualization.LineGraphWeatherComparison;
 
-import javax.swing.*;
-import java.awt.*;
-import java.text.DecimalFormat;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
-
-import org.json.JSONArray;
-
+/**
+ * The ForecastHourlyView class represents a UI window for displaying hourly weather forecasts.
+ * It allows users to visualize weather data through bar and line graphs and provides warnings
+ * based on temperature thresholds.
+ */
 public class ForecastHourlyView extends LocationsWindow {
 
     public static final String OPTION_NAME = "Forecast Hourly";
@@ -51,7 +57,7 @@ public class ForecastHourlyView extends LocationsWindow {
             return;
         }
 
-        GraphSelectionWindow graphSelectionWindow = new GraphSelectionWindow(graphType -> {
+        final GraphSelectionWindow graphSelectionWindow = new GraphSelectionWindow(graphType -> {
             if ("bar".equals(graphType)) {
                 showBarGraph();
             }
@@ -66,27 +72,28 @@ public class ForecastHourlyView extends LocationsWindow {
         if (weatherData == null) {
             throw new RuntimeException("Error displaying bar graph: Weather data is null");
         }
-        BarGraphWeatherComparison barGraph = new BarGraphWeatherComparison("Hourly Forecast Bar Graph");
+        final BarGraphWeatherComparison barGraph = new BarGraphWeatherComparison("Hourly Forecast Bar Graph");
 
         try {
-            JSONArray hourlyTemperatures = weatherData.getWeatherDetails()
+            final JSONArray hourlyTemperatures = weatherData.getWeatherDetails()
                     .getJSONObject("hourly")
                     .getJSONArray("temperature_2m");
 
-            int utcOffsetSeconds = weatherData.getWeatherDetails().getInt("utc_offset_seconds");
-            int utcOffsetHours = utcOffsetSeconds / 3600;
+            final int utcOffsetSeconds = weatherData.getWeatherDetails().getInt("utc_offset_seconds");
+            final int utcOffsetHours = utcOffsetSeconds / 3600;
 
-            LocalTime currentUtcTime = LocalTime.now(ZoneOffset.UTC);
+            final LocalTime currentUtcTime = LocalTime.now(ZoneOffset.UTC);
 
             for (int i = 0; i < NUMBER_HOURS_OF_FORECAST; i++) {
-                LocalTime forecastLocalTime = currentUtcTime.plusHours(utcOffsetHours + i + 1);
-                double temperature = hourlyTemperatures.getDouble(i);
+                final LocalTime forecastLocalTime = currentUtcTime.plusHours(utcOffsetHours + i + 1);
+                final double temperature = hourlyTemperatures.getDouble(i);
 
                 barGraph.addData("Temperature", forecastLocalTime.getHour() + ":00", temperature);
             }
 
             barGraph.display();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             JOptionPane.showMessageDialog(this,
                     "Error displaying bar graph: " + e.getMessage(),
                     "Visualization Error", JOptionPane.ERROR_MESSAGE);
@@ -99,27 +106,28 @@ public class ForecastHourlyView extends LocationsWindow {
             throw new RuntimeException("Error displaying line graph: Weather data is null");
         }
 
-        LineGraphWeatherComparison lineGraph = new LineGraphWeatherComparison("Hourly Forecast Line Graph");
+        final LineGraphWeatherComparison lineGraph = new LineGraphWeatherComparison("Hourly Forecast Line Graph");
 
         try {
-            JSONArray hourlyTemperatures = weatherData.getWeatherDetails()
+            final JSONArray hourlyTemperatures = weatherData.getWeatherDetails()
                     .getJSONObject("hourly")
                     .getJSONArray("temperature_2m");
 
-            int utcOffsetSeconds = weatherData.getWeatherDetails().getInt("utc_offset_seconds");
-            int utcOffsetHours = utcOffsetSeconds / 3600;
+            final int utcOffsetSeconds = weatherData.getWeatherDetails().getInt("utc_offset_seconds");
+            final int utcOffsetHours = utcOffsetSeconds / 3600;
 
-            LocalTime currentUtcTime = LocalTime.now(ZoneOffset.UTC);
+            final LocalTime currentUtcTime = LocalTime.now(ZoneOffset.UTC);
 
             for (int i = 0; i < NUMBER_HOURS_OF_FORECAST; i++) {
-                LocalTime forecastLocalTime = currentUtcTime.plusHours(utcOffsetHours + i + 1);
-                double temperature = hourlyTemperatures.getDouble(i);
+                final LocalTime forecastLocalTime = currentUtcTime.plusHours(utcOffsetHours + i + 1);
+                final double temperature = hourlyTemperatures.getDouble(i);
 
                 lineGraph.addData("Temperature", forecastLocalTime.getHour() + ":00", temperature);
             }
 
             lineGraph.display();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             JOptionPane.showMessageDialog(this,
                     "Error displaying line graph: " + e.getMessage(),
                     "Visualization Error", JOptionPane.ERROR_MESSAGE);
@@ -133,13 +141,25 @@ public class ForecastHourlyView extends LocationsWindow {
             throw new RuntimeException("No location selected!!");
         }
 
-        GetForecastWeatherDataUseCase forecastUseCase = new GetForecastWeatherDataUseCase(apiService);
+        final GetForecastWeatherDataUseCase forecastUseCase = new GetForecastWeatherDataUseCase(apiService);
         this.weatherData = forecastUseCase.execute(location, NUMBER_HOURS_OF_FORECAST);
-    }    public WeatherData getWeather() {
+    }
+
+    /**
+     * Retrieves the weather data.
+     *
+     * @return The weather data object.
+     */
+    public WeatherData getWeather() {
         getWeatherData();
         return weatherData;
     }
 
+    /**
+     * Sets the weather data to null.
+     *
+     * @return The updated weather data (null).
+     */
     public WeatherData makeWeatherDataNull() {
         this.weatherData = null;
         return this.weatherData;
@@ -174,19 +194,19 @@ public class ForecastHourlyView extends LocationsWindow {
         forecastpanel.add(new JLabel("Local Time", SwingConstants.CENTER));
         forecastpanel.add(new JLabel("Temperature (Celsius)", SwingConstants.CENTER));
 
-        JSONArray hourlyTemperatures = weatherData.getWeatherDetails()
+        final JSONArray hourlyTemperatures = weatherData.getWeatherDetails()
                 .getJSONObject("hourly")
                 .getJSONArray("temperature_2m");
 
-        int utcOffsetSeconds = weatherData.getWeatherDetails().getInt("utc_offset_seconds");
-        int utcOffsetHours = utcOffsetSeconds / 3600;
-        LocalTime currentUtcTime = LocalTime.now(ZoneOffset.UTC);
+        final int utcOffsetSeconds = weatherData.getWeatherDetails().getInt("utc_offset_seconds");
+        final int utcOffsetHours = utcOffsetSeconds / 3600;
+        final LocalTime currentUtcTime = LocalTime.now(ZoneOffset.UTC);
 
         double totalTemp = 0.0;
 
         for (int i = 0; i < NUMBER_HOURS_OF_FORECAST; i++) {
-            LocalTime forecastLocalTime = currentUtcTime.plusHours(utcOffsetHours + i + 1);
-            double temperature = hourlyTemperatures.getDouble(i);
+            final LocalTime forecastLocalTime = currentUtcTime.plusHours(utcOffsetHours + i + 1);
+            final double temperature = hourlyTemperatures.getDouble(i);
 
             forecastpanel.add(new JLabel(forecastLocalTime.getHour() + ":00", SwingConstants.CENTER));
             forecastpanel.add(new JLabel(String.valueOf(temperature), SwingConstants.CENTER));

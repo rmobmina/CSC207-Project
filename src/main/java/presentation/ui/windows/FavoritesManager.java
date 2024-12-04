@@ -62,14 +62,14 @@ public class FavoritesManager {
         return favorites;
     }
 
-
     /**
      * Saves the favorites list to a file.
      */
     public void saveFavorites() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FAVORITES_FILE))) {
             oos.writeObject(favorites);
-        } catch (IOException ioException) {
+        }
+        catch (IOException ioException) {
             System.err.println("Error saving favorites: " + ioException.getMessage());
         }
     }
@@ -85,10 +85,12 @@ public class FavoritesManager {
         if (file.exists()) {
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
                 favorites = (List<Location>) ois.readObject();
-            } catch (IOException | ClassNotFoundException exception) {
+            }
+            catch (IOException | ClassNotFoundException exception) {
                 // handles the exception as needed
             }
-        } else {
+        }
+        else {
             System.out.println("Favorites file does not exist. Initializing empty favorites list.");
             favorites.clear();
         }

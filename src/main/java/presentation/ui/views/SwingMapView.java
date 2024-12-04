@@ -19,8 +19,8 @@ import application.dto.WeatherDataDTOGenerator;
 import application.usecases.GetForecastWeatherDataUseCase;
 import domain.entities.Location;
 import domain.entities.WeatherData;
-import infrastructure.adapters.OpenWeatherApiService;
 import domain.services.MercatorAlgorithm;
+import infrastructure.adapters.OpenWeatherApiService;
 import utils.Constants;
 
 /**

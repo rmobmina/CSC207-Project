@@ -1,7 +1,6 @@
 package presentation.ui.views;
 
 import java.awt.BorderLayout;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -67,11 +66,12 @@ public class FavoritesView extends JFrame {
      */
     private void handleFavoritesListDoubleClick() {
         final String selectedLocationName = favoritesList.getSelectedValue();
-        if (selectedLocationName != null && ! "No favorites added yet.".equals(selectedLocationName)) {
+        if (selectedLocationName != null && !"No favorites added yet.".equals(selectedLocationName)) {
             final Location selectedLocation = getLocationFromName(selectedLocationName);
             if (selectedLocation != null) {
                 openForecastDailyView(selectedLocation);
-            } else {
+            }
+            else {
                 showError("Selected location not found.");
             }
         }
@@ -92,9 +92,9 @@ public class FavoritesView extends JFrame {
 
     protected DefaultListModel<String> getFavoritesAsStrings() {
         final DefaultListModel<String> model = new DefaultListModel<>();
-        List<Location> favorites = favoritesManager.getFavorites();
+        final List<Location> favorites = favoritesManager.getFavorites();
 
-        if (favorites == null || favorites.isEmpty()) { // Handle null or empty case here
+        if (favorites == null || favorites.isEmpty()) {
             model.addElement("No favorites added yet.");
             return model;
         }
@@ -112,9 +112,8 @@ public class FavoritesView extends JFrame {
         return model;
     }
 
-
     protected void removeFavoriteByName(String locationName) {
-        List<Location> favorites = favoritesManager.getFavorites();
+        final List<Location> favorites = favoritesManager.getFavorites();
         if (favorites == null || favorites.isEmpty()) {
             showError("No favorites found to remove.");
             return;
@@ -136,9 +135,14 @@ public class FavoritesView extends JFrame {
         }
     }
 
-
+    /**
+     * Retrieves a Location object from its name.
+     *
+     * @param locationName The name of the location to retrieve.
+     * @return The Location object if found; otherwise, null.
+     */
     public Location getLocationFromName(String locationName) {
-        List<Location> favorites = favoritesManager.getFavorites();
+        final List<Location> favorites = favoritesManager.getFavorites();
         if (favorites == null || favorites.isEmpty()) {
             return null;
         }
@@ -151,17 +155,18 @@ public class FavoritesView extends JFrame {
         return null;
     }
 
-
     void openForecastDailyView(Location location) {
         if (location != null) {
             this.setVisible(false);
             if (parentWindow != null) {
                 parentWindow.setSearchBarText(location.fullLocationName());
                 parentWindow.setWeatherLocation(location);
-            } else {
+            }
+            else {
                 showError("Parent window reference is null.");
             }
-        } else {
+        }
+        else {
             showError("Location not found.");
         }
     }
@@ -174,6 +179,9 @@ public class FavoritesView extends JFrame {
         return favoritesList;
     }
 
+    /**
+     * Refreshes the displayed list of favorite locations.
+     */
     public void refreshFavoritesList() {
         favoritesList.setModel(getFavoritesAsStrings());
         favoritesList.updateUI();

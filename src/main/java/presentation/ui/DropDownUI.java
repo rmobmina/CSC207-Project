@@ -1,23 +1,26 @@
 package presentation.ui;
 
-import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.Timer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.Timer;
 
 import application.usecases.GetLocationDataUseCase;
 import domain.entities.Location;
-import infrastructure.adapters.OpenWeatherApiService;
 
-
+/**
+ * The `DropDownUI` class provides a user interface component for selecting a location.
+ * It includes a text field for entering a location name and a dropdown for displaying
+ * matching locations as the user types. The dropdown updates dynamically based on the input.
+ */
 public class DropDownUI extends JPanel {
     private final JTextField locationField = new JTextField(20);
     private final JComboBox<String> locationDropdown = new JComboBox<>();
@@ -27,6 +30,12 @@ public class DropDownUI extends JPanel {
     private boolean selectionMade;
     private List<Location> matchingLocations = new ArrayList<>();
 
+    /**
+     * Constructs a `DropDownUI` instance.
+     *
+     * @param apiKey              The API key for accessing location data.
+     * @param locationDataUseCase The use case for retrieving matching locations.
+     */
     public DropDownUI(String apiKey, GetLocationDataUseCase locationDataUseCase) {
         this.apiKey = apiKey;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -57,7 +66,8 @@ public class DropDownUI extends JPanel {
                         locationDropdown.requestFocus();
                         locationDropdown.setPopupVisible(true);
                     }
-                } else {
+                }
+                else {
                     // Restart the timer for other keys
                     updateTimer.restart();
                 }
@@ -76,24 +86,34 @@ public class DropDownUI extends JPanel {
         });
     }
 
+    /**
+     * Resets the dropdown selection by clearing all items and hiding the dropdown.
+     */
     public void resetSelection() {
-        locationDropdown.removeAllItems(); // Clear all items
-        locationDropdown.setVisible(false); // Hide the dropdown
+        locationDropdown.removeAllItems();
+        locationDropdown.setVisible(false);
     }
 
+    /**
+     * Updates the dropdown with matching locations based on user input.
+     *
+     * @param input               The user input text to search for matching locations.
+     * @param locationDataUseCase The use case for retrieving matching locations.
+     */
     private void updateDropdown(String input, GetLocationDataUseCase locationDataUseCase) {
         locationDropdown.removeAllItems();
 
         // Trim the input but allow leading/trailing spaces in the text field
-        if (input.trim().isEmpty()) { // Check if the input is empty or just spaces
+        if (input.trim().isEmpty()) {
             locationDropdown.setVisible(false);
             return;
         }
 
-        matchingLocations = locationDataUseCase.execute(input.trim(), apiKey); // Use trimmed input for API calls
+        matchingLocations = locationDataUseCase.execute(input.trim(), apiKey);
         if (matchingLocations.isEmpty()) {
             locationDropdown.setVisible(false);
-        } else {
+        }
+        else {
             for (Location location : matchingLocations) {
                 locationDropdown.addItem(location.fullLocationName());
             }
@@ -103,28 +123,25 @@ public class DropDownUI extends JPanel {
         locationDropdown.setSelectedIndex(-1);
     }
 
-
+    /**
+     * Retrieves the text field for entering a location name.
+     *
+     * @return The location input text field.
+     */
     public JTextField getLocationField() {
         return locationField;
     }
 
+    /**
+     * Retrieves the currently selected location from the dropdown.
+     *
+     * @return The selected `Location` object, or `null` if no selection is made.
+     */
     public Location getSelectedLocation() {
         if (locationDropdown.getSelectedIndex() >= 0) {
             return matchingLocations.get(locationDropdown.getSelectedIndex());
         }
         return null;
     }
-
-
-//    public static void main(String[] args) {
-//        final JFrame frame = new JFrame("DropDown UI Example");
-//        final String testApiKey = "0e85f616a96a624a0bf65bad89ff68c5"; // Bader's API Key
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        DropDownUI dropDownUI = new DropDownUI(testApiKey);
-//        frame.add(dropDownUI);
-//        frame.pack();
-//        frame.setLocationRelativeTo(null);
-//        frame.setVisible(true);
-//    }
 }
 

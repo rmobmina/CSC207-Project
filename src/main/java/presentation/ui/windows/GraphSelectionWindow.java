@@ -1,8 +1,9 @@
 package presentation.ui.windows;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.function.Consumer;
+
+import javax.swing.*;
 
 /**
  * A window to allow the user to select the type of graph for visualization.

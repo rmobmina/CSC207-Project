@@ -12,7 +12,6 @@ import presentation.ui.views.*;
  */
 public class LocationsWindowGenerator {
 
-
     /**
      * Generates a LocationsWindow based on the option selected and other dependencies.
      *
@@ -22,6 +21,7 @@ public class LocationsWindowGenerator {
      * @param locationDataUseCase  The use case to retrieve location data.
      * @param apiKey               The API key for the weather service.
      * @param apiService           The API service to fetch weather data.
+     * @param dashboard           The API service to fetch weather data.
      * @return The corresponding LocationsWindow for the selected option.
      */
     public static LocationsWindow generateLocationsWindow(String option, int[] dimensions, int numOfLocations,
@@ -39,23 +39,27 @@ public class LocationsWindowGenerator {
         switch (option) {
             case ForecastDailyView.OPTION_NAME: {
                 // Create a default Location for ForecastDailyView
-                Location defaultLocation = createDefaultLocation(); // Uses one of the Location constructors
-                GetForecastWeatherDataUseCase forecastWeatherDataUseCase = new GetForecastWeatherDataUseCase(apiService);
+                final Location defaultLocation = createDefaultLocation();
+                final GetForecastWeatherDataUseCase forecastWeatherDataUseCase =
+                        new GetForecastWeatherDataUseCase(apiService);
 
                 // Return ForecastDailyView with all required parameters
                 return new ForecastDailyView("Forecast Daily View", dimensions, defaultLocation,
                         forecastWeatherDataUseCase, locationDataUseCase, apiKey, apiService);
             }
             case ForecastHourlyView.OPTION_NAME:
-                return new ForecastHourlyView("Forecast Hourly View", dimensions, locationDataUseCase, apiKey, apiService);
+                return new ForecastHourlyView("Forecast Hourly View",
+                        dimensions, locationDataUseCase, apiKey, apiService);
             case HistoricalWeatherComparisonView.OPTION_NAME:
-            return new HistoricalWeatherComparisonView("Weather Comparison View", dimensions, numOfLocations, locationDataUseCase, apiKey, apiService, dashboard);
+            return new HistoricalWeatherComparisonView("Weather Comparison View",
+                    dimensions, numOfLocations, locationDataUseCase, apiKey, apiService, dashboard);
             case MercatorMapView.OPTION_NAME:
                 return new MercatorMapView("Mercator Map View", dimensions, numOfLocations,
                         locationDataUseCase, apiKey, apiService);
             default:
                 // Return an error window for invalid options
-                return new ErrorLocationsWindow("ERROR: Invalid option chosen!", dimensions, locationDataUseCase, apiKey, apiService);
+                return new ErrorLocationsWindow("ERROR: Invalid option chosen!",
+                        dimensions, locationDataUseCase, apiKey, apiService);
         }
     }
 
@@ -66,11 +70,11 @@ public class LocationsWindowGenerator {
      */
     private static Location createDefaultLocation() {
         // Example: Replace with actual default values or dynamic input
-        String city = "Toronto";
-        String state = "Ontario";
-        String country = "Canada";
-        double latitude = 43.65107;
-        double longitude = -79.347015;
+        final String city = "Toronto";
+        final String state = "Ontario";
+        final String country = "Canada";
+        final double latitude = 43.65107;
+        final double longitude = -79.347015;
 
         // Use the full constructor of the Location class
         return new Location(city, state, country, latitude, longitude);

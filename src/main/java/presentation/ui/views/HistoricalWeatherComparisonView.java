@@ -1,5 +1,13 @@
 package presentation.ui.views;
 
+import java.awt.*;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+import javax.swing.*;
+
 import application.dto.WeatherDataDTO;
 import application.dto.WeatherDataDTOGenerator;
 import application.usecases.GetHistoricalWeatherDataUseCase;
@@ -10,18 +18,20 @@ import domain.interfaces.ApiService;
 import infrastructure.adapters.OpenWeatherApiService;
 import presentation.ui.DropDownUI;
 import presentation.ui.dashboard.NewDashBoardUi;
-import presentation.ui.windows.MultipleLocationsWindow;
 import presentation.ui.windows.GraphSelectionWindow;
+import presentation.ui.windows.MultipleLocationsWindow;
 import presentation.visualization.BarGraphWeatherComparison;
 import presentation.visualization.LineGraphWeatherComparison;
 
-import javax.swing.*;
-import java.awt.*;
-import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-
+/**
+ * The HistoricalWeatherComparisonView class provides a UI for comparing historical weather data
+ * between two cities over a specified time range.
+ *
+ * <p>
+ * Users can select two cities, specify a date range, and view comparative data
+ * including temperature, precipitation, humidity, and wind speed. Visualization
+ * options include bar and line graphs.
+ */
 public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
 
     public static final String OPTION_NAME = "Historical Comparison";
@@ -76,14 +86,13 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
         initializeUI();
     }
 
-
     private void initializeUI() {
-        JPanel mainPanel = new JPanel();
+        final JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // City Selection Panel
-        JPanel citySelectionPanel = new JPanel();
+        final JPanel citySelectionPanel = new JPanel();
         citySelectionPanel.setLayout(new BoxLayout(citySelectionPanel, BoxLayout.Y_AXIS));
         citySelectionPanel.setBorder(BorderFactory.createTitledBorder("City Selection"));
 
@@ -99,7 +108,7 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
         citySelectionPanel.add(refreshButton);
 
         // Time Range Panel
-        JPanel timeRangePanel = new JPanel();
+        final JPanel timeRangePanel = new JPanel();
         timeRangePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
         timeRangePanel.setBorder(BorderFactory.createTitledBorder("Select Time Range"));
 
@@ -112,7 +121,7 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
         timeRangePanel.add(timeRangeButton);
 
         // Weather Data Panel
-        JPanel weatherDataPanel = new JPanel(new GridLayout(4, 2, 10, 10));
+        final JPanel weatherDataPanel = new JPanel(new GridLayout(4, 2, 10, 10));
         weatherDataPanel.setBorder(BorderFactory.createTitledBorder("Weather Data"));
 
         weatherDataPanel.add(firstCityTemperature);
@@ -125,12 +134,12 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
         weatherDataPanel.add(secondCityWindSpeed);
 
         // Button Panel
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         buttonPanel.add(visualizeButton);
         buttonPanel.add(backButton);
 
         // Add sub-panels to the main panel
-        JPanel centerPanel = new JPanel();
+        final JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BorderLayout(10, 10));
         centerPanel.add(timeRangePanel, BorderLayout.NORTH);
         centerPanel.add(weatherDataPanel, BorderLayout.CENTER);
@@ -155,8 +164,8 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
 
     private void handleSetTimeRange() {
         try {
-            LocalDate newStartDate = LocalDate.parse(startDateField.getText(), DateTimeFormatter.ISO_LOCAL_DATE);
-            LocalDate newEndDate = LocalDate.parse(endDateField.getText(), DateTimeFormatter.ISO_LOCAL_DATE);
+            final LocalDate newStartDate = LocalDate.parse(startDateField.getText(), DateTimeFormatter.ISO_LOCAL_DATE);
+            final LocalDate newEndDate = LocalDate.parse(endDateField.getText(), DateTimeFormatter.ISO_LOCAL_DATE);
 
             if (newStartDate.isAfter(newEndDate)) {
                 showError("Start date must be before or equal to end date.");
@@ -167,7 +176,8 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
             endDate = newEndDate;
 
             showSuccess("Time range updated to: " + startDate + " to " + endDate);
-        } catch (DateTimeParseException ex) {
+        }
+        catch (DateTimeParseException ex) {
             showError("Invalid date format. Please use YYYY-MM-DD.");
         }
     }
@@ -181,22 +191,27 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
             return;
         }
 
-        System.out.println("Fetching weather data for: " + firstCity.fullLocationName() + " and " + secondCity.fullLocationName());
+        System.out.println("Fetching weather data for: " + firstCity.fullLocationName()
+                + " and " + secondCity.fullLocationName());
 
         final GetHistoricalWeatherDataUseCase weatherUseCase = new GetHistoricalWeatherDataUseCase(apiService);
         final WeatherDataDTOGenerator dtoGenerator = new WeatherDataDTOGenerator();
 
-        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+        final SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() {
                 try {
-                    WeatherData firstCityWeather = weatherUseCase.execute(firstCity, startDate, endDate);
-                    WeatherData secondCityWeather = weatherUseCase.execute(secondCity, startDate, endDate);
+                    final WeatherData firstCityWeather = weatherUseCase.execute(firstCity, startDate, endDate);
+                    final WeatherData secondCityWeather = weatherUseCase.execute(secondCity, startDate, endDate);
 
-                    firstCityWeatherData = dtoGenerator.createWeatherDataDTO(firstCityWeather, firstCity, startDate, endDate);
-                    secondCityWeatherData = dtoGenerator.createWeatherDataDTO(secondCityWeather, secondCity, startDate, endDate);
-                } catch (Exception ex) {
-                    SwingUtilities.invokeLater(() -> showError("Error fetching weather data: " + ex.getMessage()));
+                    firstCityWeatherData =
+                            dtoGenerator.createWeatherDataDTO(firstCityWeather, firstCity, startDate, endDate);
+                    secondCityWeatherData =
+                            dtoGenerator.createWeatherDataDTO(secondCityWeather, secondCity, startDate, endDate);
+                }
+                catch (Exception ex) {
+                    SwingUtilities.invokeLater(() ->
+                            showError("Error fetching weather data: " + ex.getMessage()));
                     ex.printStackTrace();
                 }
                 return null;
@@ -217,31 +232,41 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
         DecimalFormat df = new DecimalFormat("#.##");
 
         SwingUtilities.invokeLater(() -> {
-            firstCityTemperature.setText("City 1 Temperature: " + df.format(firstCityDTO.getAverageWeatherData("temperatureMeanDaily")));
-            secondCityTemperature.setText("City 2 Temperature: " + df.format(secondCityDTO.getAverageWeatherData("temperatureMeanDaily")));
+            firstCityTemperature.setText("City 1 Temperature: "
+                    + df.format(firstCityDTO.getAverageWeatherData("temperatureMeanDaily")));
+            secondCityTemperature.setText("City 2 Temperature: "
+                    + df.format(secondCityDTO.getAverageWeatherData("temperatureMeanDaily")));
 
-            firstCityPrecipitation.setText("City 1 Precipitation: " + df.format(firstCityDTO.getAverageWeatherData("percipitationDaily")));
-            secondCityPrecipitation.setText("City 2 Precipitation: " + df.format(secondCityDTO.getAverageWeatherData("percipitationDaily")));
+            firstCityPrecipitation.setText("City 1 Precipitation: "
+                    + df.format(firstCityDTO.getAverageWeatherData("percipitationDaily")));
+            secondCityPrecipitation.setText("City 2 Precipitation: "
+                    + df.format(secondCityDTO.getAverageWeatherData("percipitationDaily")));
 
-            firstCityHumidity.setText("City 1 Humidity: " + df.format(firstCityDTO.getAverageWeatherData("humidityHourly")));
-            secondCityHumidity.setText("City 2 Humidity: " + df.format(secondCityDTO.getAverageWeatherData("humidityHourly")));
+            firstCityHumidity.setText("City 1 Humidity: "
+                    + df.format(firstCityDTO.getAverageWeatherData("humidityHourly")));
+            secondCityHumidity.setText("City 2 Humidity: "
+                    + df.format(secondCityDTO.getAverageWeatherData("humidityHourly")));
 
-            firstCityWindSpeed.setText("City 1 Wind Speed: " + df.format(firstCityDTO.getAverageWeatherData("windSpeedDaily")));
-            secondCityWindSpeed.setText("City 2 Wind Speed: " + df.format(secondCityDTO.getAverageWeatherData("windSpeedDaily")));
+            firstCityWindSpeed.setText("City 1 Wind Speed: "
+                    + df.format(firstCityDTO.getAverageWeatherData("windSpeedDaily")));
+            secondCityWindSpeed.setText("City 2 Wind Speed: "
+                    + df.format(secondCityDTO.getAverageWeatherData("windSpeedDaily")));
         });
     }
 
+    @Override
     protected void openVisualization() {
         if (firstCityWeatherData == null || secondCityWeatherData == null) {
             showError("Fetch weather data for both cities first.");
             return;
         }
 
-        GraphSelectionWindow graphSelectionWindow = new GraphSelectionWindow(selectedGraph -> {
+        final GraphSelectionWindow graphSelectionWindow = new GraphSelectionWindow(selectedGraph -> {
             SwingUtilities.invokeLater(() -> {
                 switch (selectedGraph) {
                     case "line":
-                        LineGraphWeatherComparison lineGraph = new LineGraphWeatherComparison("Two Cities Weather Comparison");
+                        LineGraphWeatherComparison lineGraph =
+                                new LineGraphWeatherComparison("Two Cities Weather Comparison");
                         firstCityWeatherData.getTemperatureHistory().forEach((date, value) ->
                                 lineGraph.addData("City 1 Temperature", date, value)
                         );
@@ -252,18 +277,27 @@ public class HistoricalWeatherComparisonView extends MultipleLocationsWindow {
                         break;
 
                     case "bar":
-                        BarGraphWeatherComparison barGraph = new BarGraphWeatherComparison("Two Cities Weather Comparison");
-                        barGraph.addData("City 1", "Temperature", firstCityWeatherData.getAverageWeatherData("temperatureMeanDaily"));
-                        barGraph.addData("City 2", "Temperature", secondCityWeatherData.getAverageWeatherData("temperatureMeanDaily"));
+                        final BarGraphWeatherComparison barGraph =
+                                new BarGraphWeatherComparison("Two Cities Weather Comparison");
+                        barGraph.addData("City 1", "Temperature",
+                                firstCityWeatherData.getAverageWeatherData("temperatureMeanDaily"));
+                        barGraph.addData("City 2", "Temperature",
+                                secondCityWeatherData.getAverageWeatherData("temperatureMeanDaily"));
 
-                        barGraph.addData("City 1", "Precipitation", firstCityWeatherData.getAverageWeatherData("percipitationDaily"));
-                        barGraph.addData("City 2", "Precipitation", secondCityWeatherData.getAverageWeatherData("percipitationDaily"));
+                        barGraph.addData("City 1", "Precipitation",
+                                firstCityWeatherData.getAverageWeatherData("percipitationDaily"));
+                        barGraph.addData("City 2", "Precipitation",
+                                secondCityWeatherData.getAverageWeatherData("percipitationDaily"));
 
-                        barGraph.addData("City 1", "Humidity", firstCityWeatherData.getAverageWeatherData("humidityHourly"));
-                        barGraph.addData("City 2", "Humidity", secondCityWeatherData.getAverageWeatherData("humidityHourly"));
+                        barGraph.addData("City 1", "Humidity",
+                                firstCityWeatherData.getAverageWeatherData("humidityHourly"));
+                        barGraph.addData("City 2", "Humidity",
+                                secondCityWeatherData.getAverageWeatherData("humidityHourly"));
 
-                        barGraph.addData("City 1", "Wind Speed", firstCityWeatherData.getAverageWeatherData("windSpeedDaily"));
-                        barGraph.addData("City 2", "Wind Speed", secondCityWeatherData.getAverageWeatherData("windSpeedDaily"));
+                        barGraph.addData("City 1", "Wind Speed",
+                                firstCityWeatherData.getAverageWeatherData("windSpeedDaily"));
+                        barGraph.addData("City 2", "Wind Speed",
+                                secondCityWeatherData.getAverageWeatherData("windSpeedDaily"));
 
                         barGraph.display();
                         break;

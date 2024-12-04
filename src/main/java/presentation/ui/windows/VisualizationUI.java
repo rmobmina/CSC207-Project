@@ -1,10 +1,10 @@
 package presentation.ui.windows;
 
+import javax.swing.*;
+
 import application.dto.WeatherDataDTO;
 import presentation.visualization.BarGraphWeatherComparison;
 import presentation.visualization.LineGraphWeatherComparison;
-
-import javax.swing.*;
 
 /**
  * This class handles the visualization of weather data for one or two cities.
@@ -31,7 +31,8 @@ public class VisualizationUI {
         // Set the graph name based on the number of cities
         if (numOfCities == 1) {
             graphName = "City Historical Data";
-        } else {
+        }
+        else {
             graphName = "Two Cities Weather Comparison";
         }
     }
@@ -42,12 +43,14 @@ public class VisualizationUI {
     public void openVisualization() {
         if (firstCityWeatherData == null || (numOfCities == 2 && secondCityWeatherData == null)) {
             showError("Fetch weather data for the selected city or cities first.");
-        } else {
+        }
+        else {
             SwingUtilities.invokeLater(() -> {
                 GraphSelectionWindow graphWindow = new GraphSelectionWindow(graphType -> {
                     if ("line".equals(graphType)) {
                         visualizeLineGraph();
-                    } else if ("bar".equals(graphType)) {
+                    }
+                    else if ("bar".equals(graphType)) {
                         visualizeBarGraph();
                     }
                 });
@@ -84,17 +87,25 @@ public class VisualizationUI {
         BarGraphWeatherComparison barGraph = new BarGraphWeatherComparison(graphName);
 
         // Add data for the first city
-        barGraph.addData("City 1", "Temperature", firstCityWeatherData.getAverageWeatherData("temperatureMeanDaily"));
-        barGraph.addData("City 1", "Precipitation", firstCityWeatherData.getAverageWeatherData("precipitationDaily"));
-        barGraph.addData("City 1", "Humidity", firstCityWeatherData.getAverageWeatherData("humidityHourly"));
-        barGraph.addData("City 1", "Wind Speed", firstCityWeatherData.getAverageWeatherData("windSpeedDaily"));
+        barGraph.addData("City 1", "Temperature",
+                firstCityWeatherData.getAverageWeatherData("temperatureMeanDaily"));
+        barGraph.addData("City 1", "Precipitation",
+                firstCityWeatherData.getAverageWeatherData("precipitationDaily"));
+        barGraph.addData("City 1", "Humidity",
+                firstCityWeatherData.getAverageWeatherData("humidityHourly"));
+        barGraph.addData("City 1", "Wind Speed",
+                firstCityWeatherData.getAverageWeatherData("windSpeedDaily"));
 
         // If visualizing two cities, add data for the second city
         if (numOfCities == 2) {
-            barGraph.addData("City 2", "Temperature", secondCityWeatherData.getAverageWeatherData("temperatureMeanDaily"));
-            barGraph.addData("City 2", "Precipitation", secondCityWeatherData.getAverageWeatherData("precipitationDaily"));
-            barGraph.addData("City 2", "Humidity", secondCityWeatherData.getAverageWeatherData("humidityHourly"));
-            barGraph.addData("City 2", "Wind Speed", secondCityWeatherData.getAverageWeatherData("windSpeedDaily"));
+            barGraph.addData("City 2", "Temperature",
+                    secondCityWeatherData.getAverageWeatherData("temperatureMeanDaily"));
+            barGraph.addData("City 2", "Precipitation",
+                    secondCityWeatherData.getAverageWeatherData("precipitationDaily"));
+            barGraph.addData("City 2", "Humidity",
+                    secondCityWeatherData.getAverageWeatherData("humidityHourly"));
+            barGraph.addData("City 2", "Wind Speed",
+                    secondCityWeatherData.getAverageWeatherData("windSpeedDaily"));
         }
 
         barGraph.display();
@@ -107,23 +118,5 @@ public class VisualizationUI {
      */
     private void showError(String errorMessage) {
         JOptionPane.showMessageDialog(mainPanel, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
-    }
-
-    /**
-     * Sets the weather data for the first city.
-     *
-     * @param firstCityWeatherData The weather data for the first city.
-     */
-    public void setFirstCityWeatherData(WeatherDataDTO firstCityWeatherData) {
-        this.firstCityWeatherData = firstCityWeatherData;
-    }
-
-    /**
-     * Sets the weather data for the second city.
-     *
-     * @param secondCityWeatherData The weather data for the second city.
-     */
-    public void setSecondCityWeatherData(WeatherDataDTO secondCityWeatherData) {
-        this.secondCityWeatherData = secondCityWeatherData;
     }
 }

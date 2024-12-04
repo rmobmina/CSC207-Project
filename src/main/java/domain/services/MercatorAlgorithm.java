@@ -52,7 +52,7 @@ public class MercatorAlgorithm {
      * @param height a double representing the height of the image in pixels.
      * @return A double array [longitude, latitude] where longitude and latitude are in degrees.
      */
-    public static double[] reverseCoordinates(double x, double y, double width, double height)  {
+    public static double[] reverseCoordinates(double x, double y, double width, double height) {
         // Reversing Longitude
         final double lambda = (x / width) * Constants.MERCATOR_MAX_DEGREE - (Constants.MERCATOR_MAX_DEGREE / 2.0);
 

@@ -21,8 +21,6 @@ import presentation.visualization.BarGraphWeatherComparison;
 import presentation.visualization.LineGraphWeatherComparison;
 import utils.Constants;
 
-import utils.Constants;
-
 /**
  * Class that handles UI to display the daily forecast (up to 16 days) showing max and min
  * temperature, precipitation sum, and wind speed (with dominant wind direction).
@@ -154,7 +152,8 @@ public class ForecastDailyView extends LocationsWindow {
         try {
             final boolean isNumberOfDaysValid = getNumberOfDays();
             if (isNumberOfDaysValid) {
-                final WeatherData weatherData = forecastWeatherDataUseCase.execute(location, Constants.MAX_FORECAST_DAYS);
+                final WeatherData weatherData =
+                        forecastWeatherDataUseCase.execute(location, Constants.MAX_FORECAST_DAYS);
 
                 if (forecastWeatherDataUseCase.isUseCaseFailed()) {
                     showErrorMessage("Error: Could not fetch weather data for the selected location.");

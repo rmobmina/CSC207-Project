@@ -5,11 +5,11 @@ import java.util.Scanner;
 import application.usecases.GetLocationDataUseCase;
 import application.usecases.GetLocationsWindowUseCase;
 import infrastructure.adapters.OpenWeatherApiService;
-import presentation.ui.windows.FavoritesManager;
 import presentation.ui.dashboard.NewDashBoardUi;
 import presentation.ui.views.HelpInfoView;
 import presentation.ui.views.MainMenuView;
 import presentation.ui.views.UserOptionsView;
+import presentation.ui.windows.FavoritesManager;
 
 /**
  * A class used to run the project.
@@ -51,6 +51,12 @@ public class App {
         dashBoard.runJframe(apiService);
     }
 
+    /**
+     * Generates a new instance of {@link NewDashBoardUi}.
+     *
+     * @param locationDataUseCase The use case interactor for handling location data.
+     * @return A new instance of the main dashboard UI.
+     */
     private static NewDashBoardUi generateDashBoardUi(GetLocationDataUseCase locationDataUseCase) {
         return new NewDashBoardUi(
                 new GetLocationsWindowUseCase(),

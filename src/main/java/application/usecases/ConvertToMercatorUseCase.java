@@ -1,4 +1,5 @@
 package application.usecases;
+
 import domain.entities.Coordinate;
 import utils.UseCaseInteractor;
 /**
@@ -19,6 +20,7 @@ public class ConvertToMercatorUseCase extends UseCaseInteractor {
      * @param mapHeight The height of the map.
      * @return The Mercator projection coordinates as a double array [x, y].
      */
+
     public double[] execute(Coordinate coordinate, double mapWidth, double mapHeight) {
         final double longitude = coordinate.getLongitude();
         final double latitude = coordinate.getLatitude();
