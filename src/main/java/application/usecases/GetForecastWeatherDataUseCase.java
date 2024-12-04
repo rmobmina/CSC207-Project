@@ -25,8 +25,14 @@ public class GetForecastWeatherDataUseCase extends UseCaseInteractor {
      */
     public WeatherData execute(Location location, int numberOfDays) {
         // Calls the API service to extract weather information in JSON format
-        final WeatherData weatherData = apiService.fetchForecastWeather(location, numberOfDays);
-        useCaseFailed = weatherData == null;
+        WeatherData weatherData = null;
+        if (location != null) {
+            weatherData = apiService.fetchForecastWeather(location, numberOfDays);
+            useCaseFailed = weatherData == null;
+        }
+        else {
+            useCaseFailed = true;
+        }
         return weatherData;
     }
 }
